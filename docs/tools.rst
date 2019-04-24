@@ -9,7 +9,7 @@ AviSynth+
 
 StaxRip support both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.
 
-Used Version: 2728
+Used Version: 2772
 
 http://avisynth.nl/index.php/AviSynth%2B
 
@@ -149,7 +149,7 @@ mkvextract
 
 MKV demuxing tool.
 
-Used Version: 31.0.0
+Used Version: 33.0.0
 
 https://mkvtoolnix.download/
 
@@ -159,7 +159,7 @@ mkvinfo
 
 MKV muxing tool.
 
-Used Version: 31.0.0
+Used Version: 33.0.0
 
 https://mkvtoolnix.download/
 
@@ -169,7 +169,7 @@ mkvmerge
 
 MKV muxing tool.
 
-Used Version: 31.0.0
+Used Version: 33.0.0
 
 https://mkvtoolnix.download/
 
@@ -209,7 +209,7 @@ NVEnc
 
 NVIDIA hardware video encoder.
 
-Used Version: 4.31
+Used Version: 4.36
 
 http://github.com/rigaya/NVEnc
 
@@ -229,7 +229,7 @@ Python
 
 Python x64 is required by VapourSynth x64. StaxRip x64 supports both AviSynth+ x64 and VapourSynth x64 as scripting based video processing tool.
 
-Used Version: 3.7.2
+Used Version: 3.7.3
 
 http://www.python.org
 
@@ -349,7 +349,7 @@ x264
 
 H.264 video encoding command line app.
 
-Used Version: 2935
+Used Version: 2969
 
 http://www.videolan.org/developers/x264.html
 
@@ -359,7 +359,7 @@ x265
 
 H.265 video encoding command line app.
 
-Used Version: 3.0-AU+7
+Used Version: 3.0-AU+18
 
 http://x265.org
 
