@@ -1,14 +1,11 @@
 #### Requirements
 
-.NET 4.7.2 / 4.8 is required to be installed(For Windows 10 Anniversary and Below).
+.NET 4.8 is required, Should be Pre-Installed with the Latest Version of Windows 10.
 
 https://dotnet.microsoft.com/download
 
-Dotnet 4.8 RC Build (Not Required But Fully Supports past dotnet Builds)
-
-https://github.com/Microsoft/dotnet-framework-early-access
-
 2.0.0.1
+- Updated to dotnet 4.8.
 - Removed Auto insert for RGB for VS and Convert Bits for AVS. Most are no longer useful due to 10Bit+ Videos are more common now.
 - This is a pure Refresh Release, Mainily designed to update some of the encoding tools.
 - This Release contains all the Changes from the Pipeline along with the Following.
