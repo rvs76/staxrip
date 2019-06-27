@@ -109,7 +109,7 @@ ffmpeg
 
 Versatile audio video converter.
 
-Used Version: 4.1
+Used Version: 4.1.3
 
 http://ffmpeg.org
 
@@ -139,7 +139,7 @@ MediaInfo
 
 MediaInfo is used by StaxRip to read infos from media files.
 
-Used Version: 18.12
+Used Version: 19.04
 
 http://mediaarea.net/en/MediaInfo
 
@@ -189,9 +189,9 @@ mpvnet
 
 libmpv based media player.
 
-Used Version: 2.0
+Used Version: 4.4
 
-https://github.com/Revan654/mpvnet/
+https://github.com/stax76/mpv.net
 
 
 mtn
@@ -199,7 +199,7 @@ mtn
 
 movie thumbnailer saves thumbnails (screenshots) of movie or video files to jpeg files. StaxRip uses a custom built version with HEVC support added in and also includes the latest FFMPEG.
 
-Used Version: 2.0
+Used Version: 2.0.1
 
 https://github.com/Revan654/Movie-Thumbnailer-mtn
 
@@ -209,7 +209,7 @@ NVEnc
 
 NVIDIA hardware video encoder.
 
-Used Version: 4.36
+Used Version: 4.42
 
 http://github.com/rigaya/NVEnc
 
@@ -249,7 +249,7 @@ QSVEnc
 
 Intel hardware video encoder.
 
-Used Version: 3.17
+Used Version: 3.23
 
 http://github.com/rigaya/QSVEnc
 
@@ -289,7 +289,7 @@ VCEEnc
 
 AMD hardware video encoder.
 
-Used Version: 4.00
+Used Version: 4.01
 
 http://github.com/rigaya/VCEEnc
 
@@ -359,7 +359,7 @@ x265
 
 H.265 video encoding command line app.
 
-Used Version: 3.0-AU+18
+Used Version: 3.1
 
 http://x265.org
 
@@ -767,7 +767,7 @@ AviSynth+ and VapourSynth source filter supporting various input formats.
 
 Filters: FFVideoSource, FFAudioSource
 
-Used Version: 2.30
+Used Version: 2.3.0
 
 http://github.com/FFMS/ffms2
 
@@ -1705,7 +1705,7 @@ AviSynth+ and VapourSynth source filter supporting various input formats.
 
 Filters: ffms2
 
-Used Version: 2.30
+Used Version: 2.3.0
 
 http://github.com/FFMS/ffms2
 
