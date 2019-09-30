@@ -26,7 +26,7 @@ Namespace UI
         End Function
 
         Overloads Overrides Function GetStandardValues(context As ITypeDescriptorContext) As StandardValuesCollection
-            Return New StandardValuesCollection(CType(context.PropertyDescriptor,  _
+            Return New StandardValuesCollection(CType(context.PropertyDescriptor,
                 GridPropertyDescriptor).GridProperty.DefaultValues)
         End Function
 
@@ -53,7 +53,7 @@ Namespace UI
                     Return sourceValue
                 End If
 
-                Dim tc As TypeConverter = TypeDescriptor.GetConverter(gp.Value)
+                Dim tc = TypeDescriptor.GetConverter(gp.Value)
 
                 If Not tc Is Nothing Then
                     If tc.CanConvertFrom(GetType(String)) Then
@@ -136,16 +136,7 @@ Namespace UI
             Me.YesNoConverter = yesNoConverter
         End Sub
 
-        Private ItemsValue As List(Of Object)
-
-        Property Items() As List(Of Object)
-            Get
-                Return ItemsValue
-            End Get
-            Set(Value As List(Of Object))
-                ItemsValue = Value
-            End Set
-        End Property
+        Property Items As List(Of Object)
 
 #Region "ICustomTypeDescriptor"
         Function GetAttributes() As AttributeCollection Implements ICustomTypeDescriptor.GetAttributes
@@ -215,13 +206,13 @@ Namespace UI
                     End If
                 End If
 
-                Dim d As New GridPropertyDescriptor(gp.Name, gp, _
+                Dim d As New GridPropertyDescriptor(gp.Name, gp,
                     CType(a.ToArray(GetType(Attribute)), Attribute()))
 
                 p.Add(d)
             Next
 
-            Return New PropertyDescriptorCollection(CType(p.ToArray(GetType( _
+            Return New PropertyDescriptorCollection(CType(p.ToArray(GetType(
                 PropertyDescriptor)), PropertyDescriptor()))
         End Function
 
@@ -418,57 +409,6 @@ Namespace UI
             Next
 
             Return Nothing
-        End Function
-    End Class
-
-    <AttributeUsage(AttributeTargets.All)>
-    Public Class OrderAttribute
-        Inherits Attribute
-
-        Sub New(order As Integer)
-            Me.Order = order
-        End Sub
-
-        Private OrderValue As Integer
-
-        Property Order() As Integer
-            Get
-                Return OrderValue
-            End Get
-            Set(Value As Integer)
-                OrderValue = Value
-            End Set
-        End Property
-    End Class
-
-    Public Class PropertyOrderConverter
-        Inherits TypeConverter
-
-        Overloads Overrides Function GetPropertiesSupported(context As ITypeDescriptorContext) As Boolean
-            Return True
-        End Function
-
-        Overloads Overrides Function GetProperties(context As ITypeDescriptorContext, value As Object, attributes As Attribute()) As PropertyDescriptorCollection
-            Dim c As PropertyDescriptorCollection = TypeDescriptor.GetProperties(value, attributes)
-            Dim s As New Sorter(Of PropertyDescriptor)
-
-            For Each i As PropertyDescriptor In c
-                Dim oa As OrderAttribute = DirectCast(i.Attributes(GetType(OrderAttribute)), OrderAttribute)
-
-                If oa Is Nothing Then
-                    s.Add(999, i)
-                Else
-                    s.Add(oa.Order, i)
-                End If
-            Next
-
-            Dim l As New List(Of String)
-
-            For Each i As PropertyDescriptor In s.GetSortedList
-                l.Add(i.Name)
-            Next
-
-            Return c.Sort(l.ToArray)
         End Function
     End Class
 

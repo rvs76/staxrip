@@ -1,21 +1,12 @@
-Imports Microsoft.Win32
 Imports System.Globalization
-Imports System.IO
 Imports System.Reflection
-Imports System.Runtime.InteropServices
-Imports System.Runtime.Serialization
 Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.Text
-Imports System.Text.RegularExpressions
-Imports System.Threading
-Imports System.Windows.Forms
-Imports System.Security.Cryptography
 Imports System.ComponentModel
-Imports System.Xml.Serialization
-Imports System.Xml
 
 Imports Microsoft.VisualBasic.FileIO
-Imports StaxRip.UI
+Imports System.Management
+Imports System.Text.RegularExpressions
 
 Public Class ObjectHelp
     'parse recursive serializable fields and lists 
@@ -27,7 +18,7 @@ Public Class ObjectHelp
 
     Shared Sub ParseCompareString(obj As Object, declaringObj As Object, sb As StringBuilder)
         If TypeOf obj Is ICollection Then
-            For Each i As Object In DirectCast(obj, ICollection)
+            For Each i In DirectCast(obj, ICollection)
                 If IsGoodType(i) Then
                     If IsToString(i) Then
                         sb.Append(i.ToString)
@@ -47,8 +38,7 @@ Public Class ObjectHelp
 
                             If IsGoodType(o) Then
                                 If IsToString(o) Then
-                                    sb.Append(i.Name + "=" + o.ToString + CrLf)
-                                    'sb.Append(i.Name + "=" + o.ToString + " [" + t.Name + "]" + CrLf)
+                                    sb.Append(i.Name + "=" + o.ToString + BR)
                                 Else
                                     If Not o Is declaringObj Then
                                         ParseCompareString(o, obj, sb)
@@ -65,74 +55,32 @@ Public Class ObjectHelp
     End Sub
 
     Private Shared Function IsGoodType(o As Object) As Boolean
-        If o Is Nothing Then
-            Return False
-        End If
-
-        If TypeOf o Is Pointer Then
-            Return False
-        End If
-
-        If Not o.GetType.IsSerializable Then
-            Return False
-        End If
-
+        If o Is Nothing Then Return False
+        If TypeOf o Is Pointer Then Return False
+        If TypeOf o Is PropertyChangedEventHandler Then Return False
+        If Not o.GetType.IsSerializable Then Return False
         Return True
     End Function
 
     Private Shared Function IsToString(o As Object) As Boolean
         If Not o Is Nothing Then
-            If o.GetType.IsPrimitive Then
-                Return True
-            End If
-
-            If TypeOf o Is String Then
-                Return True
-            End If
-
-            If TypeOf o Is CultureInfo Then 'some fields change here
-                Return True
-            End If
-
-            If TypeOf o Is StringBuilder Then 'some fields change here
-                Return True
-            End If
+            If o.GetType.IsPrimitive Then Return True
+            If TypeOf o Is String Then Return True
+            'some fields change here
+            If TypeOf o Is CultureInfo Then Return True
+            'some fields change here
+            If TypeOf o Is StringBuilder Then Return True
         End If
     End Function
 
     <DebuggerHidden()>
-    Shared Function GetCopy(o As Object) As Object
-        Using ms As New MemoryStream
-            Dim bf As New BinaryFormatter
-            bf.Serialize(ms, o)
-            ms.Position = 0
-            Return bf.Deserialize(ms)
-        End Using
-    End Function
-
-    <DebuggerHidden()>
-    Shared Function GetCopy(Of T)(o As Object) As T
+    Shared Function GetCopy(Of T)(o As T) As T
         Using ms As New MemoryStream
             Dim bf As New BinaryFormatter
             bf.Serialize(ms, o)
             ms.Position = 0
             Return DirectCast(bf.Deserialize(ms), T)
         End Using
-    End Function
-
-    Shared Sub Serialize(o As Object, path As String)
-        Dim fs As FileStream = New FileStream(path, FileMode.OpenOrCreate)
-        Dim bf As BinaryFormatter = New BinaryFormatter
-        bf.Serialize(fs, o)
-        fs.Close()
-    End Sub
-
-    Shared Function Deserialize(path As String) As Object
-        Dim fs As FileStream = New FileStream(path, FileMode.Open)
-        Dim bf As BinaryFormatter = New BinaryFormatter
-        Dim o As Object = bf.Deserialize(fs)
-        fs.Close()
-        Return o
     End Function
 End Class
 
@@ -165,95 +113,42 @@ Public Class DirectoryHelp
     End Sub
 
     Shared Function Compare(dir1 As String, dir2 As String) As Boolean
-        Return DirPath.AppendSeparator(dir1).ToUpper = DirPath.AppendSeparator(dir2).ToUpper
+        Return dir1.FixDir.ToUpper = dir2.FixDir.ToUpper
     End Function
+End Class
 
-    Shared Function FindFiles(startDir As String,
-                              filename As String,
-                              Optional filePaths As List(Of String) = Nothing) As List(Of String)
+Public Class ConsoleHelp
+    Private Shared DosCodePageValue As Integer
 
-        If filePaths Is Nothing Then
-            filePaths = New List(Of String)
-        End If
-
-        If Directory.Exists(startDir) Then
-            Dim di As New DirectoryInfo(startDir)
-
-            For Each i As FileSystemInfo In di.GetFileSystemInfos()
-                If TypeOf i Is FileInfo Then
-                    If Filepath.GetName(i.FullName).EqualIgnoreCase(filename) Then
-                        filePaths.Add(i.FullName)
-                    End If
-                Else
-                    FindFiles(i.FullName, filename, filePaths)
-                End If
-            Next
-        End If
-
-        Return filePaths
-    End Function
-
-    <DebuggerNonUserCode()>
-    Shared Sub FileCallback(startDir As String, callback As Action(Of String), cancelArgs As CancelEventArgs)
-        Try
-            Dim di As New DirectoryInfo(startDir)
-
-            For Each i As FileSystemInfo In di.GetFileSystemInfos()
-                If cancelArgs.Cancel Then
-                    Exit Sub
-                End If
-
-                If TypeOf i Is FileInfo Then
-                    callback(i.FullName)
-                Else
-                    FileCallback(i.FullName, callback, cancelArgs)
-                End If
-            Next
-        Catch
-        End Try
-    End Sub
+    Shared ReadOnly Property DosCodePage As Integer
+        Get
+            If DosCodePageValue = 0 Then DosCodePageValue = Regex.Match(ProcessHelp.GetStdOut("cmd.exe", "/C CHCP"), "\d+").Value.ToInt
+            Return DosCodePageValue
+        End Get
+    End Property
 End Class
 
 Public Class FileHelp
     Shared Sub Move(src As String, dest As String)
         If File.Exists(src) Then
             If File.Exists(dest) Then Delete(dest)
-
-            Try
-                FileSystem.MoveFile(src, dest, True)
-            Catch
-                FileSystem.MoveFile(src, dest, UIOption.OnlyErrorDialogs, UICancelOption.DoNothing)
-            End Try
+            FileSystem.MoveFile(src, dest, UIOption.OnlyErrorDialogs, UICancelOption.DoNothing)
         End If
     End Sub
 
     Shared Sub Copy(src As String, dest As String)
-        If Not File.Exists(src) Then
-            Exit Sub
-        End If
-
-        If File.Exists(dest) Then
-            Delete(dest)
-        End If
-
-        Try
-            FileSystem.CopyFile(src, dest, True)
-        Catch
-            FileSystem.CopyFile(src, dest, UIOption.OnlyErrorDialogs, UICancelOption.DoNothing)
-        End Try
+        If Not File.Exists(src) Then Exit Sub
+        If File.Exists(dest) Then Delete(dest)
+        FileSystem.CopyFile(src, dest, UIOption.OnlyErrorDialogs, UICancelOption.DoNothing)
     End Sub
 
-    Shared Sub Delete(path As String,
-                      Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)
-
-        If File.Exists(path) Then
-            FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, recycleOption, UICancelOption.DoNothing)
-        End If
+    Shared Sub Delete(path As String, Optional recycleOption As RecycleOption = RecycleOption.DeletePermanently)
+        If File.Exists(path) Then FileSystem.DeleteFile(path, UIOption.OnlyErrorDialogs, recycleOption, UICancelOption.DoNothing)
     End Sub
 End Class
 
 Public Class ProcessHelp
-    Shared Function GetStandardOutput(file As String, arguments As String) As String
+    Shared Function GetStdOut(file As String, arguments As String) As String
         Dim ret = ""
         Dim proc As New Process
         proc.StartInfo.UseShellExecute = False
@@ -267,7 +162,7 @@ Public Class ProcessHelp
         Return ret
     End Function
 
-    Shared Function GetErrorOutput(file As String, arguments As String) As String
+    Shared Function GetErrOut(file As String, arguments As String) As String
         Dim ret = ""
         Dim proc As New Process
         proc.StartInfo.UseShellExecute = False
@@ -279,5 +174,37 @@ Public Class ProcessHelp
         ret = proc.StandardError.ReadToEnd()
         proc.WaitForExit()
         Return ret
+    End Function
+
+    Private Sub KillProcessAndChildren(pid As Integer)
+        Dim searcher As New ManagementObjectSearcher("Select * From Win32_Process Where ParentProcessID=" & pid)
+        Dim moc As ManagementObjectCollection = searcher.[Get]()
+        For Each mo As ManagementObject In moc
+            KillProcessAndChildren(Convert.ToInt32(mo("ProcessID")))
+        Next
+        Try
+            Dim proc As Process = Process.GetProcessById(pid)
+            proc.Kill()
+            ' process already exited 
+        Catch generatedExceptionName As ArgumentException
+        End Try
+    End Sub
+
+    Shared Function GetChilds(inputProcess As Process) As List(Of Process)
+        Dim searcher As New ManagementObjectSearcher("Select * From Win32_Process Where ParentProcessID=" & inputProcess.Id)
+        Dim ret As New List(Of Process)
+
+        For Each i As ManagementObject In searcher.Get()
+            ret.Add(Process.GetProcessById(CInt(i("ProcessID"))))
+        Next
+
+        Return ret
+    End Function
+End Class
+
+Public Class CommandLineHelp
+    Public Shared Function ConvertText(val As String) As String
+        If val = "" Then Return ""
+        Return Macro.Expand(val).Replace("""", "'").Trim
     End Function
 End Class

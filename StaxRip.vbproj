@@ -21,7 +21,7 @@
     <OutputType>WinExe</OutputType>
     <OptionCompare>Binary</OptionCompare>
     <OptionExplicit>On</OptionExplicit>
-    <OptionStrict>On</OptionStrict>
+    <OptionStrict>Off</OptionStrict>
     <RootNamespace>StaxRip</RootNamespace>
     <StartupObject>Sub Main</StartupObject>
     <MyType>WindowsFormsWithCustomSubMain</MyType>
@@ -36,8 +36,10 @@
     <ManifestKeyFile>StaxRip_TemporaryKey.pfx</ManifestKeyFile>
     <TargetZone>LocalIntranet</TargetZone>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <OptionInfer>On</OptionInfer>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <PublishUrl>ftp://planetdvb.net/staxrip/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -57,8 +59,8 @@
     <ApplicationVersion>0.9.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup />
@@ -69,48 +71,60 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\</OutputPath>
-    <WarningLevel>1</WarningLevel>
-    <NoWarn>42030,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
+    <WarningLevel>0</WarningLevel>
+    <NoWarn>41998,41999,42004,42016,42017,42018,42019,42020,42021,42022,42024,42025,42026,42029,42030,42031,42032,42036,42099,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
     <DebugType>Full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <WarningsAsErrors>41998,41999,42004,42016,42017,42018,42019,42020,42021,42022,42024,42025,42026,42029,42031,42032,42036,42099</WarningsAsErrors>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\</OutputPath>
-    <WarningLevel>1</WarningLevel>
-    <NoWarn>42030,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <WarningsAsErrors>41998,41999,42004,42016,42017,42018,42019,42020,42021,42022,42024,42025,42026,42029,42031,42032,42036,42099</WarningsAsErrors>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\x64\</OutputPath>
+    <WarningLevel>0</WarningLevel>
+    <NoWarn>41998,41999,42004,42016,42017,42018,42019,42020,42021,42022,42024,42025,42026,42029,42030,42031,42032,42036,42099,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
+    <PlatformTarget>x64</PlatformTarget>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DefineDebug>true</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <OutputPath>bin\</OutputPath>
-    <WarningLevel>1</WarningLevel>
-    <NoWarn>42030,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
-    <DebugType>Full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <WarningsAsErrors>41998,41999,42004,42016,42017,42018,42019,42020,42021,42022,42024,42025,42026,42029,42031,42032,42036,42099</WarningsAsErrors>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <WarningLevel>0</WarningLevel>
+    <NoWarn>41998,41999,42004,42016,42017,42018,42019,42020,42021,42022,42024,42025,42026,42029,42030,42031,42032,42036,42099,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\</OutputPath>
-    <WarningLevel>1</WarningLevel>
-    <NoWarn>42030,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
     <PlatformTarget>x64</PlatformTarget>
-    <WarningsAsErrors>41998,41999,42004,42016,42017,42018,42019,42020,42021,42022,42024,42025,42026,42029,42031,42032,42036,42099</WarningsAsErrors>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <OutputPath>bin\</OutputPath>
+    <WarningLevel>0</WarningLevel>
+    <NoWarn>41998,41999,42004,42016,42017,42018,42019,42020,42021,42022,42024,42025,42026,42029,42030,42031,42032,42036,42099,42104,42105,42106,42107,42108,42109,42353,42354,42355</NoWarn>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <DocumentationFile>
+    </DocumentationFile>
+    <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualBasic">
       <Name>Microsoft.VisualBasic</Name>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -123,10 +137,17 @@
     <Reference Include="System.Drawing">
       <Name>System.Drawing</Name>
     </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.PowerShell.5.ReferenceAssemblies.1.1.0\lib\net4\System.Management.Automation.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Security">
       <Name>System.Security</Name>
     </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Services">
       <Name>System.Web.Services</Name>
     </Reference>
@@ -161,16 +182,56 @@
     <Compile Include="Controls\SubtitleControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\x265Control.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="Controls\x264Control.vb">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\ScriptingEditor.Designer.vb">
-      <DependentUpon>ScriptingEditor.vb</DependentUpon>
+    <Compile Include="Controls\x265Control.vb">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\ScriptingEditor.vb">
+    <Compile Include="Encoding\Rav1e.vb" />
+    <Compile Include="Encoding\VCEEnc.vb" />
+    <Compile Include="Encoding\ffmpegEnc.vb" />
+    <Compile Include="Encoding\QSVEnc.vb" />
+    <Compile Include="Encoding\NVEnc.vb" />
+    <Compile Include="Encoding\x264Enc.vb" />
+    <Compile Include="Forms\LogForm.Designer.vb">
+      <DependentUpon>LogForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\LogForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TextHelpForm.Designer.vb">
+      <DependentUpon>TextHelpForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TextHelpForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="General\Extras.vb" />
+    <Compile Include="General\Job.vb" />
+    <Compile Include="General\LogBuilder.vb" />
+    <Compile Include="General\GlobalClass.vb" />
+    <Compile Include="General\GlobalCommands.vb" />
+    <Compile Include="General\Automation.vb" />
+    <Compile Include="General\ProcController.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\DataForm.Designer.vb">
+      <DependentUpon>DataForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="UI\DataForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CodeEditor.Designer.vb">
+      <DependentUpon>CodeEditor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\CodeEditor.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\StreamDemuxForm.Designer.vb">
@@ -197,18 +258,17 @@
     <Compile Include="Forms\eac3toForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Extensions\UI Extensions.vb" />
-    <Compile Include="Extensions\MiscExtensions.vb" />
+    <Compile Include="General\Extensions.vb" />
     <Compile Include="Forms\AudioForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\DemuxForm.vb">
+    <Compile Include="Forms\CommandLineDemuxForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\HelpForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls\AviSynthListView.vb">
+    <Compile Include="Controls\FiltersListView.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\CommandLineControl.vb">
@@ -233,10 +293,10 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="General\Audio.vb" />
-    <Compile Include="General\Automation.vb" />
+    <Compile Include="General\Late Binding.vb" />
     <Compile Include="General\CommandLine.vb" />
-    <Compile Include="General\ImageUtils.vb" />
-    <Compile Include="General\x265.vb" />
+    <Compile Include="UI\ImageUtils.vb" />
+    <Compile Include="Encoding\x265Enc.vb" />
     <Compile Include="UI\Controls\ListViewEx.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -244,18 +304,11 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="General\VideoDrawer.vb" />
-    <Compile Include="General\x264.vb" />
-    <Compile Include="My Project\Resources.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="UI\Controls\SearchTextBox.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UI\Dynamic.vb" />
-    <Compile Include="Extensions\StringExtension.vb" />
-    <Compile Include="Forms\BatchEncoderForm.vb">
+    <Compile Include="Forms\BatchVideoEncoderForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\EventCommandEditor.vb">
@@ -264,13 +317,7 @@
     <Compile Include="Forms\EventCommandsEditor.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Misc Forms.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Forms\MacroEditor.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\x264Form.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\ControlHostForm.vb">
@@ -293,7 +340,7 @@
     <Compile Include="General\General.vb" />
     <Compile Include="General\Proc.vb" />
     <Compile Include="General\Native.vb" />
-    <Compile Include="Forms\CommandLineAudioForm.vb">
+    <Compile Include="Forms\BatchAudioEncoderForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\CropForm.vb">
@@ -305,7 +352,7 @@
     <Compile Include="Forms\MainForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ApplicationsForm.vb">
+    <Compile Include="Forms\AppsForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\PreviewForm.vb">
@@ -323,13 +370,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="General\Demux.vb" />
-    <Compile Include="Forms\ProcessForm.vb">
+    <Compile Include="Forms\ProcForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="General\Project.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="General\VideoEncoder.vb">
+    <Compile Include="Encoding\VideoEncoder.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="General\Misc.vb">
@@ -381,15 +428,24 @@
     <Compile Include="UI\Templates\DialogTemplate.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Templates\UserControlTemplate.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="UI\TipProvider.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\ToolStripRendererEx.vb" />
     <Compile Include="UI\UI Help.vb" />
-    <None Include="Resources\play.png" />
+    <Content Include="MainIcon.ico" />
+    <None Include="changelog.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="Fonts\DejaVu Serif.ttf" />
+    <None Include="Fonts\FontAwesome.ttf" />
+    <None Include="Fonts\mikadan.ttf" />
+    <None Include="Fonts\Segoe-MDL2-Assets.ttf" />
+    <None Include="packages.config" />
     <None Include="Resources\arrow.png" />
     <None Include="Resources\X.png" />
     <None Include="Resources\Right3.png" />
@@ -418,17 +474,23 @@
     <EmbeddedResource Include="Controls\x265Control.resx">
       <DependentUpon>x265Control.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\x264Control.resx">
-      <DependentUpon>x264Control.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ApplicationsForm.resx">
-      <DependentUpon>ApplicationsForm.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\AppsForm.resx">
+      <DependentUpon>AppsForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AudioForm.resx">
       <DependentUpon>AudioForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ScriptingEditor.resx">
-      <DependentUpon>ScriptingEditor.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\LogForm.resx">
+      <DependentUpon>LogForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TextHelpForm.resx">
+      <DependentUpon>TextHelpForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\DataForm.resx">
+      <DependentUpon>DataForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CodeEditor.resx">
+      <DependentUpon>CodeEditor.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\StreamDemuxForm.resx">
       <DependentUpon>StreamDemuxForm.vb</DependentUpon>
@@ -439,11 +501,11 @@
     <EmbeddedResource Include="Forms\SimpleSettingsForm.resx">
       <DependentUpon>SimpleSettingsForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CommandLineAudioForm.resx">
-      <DependentUpon>CommandLineAudioForm.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\BatchAudioEncoderForm.resx">
+      <DependentUpon>BatchAudioEncoderForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\BatchEncoderForm.resx">
-      <DependentUpon>BatchEncoderForm.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\BatchVideoEncoderForm.resx">
+      <DependentUpon>BatchVideoEncoderForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ControlHostForm.resx">
       <DependentUpon>ControlHostForm.vb</DependentUpon>
@@ -451,8 +513,8 @@
     <EmbeddedResource Include="Forms\CropForm.resx">
       <DependentUpon>CropForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\DemuxForm.resx">
-      <DependentUpon>DemuxForm.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\CommandLineDemuxForm.resx">
+      <DependentUpon>CommandLineDemuxForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MediaInfoForm.resx">
       <DependentUpon>MediaInfoForm.vb</DependentUpon>
@@ -477,6 +539,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MediaInfoFolderViewForm.resx">
       <DependentUpon>MediaInfoFolderViewForm.vb</DependentUpon>
@@ -488,8 +551,8 @@
       <DependentUpon>PreviewForm.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ProcessForm.resx">
-      <DependentUpon>ProcessForm.vb</DependentUpon>
+    <EmbeddedResource Include="Forms\ProcForm.resx">
+      <DependentUpon>ProcForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ProfilesForm.resx">
       <DependentUpon>ProfilesForm.vb</DependentUpon>
@@ -504,9 +567,6 @@
     <EmbeddedResource Include="Forms\TestForm.resx">
       <DependentUpon>TestForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\x264Form.resx">
-      <DependentUpon>x264Form.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\CommandLineForm.resx">
       <DependentUpon>CommandLineForm.vb</DependentUpon>
     </EmbeddedResource>
@@ -516,7 +576,6 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
-    <Content Include="MainIcon.ico" />
     <EmbeddedResource Include="UI\Controls\SearchTextBox.resx">
       <DependentUpon>SearchTextBox.vb</DependentUpon>
     </EmbeddedResource>
@@ -536,18 +595,20 @@
     <EmbeddedResource Include="UI\MenuTemplateForm.resx">
       <DependentUpon>MenuTemplateForm.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\Misc.resx">
+      <DependentUpon>Misc.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\SelectionBoxForm.resx">
       <DependentUpon>SelectionBoxForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\StringEditorForm.resx">
       <DependentUpon>StringEditorForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Templates\UserControlTemplate.resx">
-      <DependentUpon>UserControlTemplate.vb</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="My Project\app.manifest">
       <SubType>Designer</SubType>
     </None>
@@ -582,8 +643,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="bin\" />
-    <Folder Include="Controls\Settings\" />
+    <Folder Include="My Project\DataSources\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>

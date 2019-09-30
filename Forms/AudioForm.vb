@@ -1,5 +1,4 @@
 Imports StaxRip.UI
-Imports System.Windows.Forms.VisualStyles
 
 Public Class AudioForm
     Inherits DialogBase
@@ -17,7 +16,7 @@ Public Class AudioForm
 
     Friend WithEvents CommandLink1 As StaxRip.UI.CommandLink
     Friend WithEvents gbBasic As System.Windows.Forms.GroupBox
-    Friend WithEvents nudQuality As NumEdit
+    Friend WithEvents numQuality As NumEdit
     Friend WithEvents numBitrate As NumEdit
     Friend WithEvents lQualiy As System.Windows.Forms.Label
     Friend WithEvents lCodec As System.Windows.Forms.Label
@@ -26,12 +25,11 @@ Public Class AudioForm
     Friend WithEvents lLanguage As System.Windows.Forms.Label
     Friend WithEvents numDelay As NumEdit
     Friend WithEvents lDelay As System.Windows.Forms.Label
-    Friend WithEvents rtbCmdlPreview As CmdlRichTextBox
     Friend WithEvents mbChannels As StaxRip.UI.MenuButton
     Friend WithEvents lChannels As System.Windows.Forms.Label
     Friend WithEvents gbAdvanced As System.Windows.Forms.GroupBox
-    Friend WithEvents lName As System.Windows.Forms.Label
-    Friend WithEvents tbName As System.Windows.Forms.TextBox
+    Friend WithEvents laProfileName As System.Windows.Forms.Label
+    Friend WithEvents tbProfileName As System.Windows.Forms.TextBox
     Friend WithEvents TipProvider As StaxRip.UI.TipProvider
     Friend WithEvents mbSamplingRate As StaxRip.UI.MenuButton
     Friend WithEvents Label1 As System.Windows.Forms.Label
@@ -40,317 +38,510 @@ Public Class AudioForm
     Friend WithEvents mbEncoder As StaxRip.UI.MenuButton
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents FlowLayoutPanel1 As System.Windows.Forms.FlowLayoutPanel
-    Friend WithEvents cbNormalize As StaxRip.UI.CheckBoxEx
-    Friend WithEvents MenuStrip As System.Windows.Forms.MenuStrip
-    Friend WithEvents CommandLineToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents miCopyComandLine As StaxRip.UI.MenuItemEx
-    Friend WithEvents miShowPaths As StaxRip.UI.MenuItemEx
-    Friend WithEvents miExecute As StaxRip.UI.MenuItemEx
-    Friend WithEvents miProfiles As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents miHelp As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents miDialogHelp As StaxRip.UI.MenuItemEx
     Friend WithEvents SimpleUI As StaxRip.SimpleUI
     Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents numGain As StaxRip.UI.NumEdit
     Friend WithEvents Label4 As System.Windows.Forms.Label
-
+    Friend WithEvents tlpMain As TableLayoutPanel
+    Friend WithEvents flpButtons As FlowLayoutPanel
+    Friend WithEvents tlpBasic As TableLayoutPanel
+    Friend WithEvents bnMenu As ButtonEx
+    Friend WithEvents tlpRTB As TableLayoutPanel
+    Friend WithEvents rtbCommandLine As CommandLineRichTextBox
+    Friend WithEvents laStreamName As Label
+    Friend WithEvents tbStreamName As TextBox
+    Friend WithEvents laCustom As Label
+    Friend WithEvents tbCustom As TextBox
+    Friend WithEvents cbForcedTrack As CheckBoxEx
+    Friend WithEvents cbDefaultTrack As CheckBoxEx
+    Friend WithEvents Label5 As Label
+    Friend WithEvents mbDecoder As MenuButton
+    Friend WithEvents tlpAdvanced As TableLayoutPanel
+    Friend WithEvents bnAdvanced As ButtonEx
+    Friend WithEvents cbNormalize As CheckBoxEx
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.gbBasic = New System.Windows.Forms.GroupBox()
-        Me.numGain = New StaxRip.UI.NumEdit()
-        Me.Label4 = New System.Windows.Forms.Label()
-        Me.numDelay = New StaxRip.UI.NumEdit()
-        Me.nudQuality = New StaxRip.UI.NumEdit()
-        Me.numBitrate = New StaxRip.UI.NumEdit()
-        Me.Label3 = New System.Windows.Forms.Label()
-        Me.cbNormalize = New StaxRip.UI.CheckBoxEx()
-        Me.mbEncoder = New StaxRip.UI.MenuButton()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.mbSamplingRate = New StaxRip.UI.MenuButton()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.lName = New System.Windows.Forms.Label()
-        Me.tbName = New System.Windows.Forms.TextBox()
-        Me.mbChannels = New StaxRip.UI.MenuButton()
-        Me.lChannels = New System.Windows.Forms.Label()
-        Me.lDelay = New System.Windows.Forms.Label()
-        Me.mbLanguage = New StaxRip.UI.MenuButton()
-        Me.lLanguage = New System.Windows.Forms.Label()
-        Me.lQualiy = New System.Windows.Forms.Label()
-        Me.mbCodec = New StaxRip.UI.MenuButton()
+        Me.tlpBasic = New System.Windows.Forms.TableLayoutPanel()
         Me.lCodec = New System.Windows.Forms.Label()
-        Me.rtbCmdlPreview = New StaxRip.UI.CmdlRichTextBox()
+        Me.tbProfileName = New System.Windows.Forms.TextBox()
+        Me.laProfileName = New System.Windows.Forms.Label()
+        Me.mbCodec = New StaxRip.UI.MenuButton()
+        Me.mbLanguage = New StaxRip.UI.MenuButton()
+        Me.mbSamplingRate = New StaxRip.UI.MenuButton()
+        Me.lLanguage = New System.Windows.Forms.Label()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.numBitrate = New StaxRip.UI.NumEdit()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.mbEncoder = New StaxRip.UI.MenuButton()
+        Me.lChannels = New System.Windows.Forms.Label()
+        Me.mbChannels = New StaxRip.UI.MenuButton()
+        Me.laStreamName = New System.Windows.Forms.Label()
+        Me.tbStreamName = New System.Windows.Forms.TextBox()
+        Me.laCustom = New System.Windows.Forms.Label()
+        Me.tbCustom = New System.Windows.Forms.TextBox()
+        Me.cbDefaultTrack = New StaxRip.UI.CheckBoxEx()
+        Me.cbForcedTrack = New StaxRip.UI.CheckBoxEx()
+        Me.Label5 = New System.Windows.Forms.Label()
+        Me.mbDecoder = New StaxRip.UI.MenuButton()
+        Me.lQualiy = New System.Windows.Forms.Label()
+        Me.numQuality = New StaxRip.UI.NumEdit()
+        Me.Label4 = New System.Windows.Forms.Label()
+        Me.numGain = New StaxRip.UI.NumEdit()
+        Me.lDelay = New System.Windows.Forms.Label()
+        Me.numDelay = New StaxRip.UI.NumEdit()
         Me.gbAdvanced = New System.Windows.Forms.GroupBox()
+        Me.tlpAdvanced = New System.Windows.Forms.TableLayoutPanel()
         Me.SimpleUI = New StaxRip.SimpleUI()
+        Me.bnAdvanced = New StaxRip.UI.ButtonEx()
         Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
         Me.bnOK = New StaxRip.UI.ButtonEx()
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
-        Me.MenuStrip = New System.Windows.Forms.MenuStrip()
-        Me.CommandLineToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.miCopyComandLine = New StaxRip.UI.MenuItemEx()
-        Me.miExecute = New StaxRip.UI.MenuItemEx()
-        Me.miShowPaths = New StaxRip.UI.MenuItemEx()
-        Me.miProfiles = New System.Windows.Forms.ToolStripMenuItem()
-        Me.miHelp = New System.Windows.Forms.ToolStripMenuItem()
-        Me.miDialogHelp = New StaxRip.UI.MenuItemEx()
+        Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
+        Me.flpButtons = New System.Windows.Forms.FlowLayoutPanel()
+        Me.bnMenu = New StaxRip.UI.ButtonEx()
+        Me.tlpRTB = New System.Windows.Forms.TableLayoutPanel()
+        Me.rtbCommandLine = New StaxRip.UI.CommandLineRichTextBox()
+        Me.cbNormalize = New StaxRip.UI.CheckBoxEx()
         Me.gbBasic.SuspendLayout()
+        Me.tlpBasic.SuspendLayout()
         Me.gbAdvanced.SuspendLayout()
-        Me.MenuStrip.SuspendLayout()
+        Me.tlpAdvanced.SuspendLayout()
+        Me.tlpMain.SuspendLayout()
+        Me.flpButtons.SuspendLayout()
+        Me.tlpRTB.SuspendLayout()
         Me.SuspendLayout()
         '
         'gbBasic
         '
-        Me.gbBasic.Controls.Add(Me.numGain)
-        Me.gbBasic.Controls.Add(Me.Label4)
-        Me.gbBasic.Controls.Add(Me.numDelay)
-        Me.gbBasic.Controls.Add(Me.nudQuality)
-        Me.gbBasic.Controls.Add(Me.numBitrate)
-        Me.gbBasic.Controls.Add(Me.Label3)
-        Me.gbBasic.Controls.Add(Me.cbNormalize)
-        Me.gbBasic.Controls.Add(Me.mbEncoder)
-        Me.gbBasic.Controls.Add(Me.Label2)
-        Me.gbBasic.Controls.Add(Me.mbSamplingRate)
-        Me.gbBasic.Controls.Add(Me.Label1)
-        Me.gbBasic.Controls.Add(Me.lName)
-        Me.gbBasic.Controls.Add(Me.tbName)
-        Me.gbBasic.Controls.Add(Me.mbChannels)
-        Me.gbBasic.Controls.Add(Me.lChannels)
-        Me.gbBasic.Controls.Add(Me.lDelay)
-        Me.gbBasic.Controls.Add(Me.mbLanguage)
-        Me.gbBasic.Controls.Add(Me.lLanguage)
-        Me.gbBasic.Controls.Add(Me.lQualiy)
-        Me.gbBasic.Controls.Add(Me.mbCodec)
-        Me.gbBasic.Controls.Add(Me.lCodec)
-        Me.gbBasic.Location = New System.Drawing.Point(12, 44)
+        Me.gbBasic.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.gbBasic.Controls.Add(Me.tlpBasic)
+        Me.gbBasic.Location = New System.Drawing.Point(15, 14)
+        Me.gbBasic.Margin = New System.Windows.Forms.Padding(15, 14, 7, 14)
         Me.gbBasic.Name = "gbBasic"
-        Me.gbBasic.Size = New System.Drawing.Size(467, 456)
+        Me.gbBasic.Padding = New System.Windows.Forms.Padding(5)
+        Me.gbBasic.Size = New System.Drawing.Size(911, 1018)
         Me.gbBasic.TabIndex = 1
         Me.gbBasic.TabStop = False
         Me.gbBasic.Text = "Basic"
         '
-        'numGain
+        'tlpBasic
         '
-        Me.numGain.Location = New System.Drawing.Point(368, 116)
-        Me.numGain.Name = "numGain"
-        Me.numGain.Size = New System.Drawing.Size(90, 36)
-        Me.numGain.TabIndex = 37
+        Me.tlpBasic.ColumnCount = 4
+        Me.tlpBasic.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpBasic.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60.0!))
+        Me.tlpBasic.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpBasic.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40.0!))
+        Me.tlpBasic.Controls.Add(Me.lCodec, 0, 0)
+        Me.tlpBasic.Controls.Add(Me.tbProfileName, 1, 7)
+        Me.tlpBasic.Controls.Add(Me.laProfileName, 0, 7)
+        Me.tlpBasic.Controls.Add(Me.mbCodec, 1, 0)
+        Me.tlpBasic.Controls.Add(Me.mbLanguage, 1, 5)
+        Me.tlpBasic.Controls.Add(Me.mbSamplingRate, 1, 4)
+        Me.tlpBasic.Controls.Add(Me.lLanguage, 0, 5)
+        Me.tlpBasic.Controls.Add(Me.Label1, 0, 4)
+        Me.tlpBasic.Controls.Add(Me.Label3, 2, 0)
+        Me.tlpBasic.Controls.Add(Me.numBitrate, 3, 0)
+        Me.tlpBasic.Controls.Add(Me.Label2, 0, 2)
+        Me.tlpBasic.Controls.Add(Me.mbEncoder, 1, 2)
+        Me.tlpBasic.Controls.Add(Me.lChannels, 0, 3)
+        Me.tlpBasic.Controls.Add(Me.mbChannels, 1, 3)
+        Me.tlpBasic.Controls.Add(Me.laStreamName, 0, 8)
+        Me.tlpBasic.Controls.Add(Me.tbStreamName, 1, 8)
+        Me.tlpBasic.Controls.Add(Me.laCustom, 0, 9)
+        Me.tlpBasic.Controls.Add(Me.tbCustom, 1, 9)
+        Me.tlpBasic.Controls.Add(Me.cbDefaultTrack, 0, 11)
+        Me.tlpBasic.Controls.Add(Me.cbForcedTrack, 0, 12)
+        Me.tlpBasic.Controls.Add(Me.Label5, 0, 1)
+        Me.tlpBasic.Controls.Add(Me.mbDecoder, 1, 1)
+        Me.tlpBasic.Controls.Add(Me.lQualiy, 2, 1)
+        Me.tlpBasic.Controls.Add(Me.numQuality, 3, 1)
+        Me.tlpBasic.Controls.Add(Me.Label4, 2, 2)
+        Me.tlpBasic.Controls.Add(Me.numGain, 3, 2)
+        Me.tlpBasic.Controls.Add(Me.cbNormalize, 0, 10)
+        Me.tlpBasic.Controls.Add(Me.numDelay, 3, 3)
+        Me.tlpBasic.Controls.Add(Me.lDelay, 2, 3)
+        Me.tlpBasic.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpBasic.Location = New System.Drawing.Point(5, 53)
+        Me.tlpBasic.Margin = New System.Windows.Forms.Padding(5)
+        Me.tlpBasic.Name = "tlpBasic"
+        Me.tlpBasic.RowCount = 14
+        Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpBasic.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8.0!))
+        Me.tlpBasic.Size = New System.Drawing.Size(901, 960)
+        Me.tlpBasic.TabIndex = 44
         '
-        'Label4
+        'lCodec
         '
-        Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(283, 122)
-        Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(61, 30)
-        Me.Label4.TabIndex = 36
-        Me.Label4.TabStop = True
-        Me.Label4.Text = "Gain:"
+        Me.lCodec.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.lCodec.AutoSize = True
+        Me.lCodec.Location = New System.Drawing.Point(5, 16)
+        Me.lCodec.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Me.lCodec.Name = "lCodec"
+        Me.lCodec.Size = New System.Drawing.Size(128, 48)
+        Me.lCodec.TabIndex = 0
+        Me.lCodec.Text = "Codec:"
         '
-        'numDelay
+        'tbProfileName
         '
-        Me.numDelay.Location = New System.Drawing.Point(368, 157)
-        Me.numDelay.Name = "numDelay"
-        Me.numDelay.Size = New System.Drawing.Size(90, 36)
-        Me.numDelay.TabIndex = 19
+        Me.tbProfileName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpBasic.SetColumnSpan(Me.tbProfileName, 3)
+        Me.tbProfileName.Location = New System.Drawing.Point(259, 485)
+        Me.tbProfileName.Margin = New System.Windows.Forms.Padding(5)
+        Me.tbProfileName.Name = "tbProfileName"
+        Me.tbProfileName.Size = New System.Drawing.Size(637, 55)
+        Me.tbProfileName.TabIndex = 16
         '
-        'nudQuality
+        'laProfileName
         '
-        Me.nudQuality.Location = New System.Drawing.Point(368, 74)
-        Me.nudQuality.Name = "nudQuality"
-        Me.nudQuality.Size = New System.Drawing.Size(90, 36)
-        Me.nudQuality.TabIndex = 18
+        Me.laProfileName.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.laProfileName.AutoSize = True
+        Me.laProfileName.Location = New System.Drawing.Point(5, 488)
+        Me.laProfileName.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Me.laProfileName.Name = "laProfileName"
+        Me.laProfileName.Size = New System.Drawing.Size(235, 48)
+        Me.laProfileName.TabIndex = 15
+        Me.laProfileName.Text = "Profile Name:"
         '
-        'numBitrate
+        'mbCodec
         '
-        Me.numBitrate.Location = New System.Drawing.Point(368, 32)
-        Me.numBitrate.Name = "numBitrate"
-        Me.numBitrate.Size = New System.Drawing.Size(90, 36)
-        Me.numBitrate.TabIndex = 17
+        Me.mbCodec.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.mbCodec.Location = New System.Drawing.Point(259, 5)
+        Me.mbCodec.Margin = New System.Windows.Forms.Padding(5)
+        Me.mbCodec.ShowMenuSymbol = True
+        Me.mbCodec.Size = New System.Drawing.Size(288, 70)
+        Me.mbCodec.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'mbLanguage
+        '
+        Me.mbLanguage.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.mbLanguage.Location = New System.Drawing.Point(259, 405)
+        Me.mbLanguage.Margin = New System.Windows.Forms.Padding(5)
+        Me.mbLanguage.ShowMenuSymbol = True
+        Me.mbLanguage.Size = New System.Drawing.Size(288, 70)
+        Me.mbLanguage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'mbSamplingRate
+        '
+        Me.mbSamplingRate.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.mbSamplingRate.Location = New System.Drawing.Point(259, 325)
+        Me.mbSamplingRate.Margin = New System.Windows.Forms.Padding(5)
+        Me.mbSamplingRate.ShowMenuSymbol = True
+        Me.mbSamplingRate.Size = New System.Drawing.Size(288, 70)
+        Me.mbSamplingRate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'lLanguage
+        '
+        Me.lLanguage.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.lLanguage.AutoSize = True
+        Me.lLanguage.Location = New System.Drawing.Point(5, 416)
+        Me.lLanguage.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Me.lLanguage.Name = "lLanguage"
+        Me.lLanguage.Size = New System.Drawing.Size(182, 48)
+        Me.lLanguage.TabIndex = 10
+        Me.lLanguage.Text = "Language:"
+        '
+        'Label1
+        '
+        Me.Label1.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(5, 336)
+        Me.Label1.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(226, 48)
+        Me.Label1.TabIndex = 8
+        Me.Label1.Text = "Sample Rate:"
         '
         'Label3
         '
+        Me.Label3.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(283, 38)
+        Me.Label3.Location = New System.Drawing.Point(557, 16)
+        Me.Label3.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(81, 30)
+        Me.Label3.Size = New System.Drawing.Size(132, 48)
         Me.Label3.TabIndex = 29
         Me.Label3.TabStop = True
         Me.Label3.Text = "Bitrate:"
         '
-        'cbNormalize
+        'numBitrate
         '
-        Me.cbNormalize.AutoSize = True
-        Me.cbNormalize.Location = New System.Drawing.Point(288, 205)
-        Me.cbNormalize.Size = New System.Drawing.Size(138, 34)
-        Me.cbNormalize.Text = "Normalize"
-        Me.cbNormalize.UseVisualStyleBackColor = True
-        '
-        'mbEncoder
-        '
-        Me.mbEncoder.Location = New System.Drawing.Point(128, 73)
-        Me.mbEncoder.ShowMenuSymbol = True
-        Me.mbEncoder.Size = New System.Drawing.Size(146, 36)
-        Me.mbEncoder.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.numBitrate.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.numBitrate.Location = New System.Drawing.Point(707, 5)
+        Me.numBitrate.Margin = New System.Windows.Forms.Padding(5)
+        Me.numBitrate.Name = "numBitrate"
+        Me.numBitrate.Size = New System.Drawing.Size(189, 70)
+        Me.numBitrate.TabIndex = 17
         '
         'Label2
         '
+        Me.Label2.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(6, 78)
+        Me.Label2.Location = New System.Drawing.Point(5, 176)
+        Me.Label2.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(97, 30)
+        Me.Label2.Size = New System.Drawing.Size(157, 48)
         Me.Label2.TabIndex = 24
         Me.Label2.Text = "Encoder:"
         '
-        'mbSamplingRate
+        'mbEncoder
         '
-        Me.mbSamplingRate.Location = New System.Drawing.Point(128, 159)
-        Me.mbSamplingRate.ShowMenuSymbol = True
-        Me.mbSamplingRate.Size = New System.Drawing.Size(146, 36)
-        Me.mbSamplingRate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'Label1
-        '
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(6, 163)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(139, 30)
-        Me.Label1.TabIndex = 8
-        Me.Label1.Text = "Sample Rate:"
-        '
-        'lName
-        '
-        Me.lName.AutoSize = True
-        Me.lName.Location = New System.Drawing.Point(6, 250)
-        Me.lName.Name = "lName"
-        Me.lName.Size = New System.Drawing.Size(144, 30)
-        Me.lName.TabIndex = 15
-        Me.lName.Text = "Profile Name:"
-        '
-        'tbName
-        '
-        Me.tbName.Location = New System.Drawing.Point(128, 247)
-        Me.tbName.Name = "tbName"
-        Me.tbName.Size = New System.Drawing.Size(313, 36)
-        Me.tbName.TabIndex = 16
-        '
-        'mbChannels
-        '
-        Me.mbChannels.Location = New System.Drawing.Point(128, 116)
-        Me.mbChannels.ShowMenuSymbol = True
-        Me.mbChannels.Size = New System.Drawing.Size(146, 36)
-        Me.mbChannels.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.mbEncoder.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.mbEncoder.Location = New System.Drawing.Point(259, 165)
+        Me.mbEncoder.Margin = New System.Windows.Forms.Padding(5)
+        Me.mbEncoder.ShowMenuSymbol = True
+        Me.mbEncoder.Size = New System.Drawing.Size(288, 70)
+        Me.mbEncoder.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lChannels
         '
+        Me.lChannels.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lChannels.AutoSize = True
-        Me.lChannels.Location = New System.Drawing.Point(6, 121)
+        Me.lChannels.Location = New System.Drawing.Point(5, 256)
+        Me.lChannels.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.lChannels.Name = "lChannels"
-        Me.lChannels.Size = New System.Drawing.Size(105, 30)
+        Me.lChannels.Size = New System.Drawing.Size(171, 48)
         Me.lChannels.TabIndex = 5
         Me.lChannels.Text = "Channels:"
         '
-        'lDelay
+        'mbChannels
         '
-        Me.lDelay.AutoSize = True
-        Me.lDelay.Location = New System.Drawing.Point(283, 163)
-        Me.lDelay.Name = "lDelay"
-        Me.lDelay.Size = New System.Drawing.Size(72, 30)
-        Me.lDelay.TabIndex = 14
-        Me.lDelay.TabStop = True
-        Me.lDelay.Text = "Delay:"
+        Me.mbChannels.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.mbChannels.Location = New System.Drawing.Point(259, 245)
+        Me.mbChannels.Margin = New System.Windows.Forms.Padding(5)
+        Me.mbChannels.ShowMenuSymbol = True
+        Me.mbChannels.Size = New System.Drawing.Size(288, 70)
+        Me.mbChannels.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'mbLanguage
+        'laStreamName
         '
-        Me.mbLanguage.Location = New System.Drawing.Point(128, 202)
-        Me.mbLanguage.ShowMenuSymbol = True
-        Me.mbLanguage.Size = New System.Drawing.Size(146, 36)
-        Me.mbLanguage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.laStreamName.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.laStreamName.AutoSize = True
+        Me.laStreamName.Location = New System.Drawing.Point(5, 553)
+        Me.laStreamName.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Me.laStreamName.Name = "laStreamName"
+        Me.laStreamName.Size = New System.Drawing.Size(244, 48)
+        Me.laStreamName.TabIndex = 44
+        Me.laStreamName.Text = "Stream Name:"
         '
-        'lLanguage
+        'tbStreamName
         '
-        Me.lLanguage.AutoSize = True
-        Me.lLanguage.Location = New System.Drawing.Point(6, 206)
-        Me.lLanguage.Name = "lLanguage"
-        Me.lLanguage.Size = New System.Drawing.Size(112, 30)
-        Me.lLanguage.TabIndex = 10
-        Me.lLanguage.Text = "Language:"
+        Me.tbStreamName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpBasic.SetColumnSpan(Me.tbStreamName, 3)
+        Me.tbStreamName.Location = New System.Drawing.Point(259, 550)
+        Me.tbStreamName.Margin = New System.Windows.Forms.Padding(5)
+        Me.tbStreamName.Name = "tbStreamName"
+        Me.tbStreamName.Size = New System.Drawing.Size(637, 55)
+        Me.tbStreamName.TabIndex = 45
+        '
+        'laCustom
+        '
+        Me.laCustom.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.laCustom.AutoSize = True
+        Me.laCustom.Location = New System.Drawing.Point(5, 618)
+        Me.laCustom.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Me.laCustom.Name = "laCustom"
+        Me.laCustom.Size = New System.Drawing.Size(141, 48)
+        Me.laCustom.TabIndex = 46
+        Me.laCustom.Text = "Custom"
+        '
+        'tbCustom
+        '
+        Me.tbCustom.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpBasic.SetColumnSpan(Me.tbCustom, 3)
+        Me.tbCustom.Location = New System.Drawing.Point(259, 615)
+        Me.tbCustom.Margin = New System.Windows.Forms.Padding(5)
+        Me.tbCustom.Name = "tbCustom"
+        Me.tbCustom.Size = New System.Drawing.Size(637, 55)
+        Me.tbCustom.TabIndex = 47
+        '
+        'cbDefaultTrack
+        '
+        Me.cbDefaultTrack.AutoSize = True
+        Me.tlpBasic.SetColumnSpan(Me.cbDefaultTrack, 4)
+        Me.cbDefaultTrack.Location = New System.Drawing.Point(15, 736)
+        Me.cbDefaultTrack.Margin = New System.Windows.Forms.Padding(15, 3, 3, 3)
+        Me.cbDefaultTrack.Size = New System.Drawing.Size(272, 52)
+        Me.cbDefaultTrack.Text = "Default Track"
+        Me.cbDefaultTrack.UseVisualStyleBackColor = True
+        '
+        'cbForcedTrack
+        '
+        Me.cbForcedTrack.AutoSize = True
+        Me.tlpBasic.SetColumnSpan(Me.cbForcedTrack, 4)
+        Me.cbForcedTrack.Location = New System.Drawing.Point(15, 794)
+        Me.cbForcedTrack.Margin = New System.Windows.Forms.Padding(15, 3, 3, 3)
+        Me.cbForcedTrack.Size = New System.Drawing.Size(267, 52)
+        Me.cbForcedTrack.Text = "Forced Track"
+        Me.cbForcedTrack.UseVisualStyleBackColor = True
+        '
+        'Label5
+        '
+        Me.Label5.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.Label5.AutoSize = True
+        Me.Label5.Location = New System.Drawing.Point(5, 96)
+        Me.Label5.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(163, 48)
+        Me.Label5.TabIndex = 50
+        Me.Label5.Text = "Decoder:"
+        '
+        'mbDecoder
+        '
+        Me.mbDecoder.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.mbDecoder.Location = New System.Drawing.Point(259, 85)
+        Me.mbDecoder.Margin = New System.Windows.Forms.Padding(5)
+        Me.mbDecoder.ShowMenuSymbol = True
+        Me.mbDecoder.Size = New System.Drawing.Size(288, 70)
+        Me.mbDecoder.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lQualiy
         '
+        Me.lQualiy.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lQualiy.AutoSize = True
-        Me.lQualiy.Location = New System.Drawing.Point(283, 79)
+        Me.lQualiy.Location = New System.Drawing.Point(557, 96)
+        Me.lQualiy.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
         Me.lQualiy.Name = "lQualiy"
-        Me.lQualiy.Size = New System.Drawing.Size(86, 30)
+        Me.lQualiy.Size = New System.Drawing.Size(140, 48)
         Me.lQualiy.TabIndex = 12
         Me.lQualiy.TabStop = True
         Me.lQualiy.Text = "Quality:"
         '
-        'mbCodec
+        'numQuality
         '
-        Me.mbCodec.Location = New System.Drawing.Point(128, 30)
-        Me.mbCodec.ShowMenuSymbol = True
-        Me.mbCodec.Size = New System.Drawing.Size(146, 36)
-        Me.mbCodec.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.numQuality.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.numQuality.Location = New System.Drawing.Point(707, 85)
+        Me.numQuality.Margin = New System.Windows.Forms.Padding(5)
+        Me.numQuality.Name = "numQuality"
+        Me.numQuality.Size = New System.Drawing.Size(189, 70)
+        Me.numQuality.TabIndex = 18
         '
-        'lCodec
+        'Label4
         '
-        Me.lCodec.AutoSize = True
-        Me.lCodec.Location = New System.Drawing.Point(6, 35)
-        Me.lCodec.Name = "lCodec"
-        Me.lCodec.Size = New System.Drawing.Size(80, 30)
-        Me.lCodec.TabIndex = 0
-        Me.lCodec.Text = "Codec:"
+        Me.Label4.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.Label4.AutoSize = True
+        Me.Label4.Location = New System.Drawing.Point(557, 176)
+        Me.Label4.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(100, 48)
+        Me.Label4.TabIndex = 36
+        Me.Label4.TabStop = True
+        Me.Label4.Text = "Gain:"
         '
-        'rtbCmdlPreview
+        'numGain
         '
-        Me.rtbCmdlPreview.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.rtbCmdlPreview.BlockPaint = False
-        Me.rtbCmdlPreview.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.rtbCmdlPreview.Font = New System.Drawing.Font("Tahoma", 9.0!)
-        Me.rtbCmdlPreview.LastCmdl = Nothing
-        Me.rtbCmdlPreview.Location = New System.Drawing.Point(14, 506)
-        Me.rtbCmdlPreview.Name = "rtbCmdlPreview"
-        Me.rtbCmdlPreview.ReadOnly = True
-        Me.rtbCmdlPreview.Size = New System.Drawing.Size(938, 162)
-        Me.rtbCmdlPreview.TabIndex = 2
-        Me.rtbCmdlPreview.Text = ""
+        Me.numGain.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.numGain.Location = New System.Drawing.Point(707, 165)
+        Me.numGain.Margin = New System.Windows.Forms.Padding(5)
+        Me.numGain.Name = "numGain"
+        Me.numGain.Size = New System.Drawing.Size(189, 70)
+        Me.numGain.TabIndex = 37
+        '
+        'lDelay
+        '
+        Me.lDelay.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.lDelay.AutoSize = True
+        Me.lDelay.Location = New System.Drawing.Point(557, 256)
+        Me.lDelay.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Me.lDelay.Name = "lDelay"
+        Me.lDelay.Size = New System.Drawing.Size(116, 48)
+        Me.lDelay.TabIndex = 14
+        Me.lDelay.TabStop = True
+        Me.lDelay.Text = "Delay:"
+        '
+        'numDelay
+        '
+        Me.numDelay.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.numDelay.Location = New System.Drawing.Point(707, 245)
+        Me.numDelay.Margin = New System.Windows.Forms.Padding(5)
+        Me.numDelay.Name = "numDelay"
+        Me.numDelay.Size = New System.Drawing.Size(189, 70)
+        Me.numDelay.TabIndex = 19
         '
         'gbAdvanced
         '
-        Me.gbAdvanced.Controls.Add(Me.SimpleUI)
-        Me.gbAdvanced.Location = New System.Drawing.Point(485, 44)
+        Me.gbAdvanced.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.gbAdvanced.Controls.Add(Me.tlpAdvanced)
+        Me.gbAdvanced.Location = New System.Drawing.Point(940, 14)
+        Me.gbAdvanced.Margin = New System.Windows.Forms.Padding(7, 14, 15, 14)
         Me.gbAdvanced.Name = "gbAdvanced"
-        Me.gbAdvanced.Size = New System.Drawing.Size(467, 456)
+        Me.gbAdvanced.Padding = New System.Windows.Forms.Padding(5)
+        Me.gbAdvanced.Size = New System.Drawing.Size(911, 1018)
         Me.gbAdvanced.TabIndex = 3
         Me.gbAdvanced.TabStop = False
         Me.gbAdvanced.Text = "Advanced"
         '
+        'tlpAdvanced
+        '
+        Me.tlpAdvanced.ColumnCount = 1
+        Me.tlpAdvanced.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpAdvanced.Controls.Add(Me.SimpleUI, 0, 0)
+        Me.tlpAdvanced.Controls.Add(Me.bnAdvanced, 0, 1)
+        Me.tlpAdvanced.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpAdvanced.Location = New System.Drawing.Point(5, 53)
+        Me.tlpAdvanced.Name = "tlpAdvanced"
+        Me.tlpAdvanced.RowCount = 2
+        Me.tlpAdvanced.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpAdvanced.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpAdvanced.Size = New System.Drawing.Size(901, 960)
+        Me.tlpAdvanced.TabIndex = 1
+        '
         'SimpleUI
         '
-        Me.SimpleUI.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SimpleUI.Location = New System.Drawing.Point(3, 32)
+        Me.SimpleUI.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.SimpleUI.FormSizeScaleFactor = New System.Drawing.SizeF(0!, 0!)
+        Me.SimpleUI.Location = New System.Drawing.Point(4, 3)
+        Me.SimpleUI.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
         Me.SimpleUI.Name = "SimpleUI"
-        Me.SimpleUI.Size = New System.Drawing.Size(461, 421)
+        Me.SimpleUI.Size = New System.Drawing.Size(893, 878)
         Me.SimpleUI.TabIndex = 0
         Me.SimpleUI.Text = "SimpleUI1"
+        '
+        'bnAdvanced
+        '
+        Me.bnAdvanced.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnAdvanced.Location = New System.Drawing.Point(3, 887)
+        Me.bnAdvanced.Size = New System.Drawing.Size(895, 70)
+        Me.bnAdvanced.Text = "More..."
         '
         'bnOK
         '
         Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(746, 680)
-        Me.bnOK.Size = New System.Drawing.Size(100, 34)
+        Me.bnOK.Location = New System.Drawing.Point(85, 15)
+        Me.bnOK.Margin = New System.Windows.Forms.Padding(15)
+        Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
         '
         'bnCancel
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(852, 680)
-        Me.bnCancel.Size = New System.Drawing.Size(100, 34)
+        Me.bnCancel.Location = New System.Drawing.Point(350, 15)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(0, 15, 15, 15)
+        Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
         '
         'FlowLayoutPanel1
@@ -358,91 +549,121 @@ Public Class AudioForm
         Me.FlowLayoutPanel1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.FlowLayoutPanel1.AutoSize = True
         Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(12, 693)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(22, 1268)
+        Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(5)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
         Me.FlowLayoutPanel1.Size = New System.Drawing.Size(0, 0)
         Me.FlowLayoutPanel1.TabIndex = 4
         '
-        'MenuStrip
+        'tlpMain
         '
-        Me.MenuStrip.AutoSize = False
-        Me.MenuStrip.ImageScalingSize = New System.Drawing.Size(24, 24)
-        Me.MenuStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.CommandLineToolStripMenuItem, Me.miProfiles, Me.miHelp})
-        Me.MenuStrip.Location = New System.Drawing.Point(0, 0)
-        Me.MenuStrip.Name = "MenuStrip"
-        Me.MenuStrip.Size = New System.Drawing.Size(964, 40)
-        Me.MenuStrip.TabIndex = 8
-        Me.MenuStrip.Text = "MenuStrip1"
+        Me.tlpMain.AutoSize = True
+        Me.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.tlpMain.ColumnCount = 2
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpMain.Controls.Add(Me.gbBasic, 0, 0)
+        Me.tlpMain.Controls.Add(Me.flpButtons, 1, 2)
+        Me.tlpMain.Controls.Add(Me.gbAdvanced, 1, 0)
+        Me.tlpMain.Controls.Add(Me.tlpRTB, 0, 1)
+        Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpMain.Location = New System.Drawing.Point(0, 0)
+        Me.tlpMain.Margin = New System.Windows.Forms.Padding(4, 3, 4, 3)
+        Me.tlpMain.Name = "tlpMain"
+        Me.tlpMain.RowCount = 3
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.Size = New System.Drawing.Size(1866, 1206)
+        Me.tlpMain.TabIndex = 11
         '
-        'CommandLineToolStripMenuItem
+        'flpButtons
         '
-        Me.CommandLineToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miCopyComandLine, Me.miExecute, Me.miShowPaths})
-        Me.CommandLineToolStripMenuItem.Name = "CommandLineToolStripMenuItem"
-        Me.CommandLineToolStripMenuItem.Size = New System.Drawing.Size(189, 36)
-        Me.CommandLineToolStripMenuItem.Text = "Command Line"
+        Me.flpButtons.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.flpButtons.AutoSize = True
+        Me.flpButtons.Controls.Add(Me.bnMenu)
+        Me.flpButtons.Controls.Add(Me.bnOK)
+        Me.flpButtons.Controls.Add(Me.bnCancel)
+        Me.flpButtons.Location = New System.Drawing.Point(1251, 1106)
+        Me.flpButtons.Margin = New System.Windows.Forms.Padding(0)
+        Me.flpButtons.Name = "flpButtons"
+        Me.flpButtons.Size = New System.Drawing.Size(615, 100)
+        Me.flpButtons.TabIndex = 11
         '
-        'miCopyComandLine
+        'bnMenu
         '
-        Me.miCopyComandLine.Name = "miCopyComandLine"
-        Me.miCopyComandLine.Size = New System.Drawing.Size(280, 36)
-        Me.miCopyComandLine.Text = "Copy to clipboard"
+        Me.bnMenu.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.bnMenu.Location = New System.Drawing.Point(0, 15)
+        Me.bnMenu.Margin = New System.Windows.Forms.Padding(0)
+        Me.bnMenu.ShowMenuSymbol = True
+        Me.bnMenu.Size = New System.Drawing.Size(70, 70)
         '
-        'miExecute
+        'tlpRTB
         '
-        Me.miExecute.Name = "miExecute"
-        Me.miExecute.Size = New System.Drawing.Size(280, 36)
-        Me.miExecute.Text = "Execute"
+        Me.tlpRTB.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpRTB.AutoSize = True
+        Me.tlpRTB.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.tlpRTB.ColumnCount = 1
+        Me.tlpMain.SetColumnSpan(Me.tlpRTB, 2)
+        Me.tlpRTB.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpRTB.Controls.Add(Me.rtbCommandLine, 0, 0)
+        Me.tlpRTB.Location = New System.Drawing.Point(15, 1046)
+        Me.tlpRTB.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
+        Me.tlpRTB.Name = "tlpRTB"
+        Me.tlpRTB.RowCount = 1
+        Me.tlpRTB.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpRTB.Size = New System.Drawing.Size(1836, 60)
+        Me.tlpRTB.TabIndex = 12
         '
-        'miShowPaths
+        'rtbCommandLine
         '
-        Me.miShowPaths.Name = "miShowPaths"
-        Me.miShowPaths.Size = New System.Drawing.Size(280, 36)
-        Me.miShowPaths.Text = "Show paths"
+        Me.rtbCommandLine.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.rtbCommandLine.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.rtbCommandLine.LastCommandLine = Nothing
+        Me.rtbCommandLine.Location = New System.Drawing.Point(0, 0)
+        Me.rtbCommandLine.Margin = New System.Windows.Forms.Padding(0)
+        Me.rtbCommandLine.Name = "rtbCommandLine"
+        Me.rtbCommandLine.ReadOnly = True
+        Me.rtbCommandLine.Size = New System.Drawing.Size(1836, 60)
+        Me.rtbCommandLine.TabIndex = 45
+        Me.rtbCommandLine.Text = ""
         '
-        'miProfiles
+        'cbNormalize
         '
-        Me.miProfiles.Name = "miProfiles"
-        Me.miProfiles.Size = New System.Drawing.Size(105, 36)
-        Me.miProfiles.Text = "Profiles"
-        '
-        'miHelp
-        '
-        Me.miHelp.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miDialogHelp})
-        Me.miHelp.Name = "miHelp"
-        Me.miHelp.Size = New System.Drawing.Size(77, 36)
-        Me.miHelp.Text = "Help"
-        '
-        'miDialogHelp
-        '
-        Me.miDialogHelp.Name = "miDialogHelp"
-        Me.miDialogHelp.Size = New System.Drawing.Size(140, 36)
-        Me.miDialogHelp.Text = "Help"
+        Me.cbNormalize.AutoSize = True
+        Me.tlpBasic.SetColumnSpan(Me.cbNormalize, 4)
+        Me.cbNormalize.Location = New System.Drawing.Point(15, 678)
+        Me.cbNormalize.Margin = New System.Windows.Forms.Padding(15, 3, 3, 3)
+        Me.cbNormalize.Size = New System.Drawing.Size(229, 52)
+        Me.cbNormalize.Text = "Normalize"
+        Me.cbNormalize.UseVisualStyleBackColor = True
         '
         'AudioForm
         '
         Me.AcceptButton = Me.bnOK
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+        Me.AutoSize = True
+        Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(964, 725)
-        Me.Controls.Add(Me.MenuStrip)
-        Me.Controls.Add(Me.rtbCmdlPreview)
+        Me.ClientSize = New System.Drawing.Size(1866, 1206)
+        Me.Controls.Add(Me.tlpMain)
         Me.Controls.Add(Me.FlowLayoutPanel1)
-        Me.Controls.Add(Me.bnCancel)
-        Me.Controls.Add(Me.bnOK)
-        Me.Controls.Add(Me.gbAdvanced)
-        Me.Controls.Add(Me.gbBasic)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.KeyPreview = True
-        Me.Location = New System.Drawing.Point(0, 0)
-        Me.MainMenuStrip = Me.MenuStrip
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Margin = New System.Windows.Forms.Padding(7)
         Me.Name = "AudioForm"
         Me.Text = "Audio Settings"
         Me.gbBasic.ResumeLayout(False)
-        Me.gbBasic.PerformLayout()
+        Me.tlpBasic.ResumeLayout(False)
+        Me.tlpBasic.PerformLayout()
         Me.gbAdvanced.ResumeLayout(False)
-        Me.MenuStrip.ResumeLayout(False)
-        Me.MenuStrip.PerformLayout()
+        Me.tlpAdvanced.ResumeLayout(False)
+        Me.tlpMain.ResumeLayout(False)
+        Me.tlpMain.PerformLayout()
+        Me.flpButtons.ResumeLayout(False)
+        Me.tlpRTB.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -454,14 +675,9 @@ Public Class AudioForm
 
     Sub New()
         MyBase.New()
-
         InitializeComponent()
 
-        rtbCmdlPreview.ReadOnly = True
-
-        mbChannels.Add("1 (Mono)", 1)
-        mbChannels.Add("2 (Stereo)", 2)
-        mbChannels.Add("6 (5.1)", 6)
+        rtbCommandLine.ReadOnly = True
 
         mbSamplingRate.Add("Original", 0)
         mbSamplingRate.Add("11025 Hz", 11025)
@@ -471,62 +687,66 @@ Public Class AudioForm
         mbSamplingRate.Add("88200 Hz", 88200)
         mbSamplingRate.Add("96000 Hz", 96000)
 
-        numBitrate.Minimum = 16
+        numBitrate.Minimum = 1
         numBitrate.Maximum = 16000
-
         numGain.DecimalPlaces = 1
 
-        If components Is Nothing Then
-            components = New System.ComponentModel.Container
-        End If
+        cbDefaultTrack.Visible = TypeOf p.VideoEncoder.Muxer Is MkvMuxer
+        cbForcedTrack.Visible = TypeOf p.VideoEncoder.Muxer Is MkvMuxer
 
-        rtbCmdlPreview.ScrollBars = RichTextBoxScrollBars.None
-        miShowPaths.Checked = s.ShowPathsInCommandLine
+        If components Is Nothing Then components = New System.ComponentModel.Container
 
-        UpdateProfilesMenu()
+        rtbCommandLine.ScrollBars = RichTextBoxScrollBars.None
 
-        If g.IsCulture("de") Then
-            ActionMenuItem.Add(miHelp.DropDownItems, "BeSweet | Kommandozeilenreferenz", Sub() g.ShellExecute("http://brother-john.net/besweet-referenz.html"))
-        Else
-            ActionMenuItem.Add(miHelp.DropDownItems, "BeSweet | Commandline Reference", Sub() g.ShellExecute("http://brother-john.net/besweet-reference.html"))
-        End If
+        Dim cms As New ContextMenuStripEx(components)
+        bnMenu.ContextMenuStrip = cms
 
-        ActionMenuItem.Add(miHelp.DropDownItems, "eac3to wiki", Sub() g.ShellExecute("http://en.wikibooks.org/wiki/Eac3to"))
-        ActionMenuItem.Add(miHelp.DropDownItems, "ffmpeg help file", Sub() g.ShellExecute(Packs.ffmpeg.GetHelpPath))
-        ActionMenuItem.Add(miHelp.DropDownItems, "KpeX Audio FAQ", Sub() g.ShellExecute("http://forum.doom9.org/showthread.php?t=68300"))
+        cms.Add("Copy Command Line", Sub() Clipboard.SetText(TempProfile.GetCommandLine(True))).SetImage(Symbol.Copy)
+        cms.Add("Execute Command Line", AddressOf Execute).SetImage(Symbol.fa_terminal)
+        cms.Add("Show Command Line...", Sub() g.ShowCommandLinePreview("Command Line", TempProfile.GetCommandLine(True)))
+        cms.Add("-")
+        cms.Add("Save Profile...", AddressOf SaveProfile, "Saves the current settings as profile").SetImage(Symbol.Save)
+        cms.Add("-")
+        cms.Add("Help", AddressOf ShowHelp).SetImage(Symbol.Help)
+        cms.Add("eac3to Help", Sub() g.StartProcess("http://en.wikibooks.org/wiki/Eac3to"))
+        cms.Add("ffmpeg Help", Sub() g.StartProcess(Package.ffmpeg.GetHelpPath))
 
-        g.SetRenderer(MenuStrip)
-
-        TipProvider.SetTip("Profile name that is auto generated when undefined.", lName)
+        TipProvider.SetTip("Profile name that is auto generated when undefined.", laProfileName)
         TipProvider.SetTip("Language used by the muxer. Saved in projects/templates but not in profiles.", mbLanguage, lLanguage)
-        TipProvider.SetTip("Delay in milliseconds. eac3to and BeSweet handle delay, ffmpeg don't but it is handled by the muxer. Saved in projects/templates but not in profiles.", numDelay, lDelay)
+        TipProvider.SetTip("Delay in milliseconds. eac3to handles delay, ffmpeg don't but it is handled by the muxer. Saved in projects/templates but not in profiles.", numDelay, lDelay)
+
+        TipProvider.SetTip("Stream name used by the muxer.", tbStreamName, laStreamName)
+        TipProvider.SetTip("Custom command line arguments.", tbCustom, laCustom)
+
+        TipProvider.SetTip("Default MKV Track.", cbDefaultTrack)
+        TipProvider.SetTip("Forced MKV Track.", cbForcedTrack)
     End Sub
 
     Private Sub AudioForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
-        If DialogResult = DialogResult.OK Then
-            SetValues(Profile)
-        End If
+        If DialogResult = DialogResult.OK Then SetValues(Profile)
     End Sub
 
     Sub SetValues(gap As GUIAudioProfile)
         gap.Bitrate = TempProfile.Bitrate
         gap.Language = TempProfile.Language
-        gap.Channels = TempProfile.Channels
         gap.Delay = TempProfile.Delay
-        gap.Name = TempProfile.CustomName
+        gap.Name = TempProfile.Name
         gap.StreamName = TempProfile.StreamName
         gap.Gain = TempProfile.Gain
-
+        gap.Default = TempProfile.Default
+        gap.Forced = TempProfile.Forced
         gap.Params = TempProfile.Params
+        gap.Decoder = TempProfile.Decoder
+        gap.DecodingMode = TempProfile.DecodingMode
     End Sub
 
     Sub UpdateBitrate()
-        nudQuality_ValueChanged(nudQuality)
+        nudQuality_ValueChanged(numQuality)
     End Sub
 
-    Private Sub nudQuality_ValueChanged(numEdit As NumEdit) Handles nudQuality.ValueChanged
+    Private Sub nudQuality_ValueChanged(numEdit As NumEdit) Handles numQuality.ValueChanged
         If Not TempProfile Is Nothing Then
-            TempProfile.Params.Quality = CSng(nudQuality.Value)
+            TempProfile.Params.Quality = CSng(numQuality.Value)
             numBitrate.Value = TempProfile.GetBitrate
             UpdateControls()
         End If
@@ -545,7 +765,7 @@ Public Class AudioForm
     End Sub
 
     Private Sub numGain_ValueChanged(numEdit As NumEdit) Handles numGain.ValueChanged
-        TempProfile.Gain = numGain.Value
+        TempProfile.Gain = CSng(numGain.Value)
         UpdateControls()
     End Sub
 
@@ -556,30 +776,22 @@ Public Class AudioForm
 
     Sub UpdateControls()
         Select Case TempProfile.Params.Codec
-            Case AudioCodec.Opus, AudioCodec.Flac
-                nudQuality.Enabled = False
+            Case AudioCodec.Opus, AudioCodec.FLAC, AudioCodec.W64, AudioCodec.WAV
+                numQuality.Enabled = False
             Case Else
-                nudQuality.Enabled = TempProfile.Params.RateMode = AudioRateMode.VBR
+                numQuality.Enabled = TempProfile.Params.RateMode = AudioRateMode.VBR
         End Select
 
-        If TempProfile.Params.Codec = AudioCodec.Flac OrElse TempProfile.Params.Codec = AudioCodec.WAV Then
+        If TempProfile.Params.Codec = AudioCodec.FLAC Then
             numBitrate.Enabled = False
         Else
-            numBitrate.Enabled = Not nudQuality.Enabled
+            numBitrate.Enabled = Not numQuality.Enabled
         End If
 
         numBitrate.Increment = If(TempProfile.Params.Codec = AudioCodec.AC3, 32D, 1D)
-
-        tbName.SendMessageCue(TempProfile.Name, False)
-
-        rtbCmdlPreview.SetText(TempProfile.GetCommandLine(s.ShowPathsInCommandLine))
-
-        Dim textSize = TextRenderer.MeasureText(rtbCmdlPreview.Text, rtbCmdlPreview.Font,
-                                 New Size(rtbCmdlPreview.ClientSize.Width, Integer.MaxValue),
-                                 TextFormatFlags.WordBreak)
-
-        Height += CInt(textSize.Height * 1.2) - rtbCmdlPreview.Height
-        rtbCmdlPreview.Refresh()
+        tbProfileName.SendMessageCue(TempProfile.Name, False)
+        rtbCommandLine.SetText(TempProfile.GetCommandLine(False))
+        rtbCommandLine.UpdateHeight()
     End Sub
 
     Private Sub mbCodec_ValueChangedUser() Handles mbCodec.ValueChangedUser
@@ -587,8 +799,15 @@ Public Class AudioForm
 
         Select Case TempProfile.Params.Codec
             Case AudioCodec.AAC
-                SetQuality(If(TempProfile.Params.Encoder = GuiAudioEncoder.qaac, 50.0F, 0.35F))
-                TempProfile.Params.AacProfile = AudioAacProfile.Automatic
+                Select Case TempProfile.Params.Encoder
+                    Case GuiAudioEncoder.qaac
+                        SetQuality(50)
+                    Case GuiAudioEncoder.fdkaac
+                        SetQuality(3)
+                    Case Else
+                        SetQuality(0.4)
+                End Select
+
                 TempProfile.Params.RateMode = AudioRateMode.VBR
             Case AudioCodec.AC3
                 If TempProfile.Channels = 6 Then
@@ -598,7 +817,7 @@ Public Class AudioForm
                 End If
 
                 TempProfile.Params.RateMode = AudioRateMode.CBR
-            Case AudioCodec.Flac, AudioCodec.WAV
+            Case AudioCodec.FLAC
                 numBitrate.Value = TempProfile.GetBitrate
                 TempProfile.Params.RateMode = AudioRateMode.CBR
             Case AudioCodec.DTS
@@ -627,37 +846,34 @@ Public Class AudioForm
     End Sub
 
     Sub SetQuality(value As Single)
-        If TempProfile.Params.Codec = AudioCodec.AAC AndAlso
-            TempProfile.Params.Encoder = GuiAudioEncoder.qaac Then
-
-            nudQuality.Minimum = 0D
-            nudQuality.Maximum = 127D
-            nudQuality.Increment = 1D
-            nudQuality.DecimalPlaces = 0
+        If TempProfile.Params.Codec = AudioCodec.AAC AndAlso TempProfile.Params.Encoder = GuiAudioEncoder.qaac Then
+            numQuality.Minimum = 0
+            numQuality.Maximum = 127
+            numQuality.Increment = 1
+            numQuality.DecimalPlaces = 0
+        ElseIf TempProfile.Params.Codec = AudioCodec.AAC AndAlso TempProfile.Params.Encoder = GuiAudioEncoder.fdkaac Then
+            numQuality.Minimum = 1
+            numQuality.Maximum = 5
+            numQuality.Increment = 1
+            numQuality.DecimalPlaces = 0
         ElseIf TempProfile.Params.Codec = AudioCodec.MP3 Then
-            nudQuality.Minimum = 0D
-            nudQuality.Maximum = 9D
-            nudQuality.Increment = 1D
-            nudQuality.DecimalPlaces = 0
+            numQuality.Minimum = 0
+            numQuality.Maximum = 9
+            numQuality.Increment = 1
+            numQuality.DecimalPlaces = 0
         ElseIf TempProfile.Params.Codec = AudioCodec.Vorbis Then
-            nudQuality.Minimum = 0D
-            nudQuality.Maximum = 10D
-            nudQuality.Increment = 1D
-            nudQuality.DecimalPlaces = 0
+            numQuality.Minimum = 0
+            numQuality.Maximum = 10
+            numQuality.Increment = 1
+            numQuality.DecimalPlaces = 0
         Else
-            nudQuality.Minimum = 0.01D
-            nudQuality.Maximum = 1D
-            nudQuality.Increment = 0.01D
-            nudQuality.DecimalPlaces = 2
+            numQuality.Minimum = 0
+            numQuality.Maximum = Integer.MaxValue
+            numQuality.Increment = 0.01
+            numQuality.DecimalPlaces = 2
         End If
 
-        nudQuality.Value = CDec(value)
-    End Sub
-
-    Private Sub mbChannels_ValueChanged() Handles mbChannels.ValueChangedUser
-        TempProfile.Channels = mbChannels.GetValue(Of Integer)()
-        UpdateBitrate()
-        UpdateControls()
+        numQuality.Value = value
     End Sub
 
     Private Sub mbSamplingRate_ValueChanged() Handles mbSamplingRate.ValueChangedUser
@@ -671,84 +887,34 @@ Public Class AudioForm
         UpdateControls()
     End Sub
 
-    Sub ToogleShowPaths()
-        s.ShowPathsInCommandLine = Not s.ShowPathsInCommandLine
-        miShowPaths.Checked = s.ShowPathsInCommandLine
-        Application.DoEvents()
-        UpdateControls()
-    End Sub
-
     Private Sub AudioForm_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         UpdateControls()
         Refresh()
+        ActiveControl = mbCodec
 
         For Each i In Language.Languages
             If i.IsCommon Then
-                mbLanguage.Add(i.ToString, i)
+                mbLanguage.Add(i.ToString + " (" + i.TwoLetterCode + ", " + i.ThreeLetterCode + ")", i)
             Else
-                mbLanguage.Add("More | " + i.ToString.Substring(0, 1) + " | " + i.ToString, i)
+                mbLanguage.Add("More | " + i.ToString.Substring(0, 1).ToUpper + " | " + i.ToString + " (" + i.TwoLetterCode + ", " + i.ThreeLetterCode + ")", i)
             End If
         Next
-
-        For Each i In Directory.GetFiles(Packs.BeSweet.GetDir + "help")
-            If Filepath.GetExtFull(i) <> ".lst" Then
-                Dim tmp = i
-                ActionMenuItem.Add(miHelp.DropDownItems, "BeSweet | " + Filepath.GetBase(i), Sub() g.ShellExecute(tmp))
-            End If
-        Next
-
-        ActiveControl = mbCodec
     End Sub
 
-    Private Sub tbName_TextChanged(sender As Object, e As EventArgs) Handles tbName.TextChanged
-        TempProfile.Name = tbName.Text
+    Private Sub tbName_TextChanged(sender As Object, e As EventArgs) Handles tbProfileName.TextChanged
+        TempProfile.Name = tbProfileName.Text
         UpdateControls()
-    End Sub
-
-    Sub UpdateProfilesMenu()
-        miProfiles.DropDownItems.Clear()
-
-        For Each i In s.AudioProfiles.OfType(Of GUIAudioProfile)()
-            ActionMenuItem.Add(miProfiles.DropDownItems, i.Name, AddressOf LoadProfile2, i, Nothing)
-        Next
-
-        miProfiles.DropDownItems.Add("-")
-
-        miProfiles.DropDownItems.Add(New ActionMenuItem("Save", Sub() SaveProfile(), "Saves the current settings as profile"))
-        miProfiles.DropDownItems.Add(New ActionMenuItem("Edit...", Sub() EditProfiles(), "Shows the profiles dialog to edit the audio profiles"))
     End Sub
 
     Sub SaveProfile()
         Dim gap = ObjectHelp.GetCopy(Of GUIAudioProfile)(TempProfile)
-        s.AudioProfiles.Insert(0, gap)
-        MsgInfo("The profile was saved.")
-        UpdateProfilesMenu()
-    End Sub
+        Dim name = InputBox.Show("Enter the profile name.", "Save Profile", gap.Name)
 
-    Sub EditProfiles()
-        Using f As New ProfilesForm("Audio Profiles", s.AudioProfiles, Nothing,
-                                    Function() g.MainForm.GetNewAudioProfile(Nothing),
-                                    AddressOf AudioProfile.GetDefaults)
-            f.ShowDialog()
-        End Using
-
-        UpdateProfilesMenu()
-    End Sub
-
-    Sub LoadProfile2(gap As GUIAudioProfile)
-        Dim language = TempProfile.Language
-        Dim delay = TempProfile.Delay
-        Dim file = TempProfile.File
-        Dim gain = TempProfile.Gain
-
-        TempProfile = ObjectHelp.GetCopy(Of GUIAudioProfile)(gap)
-
-        TempProfile.Gain = gain
-        TempProfile.Language = language
-        TempProfile.Delay = delay
-        TempProfile.File = file
-
-        LoadProfile()
+        If name <> "" Then
+            gap.Name = name
+            s.AudioProfiles.Add(gap)
+            MsgInfo("The profile was saved.")
+        End If
     End Sub
 
     Sub LoadProfile(gap As GUIAudioProfile)
@@ -758,22 +924,28 @@ Public Class AudioForm
     End Sub
 
     Sub LoadProfile()
-        tbName.Text = TempProfile.CustomName
-        tbName.SendMessageCue(TempProfile.Name, False)
+        If TempProfile.Name <> TempProfile.DefaultName Then tbProfileName.Text = TempProfile.Name
+        tbProfileName.SendMessageCue(TempProfile.Name, False)
+
+        tbCustom.Text = TempProfile.Params.CustomSwitches
+        tbStreamName.Text = TempProfile.StreamName
+
+        cbDefaultTrack.Checked = TempProfile.Default
+        cbForcedTrack.Checked = TempProfile.Forced
+        cbNormalize.Checked = TempProfile.Params.Normalize
 
         mbCodec.Value = TempProfile.Params.Codec
-        mbChannels.Value = TempProfile.Channels
+        mbChannels.Value = TempProfile.Params.ChannelsMode
         mbLanguage.Value = TempProfile.Language
         mbSamplingRate.Value = TempProfile.Params.SamplingRate
         mbEncoder.Value = TempProfile.Params.Encoder
+        mbDecoder.Value = TempProfile.Decoder
 
         SetQuality(TempProfile.Params.Quality)
 
-        numBitrate.Value = CDec(TempProfile.Bitrate)
+        numBitrate.Value = TempProfile.Bitrate
         numDelay.Value = TempProfile.Delay
-        numGain.Value = CDec(TempProfile.Gain)
-
-        cbNormalize.Checked = TempProfile.Params.Normalize
+        numGain.Value = TempProfile.Gain
 
         LoadAdvanced()
         UpdateControls()
@@ -787,213 +959,231 @@ Public Class AudioForm
         RemoveHandler SimpleUI.ValueChanged, AddressOf SimpleUIValueChanged
 
         Dim ui = SimpleUI
+        ui.Store = TempProfile.Params
         ui.Host.Controls.Clear()
 
-        If Not ui.ActivePage Is Nothing Then
-            DirectCast(ui.ActivePage, Control).Dispose()
-        End If
+        If Not ui.ActivePage Is Nothing Then DirectCast(ui.ActivePage, Control).Dispose()
 
-        Dim page = ui.CreateFlowPage("main page")
+        Dim page = ui.CreateFlowPage()
         page.SuspendLayout()
 
-        Dim tb = ui.AddTextBlock(page)
-        tb.Label.Text = "Stream Name:"
-        tb.Label.Tooltip = "Stream name used by the muxer."
-        tb.Edit.Text = TempProfile.StreamName
-        tb.Edit.SaveAction = Sub(value) TempProfile.StreamName = value
+        If {AudioCodec.W64, AudioCodec.WAV}.Contains(TempProfile.Params.Codec) Then
+            Dim mDepth = ui.AddMenu(Of Integer)
+            mDepth.Text = "Depth:"
+            mDepth.Expandet = True
+            mDepth.Button.Value = TempProfile.Depth
+            mDepth.Button.SaveAction = Sub(val)
+                                           TempProfile.Depth = val
+                                           UpdateBitrate()
+                                           UpdateControls()
+                                       End Sub
+            mDepth.Add({16, 24})
+        End If
 
-        tb = ui.AddTextBlock(page)
-        tb.Label.Text = "Custom Switches:"
-        tb.Label.Tooltip = "Custom command line arguments"
-        tb.Edit.Text = TempProfile.Params.CustomSwitches
-        tb.Edit.SaveAction = Sub(value) TempProfile.Params.CustomSwitches = value
+        Dim cb As SimpleUI.SimpleUICheckBox
 
         Select Case TempProfile.GetEncoder
-            Case GuiAudioEncoder.BeSweet
-                Dim mb = ui.AddMenuButtonBlock(Of String)(page)
-                mb.Label.Text = "Dynamic Compr.:"
-                mb.Label.Tooltip = "Sets the overall dynamic compression in the decoder (applied to every output speaker)."
-                mb.MenuButton.Value = TempProfile.Params.BeSweetDynamicCompression
-                mb.MenuButton.SaveAction = Sub(value) TempProfile.Params.BeSweetDynamicCompression = value
-                mb.MenuButton.Add({"None", "Normal", "Light", "Heavy", "Inverse"})
-
-                If TempProfile.Params.Codec = AudioCodec.AAC Then
-                    Dim mbaac = ui.AddMenuButtonBlock(Of AudioAacProfile)(page)
-                    mbaac.Label.Text = "AAC Profile:"
-                    mbaac.MenuButton.Value = TempProfile.Params.AacProfile
-                    mbaac.MenuButton.SaveAction = Sub(value) TempProfile.Params.AacProfile = value
-                End If
-
-                Dim mbRateMode = ui.AddMenuButtonBlock(Of AudioRateMode)(page)
-                mbRateMode.Label.Text = "Rate Mode:"
-                mbRateMode.MenuButton.Value = TempProfile.Params.RateMode
-                mbRateMode.MenuButton.SaveAction = Sub(value) TempProfile.Params.RateMode = value
-
-                Dim mbFramerate = ui.AddMenuButtonBlock(Of AudioFrameRateMode)(page)
-                mbFramerate.Label.Text = "Frame rate:"
-                mbFramerate.MenuButton.Value = TempProfile.Params.FrameRateMode
-                mbFramerate.MenuButton.SaveAction = Sub(value) TempProfile.Params.FrameRateMode = value
-
-                Dim mbDownmixMode = ui.AddMenuButtonBlock(Of AudioDownMixMode)(page)
-                mbDownmixMode.Label.Text = "Stereo Downmix:"
-                mbDownmixMode.MenuButton.Value = TempProfile.Params.BeSweetDownmixMode
-                mbDownmixMode.MenuButton.SaveAction = Sub(value) TempProfile.Params.BeSweetDownmixMode = value
-
-                tb = ui.AddTextBlock(page)
-                tb.Label.Text = "Gain/Normalize:"
-                tb.Label.Tooltip = "Parameters added to ota section when the Normalize checkbox is enabled."
-                tb.Edit.Text = TempProfile.Params.BeSweetGainAndNormalization
-                tb.Edit.SaveAction = Sub(value) TempProfile.Params.BeSweetGainAndNormalization = value
-
-                tb = ui.AddTextBlock(page)
-                tb.Label.Text = "Azid parameters:"
-                tb.Label.Tooltip = "Custom parameters used in the Azid section."
-                tb.Edit.Text = TempProfile.Params.BeSweetAzid
-                tb.Edit.SaveAction = Sub(value) TempProfile.Params.BeSweetAzid = value
-
-                tb = ui.AddTextBlock(page)
-                tb.Label.Text = "Custom section:"
-                tb.Label.Tooltip = "For boost, shibatch etc."
-                tb.Edit.Text = TempProfile.Params.BeSweetCustom
-                tb.Edit.SaveAction = Sub(value) TempProfile.Params.BeSweetCustom = value
             Case GuiAudioEncoder.Eac3to
-                Dim mbFrameRateMode = ui.AddMenuButtonBlock(Of AudioFrameRateMode)(page)
+                Dim mbFrameRateMode = ui.AddMenu(Of AudioFrameRateMode)(page)
                 mbFrameRateMode.Label.Text = "Frame rate:"
-                mbFrameRateMode.MenuButton.Value = TempProfile.Params.FrameRateMode
-                mbFrameRateMode.MenuButton.SaveAction = Sub(value) TempProfile.Params.FrameRateMode = value
+                mbFrameRateMode.Button.Expand = True
+                mbFrameRateMode.Button.Value = TempProfile.Params.FrameRateMode
+                mbFrameRateMode.Button.SaveAction = Sub(value) TempProfile.Params.FrameRateMode = value
 
-                Dim mbStereoDownmix = ui.AddMenuButtonBlock(Of Integer)(page)
+                Dim mbStereoDownmix = ui.AddMenu(Of Integer)(page)
                 mbStereoDownmix.Label.Text = "Stereo Downmix:"
-                mbStereoDownmix.MenuButton.Add("Simple", 0)
-                mbStereoDownmix.MenuButton.Add("DPL II", 1)
-                mbStereoDownmix.MenuButton.Value = TempProfile.Params.eac3toStereoDownmixMode
-                mbStereoDownmix.MenuButton.SaveAction = Sub(value) TempProfile.Params.eac3toStereoDownmixMode = value
+                mbStereoDownmix.Button.Expand = True
+                mbStereoDownmix.Button.Add("Simple", 0)
+                mbStereoDownmix.Button.Add("DPL II", 1)
+                mbStereoDownmix.Button.Value = TempProfile.Params.eac3toStereoDownmixMode
+                mbStereoDownmix.Button.SaveAction = Sub(value) TempProfile.Params.eac3toStereoDownmixMode = value
 
-                Dim cb As SimpleUI.SimpleUICheckBox
-                cb = ui.AddCheckBox(page)
-                cb.Text = "Downconvert to 16 bit"
-                cb.Checked = TempProfile.Params.Down16
-                cb.SaveAction = Sub(value)
-                                    TempProfile.Params.Down16 = value
-                                    UpdateBitrate()
-                                    UpdateControls()
-                                End Sub
                 If (TempProfile.File = "" OrElse TempProfile.File.ToLower.Contains("dts") OrElse
-                    (Not TempProfile.Stream Is Nothing AndAlso
-                     TempProfile.Stream.Name.Contains("DTS"))) AndAlso
-                    TempProfile.Params.Codec = AudioCodec.DTS Then
+                        (Not TempProfile.Stream Is Nothing AndAlso
+                         TempProfile.Stream.Name.Contains("DTS"))) AndAlso
+                        TempProfile.Params.Codec = AudioCodec.DTS Then
 
-                    cb = ui.AddCheckBox(page)
+                    cb = ui.AddBool(page)
                     cb.Text = "Extract DTS core"
                     cb.Checked = TempProfile.Params.eac3toExtractDtsCore
                     cb.SaveAction = Sub(value) TempProfile.Params.eac3toExtractDtsCore = value
                 End If
             Case GuiAudioEncoder.ffmpeg
-                Dim mbRateMode = ui.AddMenuButtonBlock(Of AudioRateMode)(page)
-                mbRateMode.Label.Text = "Rate Mode:"
-                mbRateMode.MenuButton.Value = TempProfile.Params.RateMode
-                mbRateMode.MenuButton.SaveAction = Sub(value) TempProfile.Params.RateMode = value
+                Select Case TempProfile.Params.Codec
+                    Case AudioCodec.AC3, AudioCodec.DTS
+                    Case Else
+                        If Not {AudioCodec.WAV, AudioCodec.W64, AudioCodec.FLAC}.Contains(TempProfile.Params.Codec) Then
+                            Dim mbRateMode = ui.AddMenu(Of AudioRateMode)
+                            mbRateMode.Text = "Rate Mode:"
+                            mbRateMode.Expandet = True
+                            mbRateMode.Button.Value = TempProfile.Params.RateMode
+                            mbRateMode.Button.SaveAction = Sub(value) TempProfile.Params.RateMode = value
+                        End If
+                End Select
+            Case GuiAudioEncoder.fdkaac
+                Dim getHelpAction = Function(switch As String) Sub() g.ShowCommandLineHelp(Package.fdkaac, switch)
+
+                Dim modeMenu = ui.AddMenu(Of SimpleAudioRateMode)
+                modeMenu.Text = "Rate Mode"
+                modeMenu.Expandet = True
+                modeMenu.HelpAction = getHelpAction("--bitrate-mode")
+                modeMenu.Button.Value = TempProfile.Params.SimpleRateMode
+                modeMenu.Button.SaveAction = Sub(value)
+                                                 TempProfile.Params.SimpleRateMode = value
+                                                 UpdateBitrate()
+                                             End Sub
+
+                Dim profileMenu = ui.AddMenu(Of Integer)
+                profileMenu.Text = "Profile"
+                profileMenu.Expandet = True
+                profileMenu.HelpAction = getHelpAction("--profile")
+                profileMenu.Add("AAC LC", 2)
+                profileMenu.Add("HE-AAC SBR", 5)
+                profileMenu.Add("HE-AAC SBR+PS", 29)
+                profileMenu.Add("AAC LD", 23)
+                profileMenu.Add("AAC ELD", 39)
+                profileMenu.Property = NameOf(TempProfile.Params.fdkaacProfile)
+
+                Dim lowDelaySBR = ui.AddMenu(Of Integer)
+                lowDelaySBR.Text = "Lowdelay SBR"
+                lowDelaySBR.Expandet = True
+                lowDelaySBR.HelpAction = getHelpAction("--lowdelay-sbr")
+                lowDelaySBR.Add("ELD SBR auto configuration", -1)
+                lowDelaySBR.Add("Disable SBR on ELD", 0)
+                lowDelaySBR.Add("Enable SBR on ELD", 1)
+                lowDelaySBR.Property = NameOf(TempProfile.Params.fdkaacLowDelaySBR)
+
+                Dim sbrRatio = ui.AddMenu(Of Integer)
+                sbrRatio.Text = "SBR Ratio"
+                sbrRatio.Expandet = True
+                sbrRatio.HelpAction = getHelpAction("--sbr-ratio")
+                sbrRatio.Add("Library Default", 0)
+                sbrRatio.Add("Downsampled SBR (ELD+SBR default)", 1)
+                sbrRatio.Add("Dual-rate SBR (HE-AAC default)", 2)
+                sbrRatio.Property = NameOf(TempProfile.Params.fdkaacSbrRatio)
+
+                Dim gaplessMode = ui.AddMenu(Of Integer)
+                gaplessMode.Text = "Gapless Mode"
+                gaplessMode.Expandet = True
+                gaplessMode.HelpAction = getHelpAction("--gapless-mode")
+                gaplessMode.Add("iTunSMPB", 0)
+                gaplessMode.Add("ISO Standard (EDTS And SGPD)", 1)
+                gaplessMode.Add("Both", 2)
+                gaplessMode.Property = NameOf(TempProfile.Params.fdkaacGaplessMode)
+
+                Dim transportFormat = ui.AddMenu(Of Integer)
+                transportFormat.Text = "Transport Format"
+                transportFormat.Expandet = True
+                transportFormat.HelpAction = getHelpAction("--transport-format")
+                transportFormat.Add("M4A", 0)
+                transportFormat.Add("ADIF", 1)
+                transportFormat.Add("ADTS", 2)
+                transportFormat.Add("LATM MCP=1", 6)
+                transportFormat.Add("LATM MCP=0", 7)
+                transportFormat.Add("LOAS/LATM (LATM within LOAS)", 10)
+                transportFormat.Property = NameOf(TempProfile.Params.fdkaacTransportFormat)
+
+                Dim n = ui.AddNum
+                n.Text = "Bandwidth"
+                n.HelpAction = getHelpAction("--bandwidth")
+                n.Property = NameOf(TempProfile.Params.fdkaacBandwidth)
+
+                cb = ui.AddBool
+                cb.Text = "Afterburner"
+                cb.HelpAction = getHelpAction("--afterburner")
+                cb.Property = NameOf(TempProfile.Params.fdkaacAfterburner)
+
+                cb = ui.AddBool
+                cb.Text = "Add CRC Check on ADTS header"
+                cb.HelpAction = getHelpAction("--adts-crc-check")
+                cb.Property = NameOf(TempProfile.Params.fdkaacAdtsCrcCheck)
+
+                cb = ui.AddBool
+                cb.Text = "Header Period"
+                cb.HelpAction = getHelpAction("--header-period")
+                cb.Property = NameOf(TempProfile.Params.fdkaacHeaderPeriod)
+
+                cb = ui.AddBool
+                cb.Text = "Include SBR Delay"
+                cb.HelpAction = getHelpAction("--include-sbr-delay")
+                cb.Property = NameOf(TempProfile.Params.fdkaacIncludeSbrDelay)
+
+                cb = ui.AddBool
+                cb.Text = "Place moov box before mdat box"
+                cb.HelpAction = getHelpAction("--moov-before-mdat")
+                cb.Property = NameOf(TempProfile.Params.fdkaacMoovBeforeMdat)
             Case GuiAudioEncoder.qaac
-                Dim mbMode = ui.AddMenuButtonBlock(Of Integer)(page)
-                mbMode.Label.Text = "Mode:"
-                mbMode.MenuButton.Add("True VBR", 0)
-                mbMode.MenuButton.Add("Constrained VBR", 1)
-                mbMode.MenuButton.Add("ABR", 2)
-                mbMode.MenuButton.Add("CBR", 3)
-                mbMode.MenuButton.Value = TempProfile.Params.qaacRateMode
-                mbMode.MenuButton.SaveAction = Sub(value)
-                                                   TempProfile.Params.qaacRateMode = value
-                                                   TempProfile.Params.RateMode = If(TempProfile.Params.qaacRateMode = 0,
-                                                                                    AudioRateMode.VBR,
-                                                                                    AudioRateMode.CBR)
-                                               End Sub
+                Dim mbMode = ui.AddMenu(Of Integer)
+                mbMode.Text = "Mode:"
+                mbMode.Expandet = True
+                mbMode.Add("True VBR", 0)
+                mbMode.Add("Constrained VBR", 1)
+                mbMode.Add("ABR", 2)
+                mbMode.Add("CBR", 3)
+                mbMode.Button.Value = TempProfile.Params.qaacRateMode
+                mbMode.Button.SaveAction = Sub(value)
+                                               TempProfile.Params.qaacRateMode = value
+                                               TempProfile.Params.RateMode = If(TempProfile.Params.qaacRateMode = 0, AudioRateMode.VBR, AudioRateMode.CBR)
+                                               UpdateBitrate()
+                                           End Sub
 
-                Dim mbQuality = ui.AddMenuButtonBlock(Of Integer)(page)
+                Dim mbQuality = ui.AddMenu(Of Integer)(page)
                 mbQuality.Label.Text = "Quality:"
-                mbQuality.MenuButton.Add("Low", 0)
-                mbQuality.MenuButton.Add("Medium", 1)
-                mbQuality.MenuButton.Add("High", 2)
-                mbQuality.MenuButton.Value = TempProfile.Params.qaacQuality
-                mbQuality.MenuButton.SaveAction = Sub(value) TempProfile.Params.qaacQuality = value
+                mbQuality.Button.Expand = True
+                mbQuality.Button.Add("Low", 0)
+                mbQuality.Button.Add("Medium", 1)
+                mbQuality.Button.Add("High", 2)
+                mbQuality.Button.Value = TempProfile.Params.qaacQuality
+                mbQuality.Button.SaveAction = Sub(value) TempProfile.Params.qaacQuality = value
 
-                Dim num = ui.AddNumericBlock(page)
-                num.Label.Text = "Lowpass:"
-                num.NumEdit.Init(0, Integer.MaxValue, 1, 0)
+                Dim num = ui.AddNum(page)
+                num.Text = "Lowpass:"
+                num.Config = {0, Integer.MaxValue}
                 num.NumEdit.Value = TempProfile.Params.qaacLowpass
                 num.NumEdit.SaveAction = Sub(value) TempProfile.Params.qaacLowpass = CInt(value)
 
-                Dim cbHE = ui.AddCheckBox(page)
-                cbHE.Text = "High Efficiency"
-                cbHE.Checked = TempProfile.Params.qaacHE
-                cbHE.SaveAction = Sub(value) TempProfile.Params.qaacHE = value
-                AddHandler cbHE.CheckedChanged, Sub() If cbHE.Checked Then mbMode.MenuButton.Value = 1
-                AddHandler mbMode.MenuButton.ValueChangedUser, Sub() If mbMode.MenuButton.Value = 0 Then cbHE.Checked = False
+                cb = ui.AddBool(page)
+                cb.Text = "High Efficiency"
+                cb.Checked = TempProfile.Params.qaacHE
+                cb.SaveAction = Sub(value) TempProfile.Params.qaacHE = value
+                AddHandler cb.CheckedChanged, Sub() If cb.Checked Then mbMode.Button.Value = 1
+                AddHandler mbMode.Button.ValueChangedUser, Sub() If mbMode.Button.Value = 0 Then cb.Checked = False
 
-                Dim cb = ui.AddCheckBox(page)
+                cb = ui.AddBool(page)
                 cb.Text = "No dither when quantizing to lower bit depth"
                 cb.Checked = TempProfile.Params.qaacNoDither
                 cb.SaveAction = Sub(value) TempProfile.Params.qaacNoDither = value
         End Select
 
-        If ui.Visible AndAlso ScaleFactor <> New SizeF(1, 1) Then
-            ui.Scale(ScaleFactor)
-        End If
-
         page.ResumeLayout(True)
-
         AddHandler SimpleUI.ValueChanged, AddressOf SimpleUIValueChanged
     End Sub
 
     Private Sub nudBitrate_KeyUp(sender As Object, e As KeyEventArgs) Handles numBitrate.KeyUp
         Try
             Dim v = CInt(numBitrate.Text)
-
-            If v Mod 16 = 0 Then
-                numBitrate.Value = v
-            End If
+            If v Mod 16 = 0 Then numBitrate.Value = v
         Catch
         End Try
     End Sub
 
-    Private Sub nudQuality_KeyUp(sender As Object, e As KeyEventArgs) Handles nudQuality.KeyUp
+    Private Sub nudQuality_KeyUp(sender As Object, e As KeyEventArgs) Handles numQuality.KeyUp
         Try
-            Dim v = CInt(nudQuality.Text)
-            nudQuality.Value = v
+            Dim v = CInt(numQuality.Text)
+            numQuality.Value = v
         Catch
         End Try
     End Sub
 
-    Private Sub mbEncoder_ValueChangedUser() Handles mbEncoder.ValueChangedUser
-        TempProfile.Params.Encoder = mbEncoder.GetValue(Of GuiAudioEncoder)()
-        mbCodec_ValueChangedUser()
-    End Sub
-
-    Private Sub cbNormalize_CheckedChanged(sender As Object, e As EventArgs) Handles cbNormalize.CheckedChanged
-        TempProfile.Params.Normalize = cbNormalize.Checked
-        UpdateControls()
-    End Sub
-
-    Private Sub AudioForm_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'on small screensizes like netbooks dialogs get cut at screensize
-        If gbAdvanced.Right > Width Then
-            ClientSize = New Size(gbAdvanced.Right + gbBasic.Left, ClientSize.Height)
-        End If
-    End Sub
-
-    Private Sub miCopyComandLine_Click(sender As Object, e As EventArgs) Handles miCopyComandLine.Click
-        Clipboard.SetText(TempProfile.GetCommandLine(True))
-    End Sub
-
-    Private Sub miShowPaths_Click(sender As Object, e As EventArgs) Handles miShowPaths.Click
-        ToogleShowPaths()
-    End Sub
-
-    Private Sub miExecute_Click(sender As Object, e As EventArgs) Handles miExecute.Click
+    Private Sub Execute()
         If TempProfile.File <> "" Then
-            If Not TempProfile.SupportedInput.Contains(Filepath.GetExt(TempProfile.File)) Then
-                MsgWarn("The input format isn't supported," + CrLf + "please decode first using:" + CrLf2 + "Codec: WAV" + CrLf + "Encoder: ffmpeg")
+            If Not TempProfile.IsInputSupported AndAlso Not TempProfile.DecodingMode = AudioDecodingMode.Pipe Then
+                MsgWarn("The input format isn't supported by the current encoder," + BR + "convert to WAV or FLAC first or enable piping in the options.")
             Else
-                Proc.StartComandLine(TempProfile.GetCommandLine(True))
+                Dim process As New Process
+                process.StartInfo.FileName = "cmd.exe"
+                process.StartInfo.Arguments = "/S /K """ + TempProfile.GetCommandLine(True) + """"
+                process.Start()
             End If
         Else
             MsgWarn("Source file is missing!")
@@ -1001,13 +1191,156 @@ Public Class AudioForm
     End Sub
 
     Private Sub CommandLineAudioSettingsForm_HelpRequested() Handles Me.HelpRequested
-        miDialogHelp.PerformClick()
+        ShowHelp()
     End Sub
 
-    Private Sub miDialogHelp_Click(sender As Object, e As EventArgs) Handles miDialogHelp.Click
+    Private Sub tbStreamName_TextChanged(sender As Object, e As EventArgs) Handles tbStreamName.TextChanged
+        TempProfile.StreamName = tbStreamName.Text
+    End Sub
+
+    Private Sub tbCustom_TextChanged(sender As Object, e As EventArgs) Handles tbCustom.TextChanged
+        TempProfile.Params.CustomSwitches = tbCustom.Text
+        UpdateControls()
+    End Sub
+
+    Private Sub cbDefaultTrack_CheckedChanged(sender As Object, e As EventArgs) Handles cbDefaultTrack.CheckedChanged
+        TempProfile.Default = cbDefaultTrack.Checked
+    End Sub
+
+    Private Sub cbForcedTrack_CheckedChanged(sender As Object, e As EventArgs) Handles cbForcedTrack.CheckedChanged
+        TempProfile.Forced = cbForcedTrack.Checked
+    End Sub
+
+    Private Sub mbEncoder_ValueChangedUser(value As Object) Handles mbEncoder.ValueChangedUser
+        TempProfile.Params.Encoder = mbEncoder.GetValue(Of GuiAudioEncoder)()
+        mbCodec_ValueChangedUser()
+    End Sub
+
+    Private Sub ShowHelp()
         Dim f As New HelpForm()
         f.Doc.WriteStart(Text)
         f.Doc.WriteTips(TipProvider.GetTips, SimpleUI.ActivePage.TipProvider.GetTips)
         f.Show()
+    End Sub
+
+    Private Sub mbChannels_ValueChanged(value As Object) Handles mbChannels.ValueChangedUser
+        TempProfile.Params.ChannelsMode = mbChannels.GetValue(Of ChannelsMode)()
+        UpdateBitrate()
+        UpdateControls()
+    End Sub
+
+    Private Sub mbConvertMode_ValueChangedUser(value As Object) Handles mbDecoder.ValueChangedUser
+        TempProfile.Decoder = mbDecoder.GetValue(Of AudioDecoderMode)()
+        UpdateControls()
+    End Sub
+
+    Private Sub bnAdvanced_Click(sender As Object, e As EventArgs) Handles bnAdvanced.Click
+        Using form As New SimpleSettingsForm("Advanced Audio Options")
+            form.ScaleClientSize(30, 21)
+            Dim ui = form.SimpleUI
+            ui.Store = TempProfile.Params
+
+            ui.CreateFlowPage("General", True)
+
+            Dim convFormat = ui.AddMenu(Of AudioDecodingMode)
+            convFormat.Text = "Decoding Method:"
+            convFormat.Button.Value = TempProfile.DecodingMode
+            convFormat.Button.SaveAction = Sub(val) TempProfile.DecodingMode = val
+
+            ui.CreateFlowPage("ffmpeg", True)
+
+            Dim ffmpegNormalize = ui.AddMenu(Of ffNormalizeMode)
+            ffmpegNormalize.Text = "Normalize Method:"
+            ffmpegNormalize.Property = NameOf(TempProfile.Params.ffNormalizeMode)
+
+            ui.AddLabel("EBU R128 loudness normalization (loudnorm):")
+
+            Dim helpUrl = "https://www.ffmpeg.org/ffmpeg-filters.html#loudnorm"
+
+            Dim n = ui.AddNum()
+            n.Text = "   Integrated"
+            n.Help = helpUrl
+            n.Config = {0, 0, 0.1, 1}
+            n.Property = NameOf(TempProfile.Params.ffmpegLoudnormIntegrated)
+
+            n = ui.AddNum()
+            n.Text = "   True Peak"
+            n.Help = helpUrl
+            n.Config = {0, 0, 0.1, 1}
+            n.Property = NameOf(TempProfile.Params.ffmpegLoudnormTruePeak)
+
+            n = ui.AddNum()
+            n.Text = "   LRA"
+            n.Help = helpUrl
+            n.Config = {0, 0, 0.1, 1}
+            n.Property = NameOf(TempProfile.Params.ffmpegLoudnormLRA)
+
+            ui.CreateFlowPage("ffmpeg | dynaudnorm", True)
+
+            ui.AddLabel("Dynamic Audio Normalizer")
+
+            helpUrl = "https://www.ffmpeg.org/ffmpeg-filters.html#dynaudnorm"
+
+            n = ui.AddNum()
+            n.Text = "Frame Length"
+            n.Help = helpUrl
+            n.Config = {10, 8000}
+            n.Property = NameOf(TempProfile.Params.ffmpegDynaudnormF)
+
+            n = ui.AddNum()
+            n.Text = "Gaus filter win size"
+            n.Help = helpUrl
+            n.Config = {3, 301}
+            n.Property = NameOf(TempProfile.Params.ffmpegDynaudnormG)
+
+            n = ui.AddNum()
+            n.Text = "Target Peak"
+            n.Help = helpUrl
+            n.Config = {0, 0, 0.1, 2}
+            n.Property = NameOf(TempProfile.Params.ffmpegDynaudnormP)
+
+            n = ui.AddNum()
+            n.Text = "Max gain factor"
+            n.Help = helpUrl
+            n.Config = {1, 100, 1, 1}
+            n.Property = NameOf(TempProfile.Params.ffmpegDynaudnormM)
+
+            n = ui.AddNum()
+            n.Text = "Target RMS"
+            n.Help = helpUrl
+            n.Config = {0, 1, 0.1, 1}
+            n.Property = NameOf(TempProfile.Params.ffmpegDynaudnormR)
+
+            n = ui.AddNum()
+            n.Text = "Compress factor"
+            n.Help = helpUrl
+            n.Config = {0, 30, 1, 1}
+            n.Property = NameOf(TempProfile.Params.ffmpegDynaudnormS)
+
+            Dim b = ui.AddBool
+            b.Text = "Enable channels coupling"
+            b.Help = helpUrl
+            b.Property = NameOf(TempProfile.Params.ffmpegDynaudnormN)
+
+            b = ui.AddBool
+            b.Text = "Enable DC bias correction"
+            b.Help = helpUrl
+            b.Property = NameOf(TempProfile.Params.ffmpegDynaudnormC)
+
+            b = ui.AddBool
+            b.Text = "Enable alternative boundary mode"
+            b.Help = helpUrl
+            b.Property = NameOf(TempProfile.Params.ffmpegDynaudnormB)
+
+            ui.SelectLast("last advanced audio options page")
+            If form.ShowDialog() = DialogResult.OK Then ui.Save()
+            UpdateControls()
+            ui.SaveLast("last advanced audio options page")
+        End Using
+    End Sub
+
+    Private Sub cbNormalize_CheckedChanged(sender As Object, e As EventArgs) Handles cbNormalize.CheckedChanged
+        TempProfile.Params.Normalize = cbNormalize.Checked
+        UpdateControls()
     End Sub
 End Class

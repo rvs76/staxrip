@@ -1,7 +1,6 @@
 Imports StaxRip.UI
-Imports StaxRip.x265
 
-Class x265Control
+Public Class x265Control
     Inherits UserControl
 
 #Region " Designer "
@@ -15,17 +14,17 @@ Class x265Control
     End Sub
 
     Friend WithEvents lv As StaxRip.UI.ListViewEx
-    Friend WithEvents llConfigCodec As System.Windows.Forms.LinkLabel
-    Friend WithEvents llConfigContainer As System.Windows.Forms.LinkLabel
-    Friend WithEvents llCompCheck As System.Windows.Forms.LinkLabel
+    Friend WithEvents llConfigCodec As ButtonLabel
+    Friend WithEvents llConfigContainer As ButtonLabel
+    Friend WithEvents llCompCheck As ButtonLabel
 
     Private components As System.ComponentModel.IContainer
 
     <DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Me.llConfigCodec = New System.Windows.Forms.LinkLabel()
-        Me.llConfigContainer = New System.Windows.Forms.LinkLabel()
-        Me.llCompCheck = New System.Windows.Forms.LinkLabel()
+        Me.llConfigCodec = New ButtonLabel()
+        Me.llConfigContainer = New ButtonLabel()
+        Me.llCompCheck = New ButtonLabel()
         Me.lv = New StaxRip.UI.ListViewEx()
         Me.SuspendLayout()
         '
@@ -78,7 +77,6 @@ Class x265Control
         Me.lv.Name = "lv"
         Me.lv.Size = New System.Drawing.Size(367, 213)
         Me.lv.TabIndex = 0
-        Me.lv.UseCompatibleStateImageBehavior = False
         '
         'x265Control
         '
@@ -87,7 +85,6 @@ Class x265Control
         Me.Controls.Add(Me.llConfigCodec)
         Me.Controls.Add(Me.llCompCheck)
         Me.Controls.Add(Me.lv)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Name = "x265Control"
         Me.Size = New System.Drawing.Size(367, 213)
         Me.ResumeLayout(False)
@@ -97,33 +94,34 @@ Class x265Control
 
 #End Region
 
-    Private Encoder As x265Encoder
+    Private Encoder As x265Enc
     Private Params As x265Params
 
-    Private cms As ContextMenuStrip
+    Private cms As ContextMenuStripEx
     Private QualityDefinitions As List(Of QualityItem)
 
-    Sub New(enc As x265Encoder)
+    Sub New(enc As x265Enc)
         MyBase.New()
         InitializeComponent()
 
         components = New System.ComponentModel.Container()
 
         QualityDefinitions = New List(Of QualityItem) From {
-            New QualityItem(18, "Super High", "Super high quality and file size (-crf 18)"),
-            New QualityItem(19, "Very High", "Very high quality and file size (-crf 19)"),
-            New QualityItem(20, "Higher", "Higher quality and file size (-crf 20)"),
-            New QualityItem(21, "High", "High quality and file size (-crf 21)"),
-            New QualityItem(22, "Medium", "Medium quality and file size (-crf 22)"),
-            New QualityItem(23, "Low", "Low quality and file size (-crf 23)"),
+            New QualityItem(12, "Super High", "Super high quality and file size (-crf 12)"),
+            New QualityItem(14, "Very High", "Very high quality and file size (-crf 14)"),
+            New QualityItem(16, "Higher", "Higher quality and file size (-crf 16)"),
+            New QualityItem(18, "High", "High quality and file size (-crf 18)"),
+            New QualityItem(20, "Medium", "Medium quality and file size (-crf 20)"),
+            New QualityItem(22, "Low", "Low quality and file size (-crf 22)"),
             New QualityItem(24, "Lower", "Lower quality and file size (-crf 24)"),
-            New QualityItem(25, "Very Low", "Very low quality and file size (-crf 25)"),
-            New QualityItem(26, "Super Low", "Super low quality and file size (-rf 26)")}
+            New QualityItem(26, "Very Low", "Very low quality and file size (-crf 26)"),
+            New QualityItem(28, "Super Low", "Super low quality and file size (-rf 28)")}
 
         Encoder = enc
         Params = Encoder.Params
 
-        cms = New ContextMenuStrip(components)
+        cms = New ContextMenuStripEx(components)
+        cms.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
         lv.View = View.Details
         lv.HeaderStyle = ColumnHeaderStyle.None
@@ -133,16 +131,13 @@ Class x265Control
         lv.ShowContextMenuOnLeftClick = True
 
         UpdateControls()
-
         AddHandler lv.UpdateContextMenu, AddressOf UpdateMenu
     End Sub
 
     Protected Overrides Sub OnLayout(e As LayoutEventArgs)
         MyBase.OnLayout(e)
 
-        If lv.Columns.Count = 0 Then
-            lv.Columns.AddRange({New ColumnHeader, New ColumnHeader})
-        End If
+        If lv.Columns.Count = 0 Then lv.Columns.AddRange({New ColumnHeader, New ColumnHeader})
 
         lv.Columns(0).Width = CInt(Width * (32 / 100))
         lv.Columns(1).Width = CInt(Width * (66 / 100))
@@ -159,28 +154,27 @@ Class x265Control
     End Sub
 
     Sub UpdateMenu()
-        cms.Items.Clear()
-
-        Dim offset = If(Params.Mode.Value = RateMode.SingleCRF, 0, 1)
+        cms.Items.ClearAndDisplose
+        Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
 
         If lv.SelectedItems.Count > 0 Then
             Select Case lv.SelectedIndices(0)
                 Case 0 - offset
                     For Each i In QualityDefinitions
-                        cms.Items.Add(New ActionMenuItem(i.Value & " - " + i.Text, Sub() SetQuality(i.Value), i.Tooltip) With {.Font = If(Params.Quant.Value = i.Value, New Font(.Font, FontStyle.Bold), .Font)})
+                        cms.Items.Add(New ActionMenuItem(i.Value & " - " + i.Text, Sub() SetQuality(i.Value), i.Tooltip) With {.Font = If(Params.Quant.Value = i.Value, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
                     Next
                 Case 1 - offset
                     For x = 0 To Params.Preset.Options.Length - 1
                         Dim temp = x
                         cms.Items.Add(New ActionMenuItem(
                                       Params.Preset.Options(x), Sub() SetPreset(temp),
-                                      "Use values between Fast and Slower otherwise the quality and compression will either be poor or the encoding will be painful slow. Slower is three times slower than Medium, Veryslow is 6 times slower than Medium with little gains compared to Slower.") With {.Font = If(Params.Preset.Value = x, New Font(.Font, FontStyle.Bold), .Font)})
+                                      "Use values between Fast and Slower otherwise the quality and compression will either be poor or the encoding will be painful slow. Slower is three times slower than Medium, Veryslow is 6 times slower than Medium with little gains compared to Slower.") With {.Font = If(Params.Preset.Value = x, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
                     Next
                 Case 2 - offset
                     For x = 0 To Params.Tune.Options.Length - 1
                         Dim temp = x
                         cms.Items.Add(New ActionMenuItem(
-                                      Params.Tune.Options(x), Sub() SetTune(temp)) With {.Font = If(Params.Tune.Value = x, New Font(.Font, FontStyle.Bold), .Font)})
+                                      Params.Tune.Options(x), Sub() SetTune(temp)) With {.Font = If(Params.Tune.Value = x, New Font(Font.FontFamily, 9 * s.UIScaleFactor, FontStyle.Bold), New Font(Font.FontFamily, 9 * s.UIScaleFactor))})
                     Next
             End Select
         End If
@@ -194,10 +188,12 @@ Class x265Control
     End Sub
 
     Sub SetPreset(value As Integer)
-        Dim offset = If(Params.Mode.Value = RateMode.SingleCRF, 0, 1)
+        Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
 
         Params.Preset.Value = value
+
         Params.ApplyPresetValues()
+        Params.ApplyTuneValues()
 
         lv.Items(1 - offset).SubItems(1).Text = value.ToString
         lv.Items(1 - offset).Selected = False
@@ -206,9 +202,11 @@ Class x265Control
     End Sub
 
     Sub SetTune(value As Integer)
-        Dim offset = If(Params.Mode.Value = RateMode.SingleCRF, 0, 1)
+        Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
 
         Params.Tune.Value = value
+
+        Params.ApplyPresetValues()
         Params.ApplyTuneValues()
 
         lv.Items(2 - offset).SubItems(1).Text = value.ToString
@@ -217,7 +215,7 @@ Class x265Control
         UpdateControls()
     End Sub
 
-    Function GetQualityCaption(value As Single) As String
+    Function GetQualityCaption(value As Double) As String
         For Each i In QualityDefinitions
             If i.Value = value Then
                 Return value & " - " + i.Text
@@ -228,7 +226,7 @@ Class x265Control
     End Function
 
     Sub UpdateControls()
-        If Params.Mode.Value = RateMode.SingleCRF AndAlso lv.Items.Count < 4 Then
+        If Params.Mode.Value = x265RateMode.SingleCRF AndAlso lv.Items.Count < 4 Then
             lv.Items.Clear()
             lv.Items.Add(New ListViewItem({"Quality", GetQualityCaption(Params.Quant.Value)}))
             lv.Items.Add(New ListViewItem({"Preset", Params.Preset.OptionText}))
@@ -239,23 +237,23 @@ Class x265Control
             lv.Items.Add(New ListViewItem({"Tune", Params.Tune.OptionText}))
         End If
 
-        Dim offset = If(Params.Mode.Value = RateMode.SingleCRF, 0, 1)
-        llCompCheck.Visible = Params.Mode.Value = RateMode.TwoPass Or Params.Mode.Value = RateMode.ThreePass
+        Dim offset = If(Params.Mode.Value = x265RateMode.SingleCRF, 0, 1)
+        llCompCheck.Visible = Params.Mode.Value = x265RateMode.TwoPass Or Params.Mode.Value = x265RateMode.ThreePass
     End Sub
 
-    Private Sub llAdvanced_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llConfigCodec.LinkClicked
+    Private Sub llConfigCodec_Click(sender As Object, e As EventArgs) Handles llConfigCodec.Click
         Encoder.ShowConfigDialog()
     End Sub
 
-    Private Sub llConfigContainer_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llConfigContainer.LinkClicked
+    Private Sub llConfigContainer_Click(sender As Object, e As EventArgs) Handles llConfigContainer.Click
         Encoder.OpenMuxerConfigDialog()
     End Sub
 
-    Private Sub llCompCheck_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llCompCheck.LinkClicked
+    Private Sub llCompCheck_Click(sender As Object, e As EventArgs) Handles llCompCheck.Click
         Encoder.RunCompCheck()
     End Sub
 
-    Class QualityItem
+    Public Class QualityItem
         Property Value As Single
         Property Text As String
         Property Tooltip As String

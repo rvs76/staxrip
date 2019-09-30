@@ -1,28 +1,40 @@
 ﻿Imports System.ComponentModel
-Imports System.Runtime.InteropServices
+Imports System.Reflection
 
 Namespace UI
-    Enum AutoCheckMode
+    Public Enum AutoCheckMode
         None
         SingleClick
         DoubleClick
     End Enum
 
-    Class ListViewEx
+    Public Class ListViewEx
         Inherits ListView
 
-        <DefaultValue(CStr(Nothing))> Property UpButton As Button
-        <DefaultValue(CStr(Nothing))> Property DownButton As Button
-        <DefaultValue(CStr(Nothing))> Property RemoveButton As Button
-        <DefaultValue(CStr(Nothing))> Property EditButton As Button
+        <DefaultValue(GetType(Button), Nothing)>
+        Property UpButton As Button
 
-        Event Edited(value As Object, pos As Point)
-        Event BeforeShowControl(e As BeforeShowControlEventArgs)
-        Event ControlsUpdated()
+        <DefaultValue(GetType(Button), Nothing)>
+        Property DownButton As Button
 
-        Private ColumnsDic As New Dictionary(Of Control, List(Of Integer))
-        Private CurrentPos As Point
-        Private IsInit As Boolean
+        <DefaultValue(GetType(Button), Nothing)>
+        Property RemoveButton As Button
+
+        <DefaultValue(GetType(Button()), Nothing)>
+        Property SingleSelectionButtons As Button()
+
+        <DefaultValue(GetType(Button()), Nothing)>
+        Property MultiSelectionButtons As Button()
+
+        <DefaultValue(CStr(Nothing))>
+        Property ItemCheckProperty As String
+
+        Event ItemsChanged()
+        Event ItemRemoved(item As ListViewItem)
+
+        Sub OnItemsChanged()
+            RaiseEvent ItemsChanged()
+        End Sub
 
         <DefaultValue(False)>
         Property ShowContextMenuOnLeftClick As Boolean
@@ -34,22 +46,68 @@ Namespace UI
             DoubleBuffered = True
         End Sub
 
-        Sub UpdateControls()
-            If Not RemoveButton Is Nothing Then RemoveButton.Enabled = SelectedItems.Count > 0
-            If Not UpButton Is Nothing Then UpButton.Enabled = CanMoveUp()
-            If Not DownButton Is Nothing Then DownButton.Enabled = CanMoveDown()
-            If Not EditButton Is Nothing Then EditButton.Enabled = SelectedItems.Count = 1
-
-            RaiseEvent ControlsUpdated()
+        Sub SelectFirst()
+            If Items.Count > 0 Then Items(0).Selected = True
+            UpdateControls()
         End Sub
 
-        Protected Overrides Sub OnCreateControl()
-            MyBase.OnCreateControl()
+        Function SelectedItem(Of T)() As T
+            If SelectedItems.Count > 0 Then Return DirectCast(SelectedItems(0).Tag, T)
+        End Function
 
-            If Not DesignMode Then
-                If Not UpButton Is Nothing Then UpButton.AddClickAction(AddressOf MoveSelectionUp)
-                If Not DownButton Is Nothing Then DownButton.AddClickAction(AddressOf MoveSelectionDown)
-                If Not RemoveButton Is Nothing Then RemoveButton.AddClickAction(AddressOf RemoveSelection)
+        Function SelectedItem() As Object
+            If SelectedItems.Count > 0 Then Return SelectedItems(0).Tag
+        End Function
+
+        Function AddItem(item As Object) As ListViewItem
+            Dim listItem = Items.Add("")
+            listItem.Tag = item
+            RefreshItem(listItem.Index)
+            OnItemsChanged()
+            Return listItem
+        End Function
+
+        Sub AddItems(items As IEnumerable)
+            For Each i In items
+                AddItem(i)
+            Next
+        End Sub
+
+        Sub RefreshItem(index As Integer)
+            If ItemCheckProperty <> "" Then Items(index).Checked = CBool(Items(index).Tag.GetType.GetProperty(ItemCheckProperty).GetValue(Items(index).Tag))
+            Items(index).Text = Items(index).Tag.ToString
+        End Sub
+
+        Sub RefreshSelection()
+            For Each i As ListViewItem In SelectedItems
+                RefreshItem(i.Index)
+            Next
+        End Sub
+
+        Sub EnableListBoxMode()
+            View = View.Details
+            FullRowSelect = True
+            Columns.Add("")
+            HeaderStyle = ColumnHeaderStyle.None
+            AddHandler Layout, Sub() Columns(0).Width = Width - 4 - SystemInformation.VerticalScrollBarWidth
+            AddHandler HandleCreated, Sub() Columns(0).Width = Width - 4
+        End Sub
+
+        Sub UpdateControls()
+            If Not UpButton Is Nothing Then UpButton.Enabled = CanMoveUp()
+            If Not DownButton Is Nothing Then DownButton.Enabled = CanMoveDown()
+            If Not RemoveButton Is Nothing Then RemoveButton.Enabled = Not SelectedItem() Is Nothing
+
+            If Not SingleSelectionButtons Is Nothing Then
+                For Each i In SingleSelectionButtons
+                    i.Enabled = SelectedItems.Count = 1
+                Next
+            End If
+
+            If Not MultiSelectionButtons Is Nothing Then
+                For Each i In MultiSelectionButtons
+                    i.Enabled = SelectedItems.Count > 0
+                Next
             End If
         End Sub
 
@@ -61,30 +119,54 @@ Namespace UI
             Return SelectedIndices.Count > 0 AndAlso SelectedIndices(SelectedIndices.Count - 1) < Items.Count - 1
         End Function
 
+        Sub MoveSelectionTop()
+            If Not CanMoveUp() Then Exit Sub
+            Dim selected = SelectedItems.OfType(Of ListViewItem).ToList
+
+            For Each i In selected
+                Items.Remove(i)
+            Next
+
+            For x = 0 To selected.Count - 1
+                Items.Insert(x, selected(x))
+            Next
+        End Sub
+
+        Sub MoveSelectionBottom()
+            If Not CanMoveDown() Then Exit Sub
+            Dim selected = SelectedItems.OfType(Of ListViewItem).ToArray
+
+            For Each i In selected
+                Items.Remove(i)
+            Next
+
+            Items.AddRange(selected)
+        End Sub
+
         Sub MoveSelectionUp()
-            If CanMoveUp() Then
-                Dim indexAbove = SelectedIndices(0) - 1
-                If indexAbove = -1 Then Exit Sub
-                Dim itemAbove = Items(indexAbove)
-                Items.RemoveAt(indexAbove)
-                Dim iLastItem = SelectedIndices(SelectedIndices.Count - 1)
-                Items.Insert(iLastItem + 1, itemAbove)
-                UpdateControls()
-                EnsureVisible(indexAbove)
-            End If
+            If Not CanMoveUp() Then Exit Sub
+            Dim indexAbove = SelectedIndices(0) - 1
+            If indexAbove = -1 Then Exit Sub
+            Dim itemAbove = Items(indexAbove)
+            Items.RemoveAt(indexAbove)
+            Dim indexLastItem = SelectedIndices(SelectedIndices.Count - 1)
+            Items.Insert(indexLastItem + 1, itemAbove)
+            UpdateControls()
+            OnItemsChanged()
+            EnsureVisible(indexAbove)
         End Sub
 
         Sub MoveSelectionDown()
-            If CanMoveDown() Then
-                Dim indexBelow = SelectedIndices(SelectedIndices.Count - 1) + 1
-                If indexBelow >= Items.Count Then Exit Sub
-                Dim itemBelow = Items(indexBelow)
-                Items.RemoveAt(indexBelow)
-                Dim iAbove = SelectedIndices(0) - 1
-                Items.Insert(iAbove + 1, itemBelow)
-                UpdateControls()
-                EnsureVisible(indexBelow)
-            End If
+            If Not CanMoveDown() Then Exit Sub
+            Dim indexBelow = SelectedIndices(SelectedIndices.Count - 1) + 1
+            If indexBelow >= Items.Count Then Exit Sub
+            Dim itemBelow = Items(indexBelow)
+            Items.RemoveAt(indexBelow)
+            Dim iAbove = SelectedIndices(0) - 1
+            Items.Insert(iAbove + 1, itemBelow)
+            UpdateControls()
+            OnItemsChanged()
+            EnsureVisible(indexBelow)
         End Sub
 
         Sub RemoveSelection()
@@ -95,19 +177,21 @@ Namespace UI
                     If Items.Count - 1 > index Then
                         Items(index + 1).Selected = True
                     Else
-                        If index > 0 Then
-                            Items(index - 1).Selected = True
-                        End If
+                        If index > 0 Then Items(index - 1).Selected = True
                     End If
 
+                    Dim removedItem = Items(index)
                     Items.RemoveAt(index)
+                    RaiseEvent ItemRemoved(removedItem)
                 Else
                     Dim iFirst = SelectedIndices(0)
                     Dim indices(SelectedIndices.Count - 1) As Integer
                     SelectedIndices.CopyTo(indices, 0)
 
                     For i = indices.Length - 1 To 0 Step -1
+                        Dim removedItem = Items(indices(i))
                         Items.RemoveAt(indices(i))
+                        RaiseEvent ItemRemoved(removedItem)
                     Next
 
                     If Items.Count > 0 Then
@@ -118,6 +202,7 @@ Namespace UI
                 End If
 
                 UpdateControls()
+                OnItemsChanged()
             End If
         End Sub
 
@@ -137,12 +222,12 @@ Namespace UI
 
         Protected Overrides Sub WndProc(ByRef m As Message)
             Select Case m.Msg
-                Case Native.WM_LBUTTONDBLCLK
+                Case &H203 'WM_LBUTTONDBLCLK
                     If CheckBoxes AndAlso AutoCheckMode <> AutoCheckMode.DoubleClick Then
                         OnDoubleClick(Nothing)
                         Exit Sub
                     End If
-                Case Native.WM_LBUTTONDOWN
+                Case &H201 'WM_LBUTTONDOWN
                     If CheckBoxes AndAlso AutoCheckMode = AutoCheckMode.SingleClick Then
                         Dim pos = ClientMousePos
                         Dim item = GetItemAt(pos.X, pos.Y)
@@ -163,9 +248,7 @@ Namespace UI
         Event UpdateContextMenu()
 
         Protected Overrides Sub OnMouseUp(e As MouseEventArgs)
-            If e.Button = MouseButtons.Right Then
-                RaiseEvent UpdateContextMenu()
-            End If
+            If e.Button = MouseButtons.Right Then RaiseEvent UpdateContextMenu()
 
             If ShowContextMenuOnLeftClick AndAlso e.Button = MouseButtons.Left Then
                 RaiseEvent UpdateContextMenu()
@@ -173,7 +256,6 @@ Namespace UI
             End If
 
             DragActive = False
-
             MyBase.OnMouseUp(e)
         End Sub
 
@@ -199,7 +281,8 @@ Namespace UI
             Next
 
             For Each i As ListViewItem In Items
-                Dim bounds As Rectangle = i.GetBounds(ItemBoundsPortion.Entire)
+                Dim bounds = i.GetBounds(ItemBoundsPortion.Entire)
+
                 If mousePos.Y >= bounds.Top AndAlso mousePos.Y <= bounds.Bottom Then
                     y = bounds.Top
                     h = bounds.Height
@@ -233,7 +316,7 @@ Namespace UI
             Next
 
             For Each i As ListViewItem In Items
-                Dim bounds As Rectangle = i.GetBounds(ItemBoundsPortion.Entire)
+                Dim bounds = i.GetBounds(ItemBoundsPortion.Entire)
 
                 If mousePos.Y >= bounds.Top AndAlso mousePos.Y <= bounds.Bottom Then
                     y = i.Index
@@ -244,6 +327,12 @@ Namespace UI
         End Function
 
         Protected Overrides Sub OnDragEnter(e As DragEventArgs)
+            If e.Data.GetDataPresent(DataFormats.FileDrop) Then
+                e.Effect = DragDropEffects.Copy
+                MyBase.OnDragEnter(e)
+                Exit Sub
+            End If
+
             e.Effect = DragDropEffects.Move
             MyBase.OnDragEnter(e)
         End Sub
@@ -268,6 +357,11 @@ Namespace UI
 
         'OnMouseMove doesn't work while dragging
         Protected Overrides Sub OnDragOver(e As DragEventArgs)
+            If e.Data.GetDataPresent(DataFormats.FileDrop) Then
+                MyBase.OnDragOver(e)
+                Exit Sub
+            End If
+
             If Control.MousePosition <> LastDragOverPos Then
                 Dim mousePos = GetMousePos()
                 Dim bounds = GetBounds(mousePos)
@@ -306,6 +400,14 @@ Namespace UI
         End Sub
 
         Protected Overrides Sub OnDragDrop(e As DragEventArgs)
+            If e.Data.GetDataPresent(DataFormats.FileDrop) Then
+                Dim f = FindForm()
+
+                If f.AllowDrop Then f.GetType.GetMethod(
+                    "OnDragDrop", BindingFlags.Instance Or BindingFlags.NonPublic).Invoke(f, {e})
+                Exit Sub
+            End If
+
             Dim item = DirectCast(e.Data.GetData(GetType(ListViewItem)), ListViewItem)
             Dim mousePos = GetMousePos()
             Dim p = GetPos(mousePos)
@@ -319,18 +421,25 @@ Namespace UI
                 index = p.Y + 1
             End If
 
-            If index > item.Index Then
-                index -= 1
-            End If
-
+            If index > item.Index Then index -= 1
             item.Remove()
             Items.Insert(index, item)
             MyBase.OnDragDrop(e)
         End Sub
 
         Protected Overrides Sub OnHandleCreated(e As EventArgs)
-            Native.SetWindowTheme(Handle, "explorer", Nothing)
             MyBase.OnHandleCreated(e)
+            Native.SetWindowTheme(Handle, "explorer", Nothing)
+            If Not UpButton Is Nothing Then UpButton.AddClickAction(AddressOf MoveSelectionUp)
+            If Not DownButton Is Nothing Then DownButton.AddClickAction(AddressOf MoveSelectionDown)
+            If Not RemoveButton Is Nothing Then RemoveButton.AddClickAction(AddressOf RemoveSelection)
+
+            If ItemCheckProperty <> "" Then
+                AddHandler ItemCheck, Sub(sender As Object, e2 As ItemCheckEventArgs)
+                                          Items(e2.Index).Tag.GetType.GetProperty(ItemCheckProperty).SetValue(Items(e2.Index).Tag, e2.NewValue = CheckState.Checked)
+                                          OnItemsChanged()
+                                      End Sub
+            End If
         End Sub
 
         Protected Overrides Sub OnColumnClick(e As ColumnClickEventArgs)
@@ -354,13 +463,13 @@ Namespace UI
             End If
         End Sub
 
-        Public Class ColumnSorter
+        Class ColumnSorter
             Implements IComparer
 
             Property LastColumn As Integer
             Property ColumnIndex As Integer
 
-            Public Function Compare(o1 As Object, o2 As Object) As Integer Implements IComparer.Compare
+            Function Compare(o1 As Object, o2 As Object) As Integer Implements IComparer.Compare
                 Dim item1 = DirectCast(o2, ListViewItem)
                 Dim item2 = DirectCast(o1, ListViewItem)
 
@@ -387,6 +496,7 @@ Namespace UI
         End Class
 
         Shadows Sub AutoResizeColumns(lastAtListViewWidth As Boolean)
+            If Columns.Count = 0 Then Exit Sub
             BeginUpdate()
 
             For Each i As ColumnHeader In Columns

@@ -1,93 +1,252 @@
-Imports System
 Imports System.Runtime.Serialization
-Imports System.Collections.Specialized
 Imports System.ComponentModel
-Imports System.Drawing.Design
-Imports System.Globalization
-Imports System.IO
 Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.Runtime.InteropServices
 Imports System.Reflection
 Imports System.Text.RegularExpressions
-Imports System.Net
-Imports System.Resources
 Imports System.Xml
-Imports System.Xml.Linq
 Imports System.Text
 Imports System.Security.Permissions
-Imports Microsoft.Win32
-Imports System.Management
 Imports System.Security.Principal
 
-Imports SWF = System.Windows.Forms
-
 Imports StaxRip.UI
-
 Imports VB6 = Microsoft.VisualBasic
+Imports Microsoft.Win32
 
-Public Class CommonDirs
-    Shared ReadOnly Property Startup() As String
+Public Class Folder
+
+#Region "System"
+
+    Shared ReadOnly Property Desktop() As String
         Get
-            Return DirPath.AppendSeparator(Application.StartupPath)
+            Return Environment.GetFolderPath(Environment.SpecialFolder.Desktop).FixDir
         End Get
     End Property
 
-    Shared ReadOnly Property CurrentDirectory() As String
+    Shared ReadOnly Property Fonts() As String
         Get
-            Return DirPath.AppendSeparator(Environment.CurrentDirectory)
+            Return Environment.GetFolderPath(Environment.SpecialFolder.Fonts).FixDir
+        End Get
+    End Property
+
+    Shared ReadOnly Property Startup() As String
+        Get
+            Return Application.StartupPath.FixDir
+        End Get
+    End Property
+
+    Shared ReadOnly Property Current() As String
+        Get
+            Return Environment.CurrentDirectory.FixDir
         End Get
     End Property
 
     Shared ReadOnly Property Temp() As String
         Get
-            Return DirPath.AppendSeparator(Path.GetTempPath)
+            Return Path.GetTempPath.FixDir
         End Get
     End Property
 
     Shared ReadOnly Property System() As String
         Get
-            Return DirPath.AppendSeparator(Environment.SystemDirectory)
+            Return Environment.SystemDirectory.FixDir
         End Get
     End Property
 
     Shared ReadOnly Property Programs() As String
         Get
-            Return DirPath.AppendSeparator(GetFolderPath(Environment.SpecialFolder.ProgramFiles))
+            Return GetFolderPath(Environment.SpecialFolder.ProgramFiles).FixDir
         End Get
     End Property
 
-    Shared ReadOnly Property CommonAppData() As String
+    Shared ReadOnly Property Home() As String
         Get
-            Return DirPath.AppendSeparator(GetFolderPath(Environment.SpecialFolder.CommonApplicationData))
+            Return GetFolderPath(Environment.SpecialFolder.UserProfile).FixDir
         End Get
     End Property
 
-    Shared ReadOnly Property UserAppDataRoaming() As String
+    Shared ReadOnly Property AppDataCommon() As String
         Get
-            Return DirPath.AppendSeparator(GetFolderPath(Environment.SpecialFolder.ApplicationData))
+            Return GetFolderPath(Environment.SpecialFolder.CommonApplicationData).FixDir
+        End Get
+    End Property
+
+    Shared ReadOnly Property AppDataLocal() As String
+        Get
+            Return GetFolderPath(Environment.SpecialFolder.LocalApplicationData).FixDir
+        End Get
+    End Property
+
+    Shared ReadOnly Property AppDataRoaming() As String
+        Get
+            Return GetFolderPath(Environment.SpecialFolder.ApplicationData).FixDir
         End Get
     End Property
 
     Shared ReadOnly Property Windows() As String
         Get
-            Return DirPath.AppendSeparator(GetFolderPath(Environment.SpecialFolder.Windows))
+            Return GetFolderPath(Environment.SpecialFolder.Windows).FixDir
         End Get
     End Property
 
-    Shared ReadOnly Property UserAppDataLocal() As String
+#End Region
+
+#Region "StaxRip"
+
+    Shared ReadOnly Property Apps As String
         Get
-            Return DirPath.AppendSeparator(GetFolderPath(Environment.SpecialFolder.LocalApplicationData))
+            Return Folder.Startup + "Apps\"
         End Get
     End Property
+
+    Shared ReadOnly Property Plugins As String
+        Get
+            If p.Script.Engine = ScriptEngine.AviSynth Then
+                Return Registry.LocalMachine.GetString("SOFTWARE\AviSynth", "plugindir+").FixDir
+            Else
+                Return Registry.LocalMachine.GetString("SOFTWARE\Wow6432Node\VapourSynth", "Plugins64").FixDir
+            End If
+        End Get
+    End Property
+
+    Shared ReadOnly Property Script As String
+        Get
+            Dim ret = Settings + "Scripts\"
+            If Not Directory.Exists(ret) Then Directory.CreateDirectory(ret)
+            Return ret
+        End Get
+    End Property
+
+    Private Shared SettingsValue As String
+
+    Shared ReadOnly Property Settings As String
+        Get
+            If SettingsValue Is Nothing Then
+                For Each location In Registry.CurrentUser.GetValueNames("Software\StaxRip\SettingsLocation")
+                    If Not Directory.Exists(location) Then
+                        Registry.CurrentUser.DeleteValue("Software\StaxRip\SettingsLocation", location)
+                    End If
+                Next
+
+                SettingsValue = Registry.CurrentUser.GetString("Software\StaxRip\SettingsLocation", Folder.Startup)
+
+                If Not Directory.Exists(SettingsValue) Then
+                    Dim td As New TaskDialog(Of String)
+
+                    td.MainInstruction = "Settings Directory"
+                    td.Content = "Select the location of the settings directory."
+
+                    td.AddCommandLink(Folder.AppDataRoaming + "StaxRip")
+                    td.AddCommandLink(Folder.Startup + "Settings")
+                    td.AddCommandLink("Browse for custom directory", "custom")
+
+                    Dim dir = td.Show
+
+                    If dir = "custom" Then
+                        Using d As New FolderBrowserDialog
+                            d.SelectedPath = Folder.Startup
+
+                            If d.ShowDialog = DialogResult.OK Then
+                                dir = d.SelectedPath
+                            Else
+                                dir = Folder.AppDataCommon + "StaxRip"
+                            End If
+                        End Using
+                    ElseIf dir = "" Then
+                        dir = Folder.AppDataCommon + "StaxRip"
+                    End If
+
+                    If Not Directory.Exists(dir) Then
+                        Try
+                            Directory.CreateDirectory(dir)
+                        Catch
+                            dir = Folder.AppDataCommon + "StaxRip"
+                            If Not Directory.Exists(dir) Then Directory.CreateDirectory(dir)
+                        End Try
+                    End If
+
+                    SettingsValue = dir.FixDir
+                    Registry.CurrentUser.Write("Software\StaxRip\SettingsLocation", Folder.Startup, SettingsValue)
+                End If
+            End If
+
+            Return SettingsValue
+        End Get
+    End Property
+
+    Shared ReadOnly Property Template As String
+        Get
+            Dim ret = Settings + "Templates\"
+            Dim fresh As Boolean
+
+            If Not Directory.Exists(ret) Then
+                Directory.CreateDirectory(ret)
+                fresh = True
+            End If
+
+            Dim version = 44
+
+            If fresh OrElse Not s.Storage.GetInt("template update") = version Then
+                s.Storage.SetInt("template update", version)
+
+                Dim files = Directory.GetFiles(ret, "*.srip")
+
+                If files.Length > 0 Then
+                    DirectoryHelp.Delete(ret + "Backup")
+                    Directory.CreateDirectory(ret + "Backup")
+
+                    For Each i In files
+                        FileHelp.Move(i, FilePath.GetDir(i) + "Backup\" + FilePath.GetName(i))
+                    Next
+                End If
+
+                Dim manual As New Project
+                manual.Init()
+                manual.Script = VideoScript.GetDefaults()(0)
+                manual.Script.Filters(0) = VideoFilter.GetDefault("Source", "Manual")
+                manual.DemuxAudio = DemuxMode.Dialog
+                manual.DemuxSubtitles = DemuxMode.Dialog
+                SafeSerialization.Serialize(manual, ret + "Manual Workflow.srip")
+
+                Dim auto As New Project
+                auto.Init()
+                auto.Script.Filters(0) = VideoFilter.GetDefault("Source", "Automatic")
+                auto.DemuxAudio = DemuxMode.All
+                auto.DemuxSubtitles = DemuxMode.All
+                SafeSerialization.Serialize(auto, ret + "Automatic Workflow.srip")
+
+                Dim fastLoad As New Project
+                fastLoad.Init()
+                fastLoad.Script.Filters(0) = New VideoFilter("Source", "DSS2/L-Smash", $"srcFile = ""%source_file%""{BR}ext = LCase(RightStr(srcFile, 3)){BR}(ext == ""mp4"") ? LSMASHVideoSource(srcFile, format = ""YUV420P8"") : DSS2(srcFile)")
+                fastLoad.DemuxAudio = DemuxMode.None
+                fastLoad.DemuxSubtitles = DemuxMode.None
+                SafeSerialization.Serialize(fastLoad, ret + "No indexing and demuxing.srip")
+
+                Dim remux As New Project
+                remux.Init()
+                remux.Script.Filters(0) = VideoFilter.GetDefault("Source", "DSS2")
+                remux.DemuxAudio = DemuxMode.None
+                remux.DemuxSubtitles = DemuxMode.None
+                remux.VideoEncoder = New NullEncoder
+                remux.Audio0 = New MuxAudioProfile
+                remux.Audio1 = New MuxAudioProfile
+                SafeSerialization.Serialize(remux, ret + "Re-mux.srip")
+            End If
+
+            Return ret
+        End Get
+    End Property
+
+#End Region
 
     <DllImport("shfolder.dll", CharSet:=CharSet.Unicode)>
     Private Shared Function SHGetFolderPath(hwndOwner As IntPtr, nFolder As Integer, hToken As IntPtr, dwFlags As Integer, lpszPath As StringBuilder) As Integer
     End Function
 
-    Shared Function GetFolderPath(folder As Environment.SpecialFolder) As String
+    Private Shared Function GetFolderPath(folder As Environment.SpecialFolder) As String
         Dim sb As New StringBuilder(260)
         SHGetFolderPath(IntPtr.Zero, CInt(folder), IntPtr.Zero, 0, sb)
-        Dim ret = DirPath.AppendSeparator(sb.ToString) '.NET fails on 'D:'
+        Dim ret = sb.ToString.FixDir '.NET fails on 'D:'
         Call New FileIOPermission(FileIOPermissionAccess.PathDiscovery, ret).Demand()
         Return ret
     End Function
@@ -100,33 +259,21 @@ Public Class PathBase
         End Get
     End Property
 
-    Shared Function AppendSeparator(path As String) As String
-        If path = "" Then Return ""
-        If path.EndsWith(Separator) Then Return path
-        Return path + Separator
-    End Function
-
     Shared Function IsSameBase(a As String, b As String) As Boolean
-        Return Filepath.GetBase(a).EqualIgnoreCase(Filepath.GetBase(b))
+        Return FilePath.GetBase(a).EqualIgnoreCase(FilePath.GetBase(b))
     End Function
 
     Shared Function IsSameDir(a As String, b As String) As Boolean
-        Return Filepath.GetDir(a).EqualIgnoreCase(Filepath.GetDir(b))
+        Return FilePath.GetDir(a).EqualIgnoreCase(FilePath.GetDir(b))
     End Function
 
     Shared Function IsValidFileSystemName(name As String) As Boolean
         If name = "" Then Return False
-
-        Dim chars = """*/:<>?\|".ToCharArray
+        Dim chars = """*/:<>?\|^".ToCharArray
 
         For Each i In name.ToCharArray
-            If chars.Contains(i) Then
-                Return False
-            End If
-
-            If Convert.ToInt32(i) < 32 Then
-                Return False
-            End If
+            If chars.Contains(i) Then Return False
+            If Convert.ToInt32(i) < 32 Then Return False
         Next
 
         Return True
@@ -135,7 +282,7 @@ Public Class PathBase
     Shared Function RemoveIllegalCharsFromName(name As String) As String
         If name = "" Then Return ""
 
-        Dim chars = """*/:<>?\|".ToCharArray
+        Dim chars = """*/:<>?\|^".ToCharArray
 
         For Each i In name.ToCharArray
             If chars.Contains(i) Then
@@ -156,14 +303,10 @@ End Class
 Public Class DirPath
     Inherits PathBase
 
-    Shared Function GetRoot(path As String) As String
-        Return Regex.Match(path, "^.:\\").Value
-    End Function
-
     Shared Function TrimTrailingSeparator(path As String) As String
         If path = "" Then Return ""
 
-        If path.EndsWith(Separator) AndAlso Not path.EndsWith(":\") Then
+        If path.EndsWith(Separator) AndAlso Not path.Length <= 3 Then
             Return path.TrimEnd(Separator)
         End If
 
@@ -184,40 +327,32 @@ Public Class DirPath
 
     Shared Function GetParent(path As String) As String
         If path = "" Then Return ""
-
-        Dim tmp = TrimTrailingSeparator(path)
-
-        If tmp.Contains(Separator) Then
-            path = tmp.LeftLast(Separator) + Separator
-        End If
-
+        Dim temp = TrimTrailingSeparator(path)
+        If temp.Contains(Separator) Then path = temp.LeftLast(Separator) + Separator
         Return path
     End Function
 
     Shared Function GetName(path As String) As String
-        If String.IsNullOrEmpty(path) Then
-            Return ""
-        End If
-
+        If path = "" Then Return ""
         path = TrimTrailingSeparator(path)
-
         Return path.RightLast(Separator)
     End Function
 
     Shared Function IsInSysDir(path As String) As Boolean
-        If Not OK(path) Then
-            Return False
-        End If
+        If path = "" Then Return False
+        If Not path.EndsWith("\") Then path += "\"
+        Return path.ToUpper.Contains(Folder.Programs.ToUpper)
+    End Function
 
-        If Not path.EndsWith("\") Then
-            path += "\"
-        End If
-
-        Return path.ToUpper.Contains(CommonDirs.Programs.ToUpper)
+    Shared Function IsFixedDrive(path As String) As Boolean
+        Try
+            If path <> "" Then Return New DriveInfo(path).DriveType = DriveType.Fixed
+        Catch ex As Exception
+        End Try
     End Function
 End Class
 
-Public Class Filepath
+Public Class FilePath
     Inherits PathBase
 
     Private Value As String
@@ -227,14 +362,8 @@ Public Class Filepath
     End Sub
 
     Shared Function GetDir(path As String) As String
-        If String.IsNullOrEmpty(path) Then
-            Return ""
-        End If
-
-        If path.Contains(Separator) Then
-            path = path.LeftLast(Separator) + Separator
-        End If
-
+        If path = "" Then Return ""
+        If path.Contains("\") Then path = path.LeftLast("\") + "\"
         Return path
     End Function
 
@@ -264,45 +393,27 @@ Public Class Filepath
 
     Shared Function GetExt(filepath As String, dot As Boolean) As String
         If filepath = "" Then Return ""
-
         Dim chars = filepath.ToCharArray
 
         For x = filepath.Length - 1 To 0 Step -1
             If chars(x) = Separator Then Return ""
-
-            If chars(x) = "."c Then
-                Return filepath.Substring(x + If(dot, 0, 1)).ToLower
-            End If
+            If chars(x) = "."c Then Return filepath.Substring(x + If(dot, 0, 1)).ToLower
         Next
 
         Return ""
     End Function
 
-    Shared Function GetChangeExt(path As String, value As String) As String
-        If path = "" Then Return Nothing
-
-        If Not value.StartsWith(".") Then value = "." + value
-
-        Return GetDirAndBase(path) + value.ToLower
-    End Function
-
     Shared Function GetDirNoSep(path As String) As String
         path = GetDir(path)
-
         If path.EndsWith(Separator) Then path = TrimSep(path)
-
         Return path
     End Function
 
     Shared Function GetBase(path As String) As String
         If path = "" Then Return ""
-
         Dim ret = path
-
         If ret.Contains(Separator) Then ret = ret.RightLast(Separator)
-
         If ret.Contains(".") Then ret = ret.LeftLast(".")
-
         Return ret
     End Function
 
@@ -317,7 +428,7 @@ Public Class Filepath
     End Function
 
     Shared Function GetDirNameOnly(path As String) As String
-        Return Filepath.GetDirNoSep(path).RightLast("\")
+        Return FilePath.GetDirNoSep(path).RightLast("\")
     End Function
 End Class
 
@@ -349,49 +460,46 @@ Public Class SafeSerialization
 
         Dim bf As New BinaryFormatter
 
-        Using fs As New FileStream(path, FileMode.Create)
-            bf.Serialize(fs, list)
-        End Using
+        Try
+            Using fs As New FileStream(path, FileMode.Create)
+                bf.Serialize(fs, list)
+            End Using
+        Catch
+        End Try
     End Sub
 
-    Shared Function Deserialize(instance As Object,
-                                path As String,
-                                binder As SerializationBinder) As Object
-
+    Shared Function Deserialize(Of T)(instance As T, path As String) As T
         Dim safeInstance = DirectCast(instance, ISafeSerialization)
 
         If File.Exists(path) Then
-            Dim list As List(Of Object) = Nothing
+            Dim list As List(Of Object)
             Dim bf As New BinaryFormatter
 
             Using fs As New FileStream(path, FileMode.Open)
-                Try
-                    list = DirectCast(bf.Deserialize(fs), List(Of Object))
-                Catch
-                End Try
+                list = DirectCast(bf.Deserialize(fs), List(Of Object))
             End Using
 
-            If Not list Is Nothing Then
-                For Each i As FieldContainer In list
-                    For Each iFieldInfo In instance.GetType.GetFields(BindingFlags.Public Or
+            For Each i As FieldContainer In list
+                For Each iFieldInfo In instance.GetType.GetFields(BindingFlags.Public Or
                                                                       BindingFlags.NonPublic Or
                                                                       BindingFlags.Instance)
-                        If Not iFieldInfo.IsNotSerialized Then
-                            If i.Name = iFieldInfo.Name Then
-                                Try
-                                    If i.Value.GetType Is GetType(Byte()) Then
-                                        iFieldInfo.SetValue(instance, GetObjectInstance(DirectCast(i.Value, Byte()), binder))
-                                    Else
+                    If Not iFieldInfo.IsNotSerialized Then
+                        If i.Name = iFieldInfo.Name Then
+                            Try
+                                If i.Value.GetType Is GetType(Byte()) Then
+                                    iFieldInfo.SetValue(instance, GetObjectInstance(DirectCast(i.Value, Byte())))
+                                Else
+                                    If iFieldInfo.Name <> "_WasUpdated" Then
                                         iFieldInfo.SetValue(instance, i.Value)
                                     End If
-                                Catch ex As Exception
-                                    safeInstance.WasUpdated = True
-                                End Try
-                            End If
+                                End If
+                            Catch ex As Exception
+                                safeInstance.WasUpdated = True
+                            End Try
                         End If
-                    Next
+                    End If
                 Next
-            End If
+            Next
         End If
 
         safeInstance.Init()
@@ -405,7 +513,7 @@ Public Class SafeSerialization
     End Function
 
     Private Shared Function IsSimpleType(t As Type) As Boolean
-        Return t.IsPrimitive OrElse _
+        Return t.IsPrimitive OrElse
             t Is GetType(String) OrElse
             t Is GetType(SettingBag(Of String)) OrElse
             t Is GetType(SettingBag(Of Boolean)) OrElse
@@ -415,14 +523,11 @@ Public Class SafeSerialization
     End Function
 
     <DebuggerNonUserCode()>
-    Private Shared Function GetObjectInstance(ba As Byte(), binder As SerializationBinder) As Object
+    Private Shared Function GetObjectInstance(ba As Byte()) As Object
         Using ms As New MemoryStream(ba)
             Dim bf As New BinaryFormatter
-
-            If Not binder Is Nothing Then
-                bf.Binder = binder
-            End If
-
+            'Static binder As New LegacySerializationBinder
+            'bf.Binder = binder
             Return bf.Deserialize(ms)
         End Using
     End Function
@@ -455,6 +560,19 @@ Public Class SafeSerialization
             Return True
         End If
     End Function
+
+    'legacy
+    Private Class LegacySerializationBinder
+        Inherits SerializationBinder
+
+        Overrides Function BindToType(assemblyName As String, typeName As String) As Type
+            'If typeName.Contains("CLIEncoder") Then
+            '    typeName = typeName.Replace("CLIEncoder", "CmdlEncoder")
+            'End If
+
+            Return Type.GetType(typeName)
+        End Function
+    End Class
 End Class
 
 Public Interface ISafeSerialization
@@ -462,41 +580,6 @@ Public Interface ISafeSerialization
     ReadOnly Property Versions() As Dictionary(Of String, Integer)
     Sub Init()
 End Interface
-
-Public Class Sorter(Of T)
-    Private List As New List(Of SortObject(Of T))
-
-    Sub Add(sortValue As IComparable, o As T)
-        List.Add(New SortObject(Of T)(sortValue, o))
-    End Sub
-
-    Function GetSortedList() As List(Of T)
-        Dim r As New List(Of T)
-        List.Sort()
-
-        For Each i In List
-            r.Add(i.Value)
-        Next
-
-        Return r
-    End Function
-
-    Private Class SortObject(Of T2)
-        Implements IComparable
-
-        Public SortValue As IComparable
-        Public Value As T2
-
-        Sub New(sortValue As IComparable, o As T2)
-            Me.SortValue = sortValue
-            Me.Value = o
-        End Sub
-
-        Function CompareTo(obj As Object) As Integer Implements IComparable.CompareTo
-            Return SortValue.CompareTo(CType(obj, SortObject(Of T2)).SortValue)
-        End Function
-    End Class
-End Class
 
 Public Class HelpDocument
     Private Path As String
@@ -514,58 +597,69 @@ Public Class HelpDocument
     End Sub
 
     Sub WriteStart(title As String, showTitle As Boolean)
-        Dim script As XElement =
-<script type="text/javascript">
-</script>
+        Dim script = "<script type=""text/javascript""></script>"
 
-        Dim style As XElement =
-<style type="text/css">
+        Dim style = "<style type=""text/css"">
+@import url(http://fonts.googleapis.com/css?family=Lato:700,900);
+
 body {
-    background-image:url('StaxRipBackground.gif');
-    background-repeat:repeat-x;
-    font-family:Arial,Helvetica,sans-serif;
+    font-family: Tahoma, Geneva, sans-serif;
 }
 
 h1 {
-    font-size:150%;
-    color:#333333;
-    margin-bottom:-4pt;
+    font-size: 150%;
+    margin-bottom: -4pt;
 }
 
 h2 {
-    font-size:120%;
-    color:#666666;
-    margin-bottom:-8pt;
+    font-size: 120%;
+    color: #666666;
+    margin-bottom: -8pt;
 }
 
 h3 {
-    font-size:100%;
-    color:#333333;
-    margin-bottom:-8pt;
+    font-size: 100%;
+    color: #333333;
+    margin-bottom: -8pt;
 }
 
 a {
     color: #666666;
 }
-</style>
+
+td {
+    width: 50%;
+    vertical-align: top;
+}
+
+table {
+    table-layout: fixed;
+}
+</style>"
 
         Me.Title = title
         Writer = New XmlTextWriter(Path, Encoding.UTF8)
         Writer.Formatting = Formatting.Indented
+        Writer.WriteRaw("<!doctype html>")
         Writer.WriteStartElement("html")
         Writer.WriteStartElement("head")
         Writer.WriteElementString("title", title)
-        Writer.WriteRaw(CrLf + style.ToString + CrLf)
-        Writer.WriteRaw(CrLf + script.ToString + CrLf)
+        Writer.WriteRaw(BR + style.ToString + BR)
+        Writer.WriteRaw(BR + script.ToString + BR)
         Writer.WriteEndElement() 'head
         Writer.WriteStartElement("body")
-        WriteElement("p", "<img src=""" + HelpForm.MainImagePath + """ style=""margin-bottom:-8pt;margin-left:-4pt"">")
 
         If showTitle Then Writer.WriteElementString("h1", title)
-        Dim dummy = HelpForm.BackgroundImagePath
     End Sub
 
-    Sub WriteP(rawText As String)
+    Sub WriteP(rawText As String, Optional convert As Boolean = False)
+        If convert Then rawText = ConvertChars(rawText)
+        WriteElement("p", rawText)
+    End Sub
+
+    Sub WriteP(title As String, rawText As String, Optional convert As Boolean = False)
+        If convert Then rawText = ConvertChars(rawText)
+        WriteElement("h2", title)
         WriteElement("p", rawText)
     End Sub
 
@@ -575,11 +669,6 @@ a {
 
     Sub WriteH3(rawText As String)
         WriteElement("h3", rawText)
-    End Sub
-
-    Sub WriteP(title As String, rawText As String)
-        WriteElement("h2", title)
-        WriteElement("p", rawText)
     End Sub
 
     Sub WriteElement(elementName As String, rawText As String)
@@ -598,11 +687,9 @@ a {
 
     Shared Function ConvertChars(value As String) As String
         value = value.FixBreak
-
         If value.Contains("<") Then value = value.Replace("<", "&lt;")
-        If value.Contains(">") Then value = value.Replace("<", "&gt;")
-        If value.Contains(CrLf) Then value = value.Replace(CrLf, "<br>")
-
+        If value.Contains(">") Then value = value.Replace(">", "&gt;")
+        If value.Contains(BR) Then value = value.Replace(BR, "<br>")
         Return value
     End Function
 
@@ -610,18 +697,12 @@ a {
         If stripOnly Then
             If value.Contains("[") Then
                 Dim re As New Regex("\[(.+?) (.+?)\]")
-
-                If re.IsMatch(value) Then
-                    value = re.Replace(value, "$2")
-                End If
+                If re.IsMatch(value) Then value = re.Replace(value, "$2")
             End If
 
             If value.Contains("'''") Then
                 Dim re As New Regex("'''(.+?)'''")
-
-                If re.IsMatch(value) Then
-                    value = re.Replace(value, "$1")
-                End If
+                If re.IsMatch(value) Then value = re.Replace(value, "$1")
             End If
         Else
             If value.Contains("[") Then
@@ -653,7 +734,7 @@ a {
     End Function
 
     Sub WriteTips(ParamArray tips As StringPairList())
-        If Not OK(tips) Then Exit Sub
+        If tips.NothingOrEmpty Then Exit Sub
 
         Dim l As New StringPairList
 
@@ -681,6 +762,10 @@ a {
         Writer.WriteEndElement()
     End Sub
 
+    Sub WriteTable(list As IEnumerable(Of StringPair))
+        WriteTable(Nothing, Nothing, New StringPairList(list), True)
+    End Sub
+
     Sub WriteTable(list As StringPairList)
         WriteTable(Nothing, Nothing, list, True)
     End Sub
@@ -694,13 +779,11 @@ a {
     End Sub
 
     Sub WriteTable(title As String, text As String, list As StringPairList)
-        WriteTable(title, text, list, True)
+        WriteTable(title, text, list, False)
     End Sub
 
     Private Sub WriteTable(title As String, text As String, list As StringPairList, sort As Boolean)
-        If sort Then
-            list.Sort()
-        End If
+        If sort Then list.Sort()
 
         If Not title Is Nothing Then
             Writer.WriteElementString("h2", title)
@@ -709,7 +792,7 @@ a {
         If text Is Nothing Then
             Writer.WriteElementString("p", "")
         Else
-            WriteP(text)
+            WriteP(text, True)
         End If
 
         Writer.WriteStartElement("table")
@@ -719,19 +802,25 @@ a {
         Writer.WriteAttributeString("bordercolordark", "white")
         Writer.WriteAttributeString("bordercolorlight", "black")
 
+        Writer.WriteStartElement("col")
+        Writer.WriteAttributeString("style", "width: 40%")
+        Writer.WriteEndElement()
+
+        Writer.WriteStartElement("col")
+        Writer.WriteAttributeString("style", "width: 60%")
+        Writer.WriteEndElement()
+
         For Each i As StringPair In list
             Writer.WriteStartElement("tr")
-
             Writer.WriteStartElement("td")
-            WriteElement("p", i.Name)
+            WriteElement("p", HelpDocument.ConvertChars(i.Name))
             Writer.WriteEndElement() 'td
-
             Writer.WriteStartElement("td")
 
             If i.Value Is Nothing Then
                 WriteElement("p", "&nbsp;")
             Else
-                WriteElement("p", i.Value)
+                WriteElement("p", HelpDocument.ConvertChars(i.Value))
             End If
 
             Writer.WriteEndElement() 'td
@@ -746,8 +835,8 @@ a {
         If Not IsClosed Then
             IsClosed = True
 
-            Writer.WriteRaw("<p>&nbsp;</p>" + CrLf)
-            Writer.WriteRaw("<h5 align=""center"">Copyright &copy; " & DateTime.Now.Year & " by stax76. All rights reserved.</h5><br>")
+            Writer.WriteRaw("<p>&nbsp;</p>" + BR)
+            Writer.WriteRaw("<h5 align=""center"">Copyright &copy; 2002-" & DateTime.Now.Year & "</h5><br>")
             Writer.WriteEndElement() 'body
             Writer.WriteEndElement() 'html
             Writer.Close()
@@ -769,16 +858,7 @@ Public Class SettingBag(Of T)
         Me.Value = value
     End Sub
 
-    Private ValueValue As T
-
-    Overridable Property Value() As T
-        Get
-            Return ValueValue
-        End Get
-        Set(Value As T)
-            ValueValue = Value
-        End Set
-    End Property
+    Overridable Property Value As T
 End Class
 
 Public Class FieldSettingBag(Of T)
@@ -916,11 +996,12 @@ Public Class ErrorAbortException
 
     Property Title As String
 
-    Sub New(title As String, message As String)
+    Sub New(title As String, message As String, Optional proj As Project = Nothing)
         MyBase.New(message)
+        If proj Is Nothing Then proj = p
         Me.Title = title
-        Log.WriteHeader(title)
-        Log.WriteLine(message)
+        proj.Log.WriteHeader(title)
+        proj.Log.WriteLine(message)
     End Sub
 End Class
 
@@ -933,16 +1014,7 @@ Public Class CLIArg
         Me.Value = value
     End Sub
 
-    Private ValueValue As String
-
-    Property Value() As String
-        Get
-            Return ValueValue
-        End Get
-        Set(Value As String)
-            ValueValue = Value
-        End Set
-    End Property
+    Property Value As String
 
     Shared Function GetArgs(a As String()) As List(Of CLIArg)
         Dim ret As New List(Of CLIArg)
@@ -961,8 +1033,8 @@ Public Class CLIArg
             i = i.ToUpper
             Dim val As String = Value.ToUpper
 
-            If "-" + i = val OrElse "/" + i = val OrElse _
-                val.ToUpper.StartsWith("-" + i + ":") OrElse _
+            If "-" + i = val OrElse "/" + i = val OrElse
+                val.ToUpper.StartsWith("-" + i + ":") OrElse
                 val.ToUpper.StartsWith("/" + i + ":") Then
 
                 Return True
@@ -1006,53 +1078,15 @@ Public Class CommandParameters
         Parameters = New List(Of Object)(params)
     End Sub
 
-    Private MethodNameValue As String
-
-    Property MethodName() As String
-        Get
-            Return MethodNameValue
-        End Get
-        Set(Value As String)
-            MethodNameValue = Value
-        End Set
-    End Property
-
-    Private ParametersValue As List(Of Object)
-
-    Property Parameters() As List(Of Object)
-        Get
-            Return ParametersValue
-        End Get
-        Set(Value As List(Of Object))
-            ParametersValue = Value
-        End Set
-    End Property
+    Property MethodName As String
+    Property Parameters As List(Of Object)
 End Class
 
 Public Class Command
     Implements IComparable(Of Command)
 
-    Private FunctionAttributeValue As CommandAttribute
-
-    Property Attribute() As CommandAttribute
-        Get
-            Return FunctionAttributeValue
-        End Get
-        Set(Value As CommandAttribute)
-            FunctionAttributeValue = Value
-        End Set
-    End Property
-
-    Private MethodInfoValue As MethodInfo
-
-    Property MethodInfo() As MethodInfo
-        Get
-            Return MethodInfoValue
-        End Get
-        Set(Value As MethodInfo)
-            MethodInfoValue = Value
-        End Set
-    End Property
+    Property Attribute As CommandAttribute
+    Property MethodInfo As MethodInfo
 
     Function FixParameters(params As List(Of Object)) As List(Of Object)
         Dim copiedParams As New List(Of Object)(params)
@@ -1060,7 +1094,9 @@ Public Class Command
 
         For i = 0 To checkedParams.Count - 1
             If copiedParams.Count > 0 Then
-                If checkedParams(i).GetType Is copiedParams(0).GetType Then
+                If Not copiedParams(0) Is Nothing AndAlso
+                    checkedParams(i).GetType Is copiedParams(0).GetType Then
+
                     checkedParams(i) = copiedParams(0)
                     copiedParams.RemoveAt(0)
                 End If
@@ -1097,54 +1133,51 @@ Public Class Command
     End Function
 
     Overrides Function ToString() As String
-        If Not Attribute Is Nothing Then
-            Return Attribute.Name
-        End If
-
-        Return ""
+        Return MethodInfo.Name
     End Function
 
-    Private ObjectValue As Object
-
-    Property [Object]() As Object
-        Get
-            Return ObjectValue
-        End Get
-        Set(Value As Object)
-            ObjectValue = Value
-        End Set
-    End Property
+    Property [Object] As Object
 
     Function CompareTo(other As Command) As Integer Implements System.IComparable(Of Command).CompareTo
-        Return Attribute.Name.CompareTo(other.Attribute.Name)
+        Return MethodInfo.Name.CompareTo(other.MethodInfo.Name)
     End Function
 
-    Shared Sub PopulateCommandMenu(items As ToolStripItemCollection, commands As List(Of Command), clickSub As Action(Of Command))
+    Shared Sub PopulateCommandMenu(items As ToolStripItemCollection,
+                                   commands As List(Of Command),
+                                   clickSub As Action(Of Command))
         commands.Sort()
 
         For Each i In commands
-            ActionMenuItem.Add(items, i.Attribute.Name, clickSub, i, i.Attribute.Description)
+            Dim path = i.MethodInfo.Name
+
+            If path.StartsWith("Run") Then path = "Run | " + path
+            If path.StartsWith("Save") Then path = "Save | " + path
+            If path.StartsWith("Show") Then path = "Show | " + path
+            If path.StartsWith("Set") Then path = "Set | " + path
+            If path.StartsWith("Start") Then path = "Start | " + path
+            If path.StartsWith("Execute") Then path = "Execute | " + path
+            If path.StartsWith("Add") Then path = "Add | " + path
+
+            ActionMenuItem.Add(items, path, clickSub, i, i.Attribute.Description)
         Next
     End Sub
 
     Function GetParameterHelp(parameters As List(Of Object)) As String
         If parameters.Count > 0 Then
             Dim paramList As New List(Of String)
-            Dim params As ParameterInfo() = MethodInfo.GetParameters
+            Dim params = MethodInfo.GetParameters
 
-            For iParams As Integer = 0 To params.Length - 1
+            For iParams = 0 To params.Length - 1
                 Dim paramInfo As ParameterInfo = params(iParams)
-                Dim attributs As Object() = paramInfo.GetCustomAttributes(GetType(DispNameAttribute), False)
+                Dim attributs = paramInfo.GetCustomAttributes(GetType(DispNameAttribute), False)
 
                 If attributs.Length > 0 Then
-                    paramList.Add(DirectCast(attributs(0), DispNameAttribute).DisplayName + " = " + FixParameters(parameters)(iParams).ToString)
+                    paramList.Add("Parameter " + DirectCast(attributs(0), DispNameAttribute).DisplayName + ": " + FixParameters(parameters)(iParams).ToString)
                 End If
             Next
 
-            Return String.Join(", ", paramList.ToArray)
+            Return paramList.Join(BR)
         End If
-
-        Return Nothing
     End Function
 End Class
 
@@ -1152,80 +1185,33 @@ End Class
 Public Class CommandAttribute
     Inherits Attribute
 
-    Sub New(name As String, description As String)
-        Me.Name = name
+    Sub New(description As String)
         Me.Description = description
     End Sub
 
-    Private NameValue As String
-
-    Property Name() As String
-        Get
-            Return NameValue
-        End Get
-        Set(Value As String)
-            NameValue = Value
-        End Set
-    End Property
-
-    Private DescriptionValue As String
-
-    Property Description() As String
-        Get
-            Return DescriptionValue
-        End Get
-        Set(Value As String)
-            DescriptionValue = Value
-        End Set
-    End Property
-
-    Private SwitchValue As String
-
-    Property Switch() As String
-        Get
-            Return SwitchValue
-        End Get
-        Set(Value As String)
-            SwitchValue = Value
-        End Set
-    End Property
+    Property Description As String
 End Class
 
 Public Class CommandManager
-    Private CommandsValue As New Dictionary(Of String, Command)
-
-    Property Commands() As Dictionary(Of String, Command)
-        Get
-            Return CommandsValue
-        End Get
-        Set(Value As Dictionary(Of String, Command))
-            CommandsValue = Value
-        End Set
-    End Property
+    Property Commands As New Dictionary(Of String, Command)
 
     Function HasCommand(name As String) As Boolean
         Return Not name Is Nothing AndAlso Commands.ContainsKey(name)
     End Function
 
     Function GetCommand(name As String) As Command
-        If HasCommand(name) Then
-            Return Commands(name)
-        End If
-
-        Return Nothing
+        If HasCommand(name) Then Return Commands(name)
     End Function
 
     Sub AddCommandsFromObject(obj As Object)
-        For Each i As MethodInfo In obj.GetType.GetMethods(BindingFlags.Instance Or BindingFlags.NonPublic Or BindingFlags.Public)
-            Dim attributes As CommandAttribute() = DirectCast(i.GetCustomAttributes(GetType(CommandAttribute), False), CommandAttribute())
+        For Each i In obj.GetType.GetMethods(BindingFlags.Instance Or BindingFlags.NonPublic Or BindingFlags.Public)
+            Dim attributes = DirectCast(i.GetCustomAttributes(GetType(CommandAttribute), False), CommandAttribute())
 
             If attributes.Length > 0 Then
                 Dim c As New Command
-
                 c.MethodInfo = i
                 c.Attribute = attributes(0)
                 c.Object = obj
-
                 AddCommand(c)
             End If
         Next
@@ -1240,64 +1226,57 @@ Public Class CommandManager
     End Sub
 
     Sub Process(cp As CommandParameters)
-        If Not cp Is Nothing Then
-            Process(cp.MethodName, cp.Parameters)
-        End If
+        If Not cp Is Nothing Then Process(cp.MethodName, cp.Parameters)
     End Sub
 
     Sub Process(name As String, params As List(Of Object))
-        If HasCommand(name) Then
-            Process(GetCommand(name), params)
-        End If
+        If HasCommand(name) Then Process(GetCommand(name), params)
+    End Sub
+
+    Sub Process(name As String, ParamArray params As Object())
+        If HasCommand(name) Then Process(GetCommand(name), params.ToList)
     End Sub
 
     Sub Process(command As Command, params As List(Of Object))
         Try
             command.MethodInfo.Invoke(command.Object, command.FixParameters(params).ToArray)
         Catch ex As TargetParameterCountException
-            MsgError("Parameter mismatch, for the command :" + command.Attribute.Name)
+            MsgError("Parameter mismatch, for the command :" + command.MethodInfo.Name)
+        Catch ex As Exception
+            If Not TypeOf ex.InnerException Is AbortException Then g.ShowException(ex)
         End Try
     End Sub
 
-    Function ProcessCmdlArgument(value As String) As Boolean
-        If value.Contains("/") Then
-            value = value.Replace("/", "|")
-        End If
-
+    Function ProcessCommandLineArgument(value As String) As Boolean
         For Each i As Command In Commands.Values
-            Dim s As String = i.Attribute.Name.ToUpper.Replace(" ", "")
+            Dim switch = i.MethodInfo.Name.Replace(" ", "")
+            switch = switch.ToUpper
+            Dim test = value.ToUpper
 
-            Dim switches As New List(Of String)
-            switches.Add(s)
-
-            If OK(i.Attribute.Switch) Then
-                switches.AddRange(i.Attribute.Switch.ToUpper.SplitNoEmpty("|"))
-            End If
-
-            For Each iSwitch As String In switches
-                If value.ToUpper = "-" + iSwitch OrElse value.ToUpper = "/" + iSwitch Then
-                    Process(i.MethodInfo.Name, New List(Of Object))
-                    Return True
-                ElseIf value.ToUpper.StartsWith("-" + iSwitch + ":") OrElse _
-                    value.ToUpper.StartsWith("/" + iSwitch + ":") Then
-
+            If test = "-" + switch Then
+                Process(i.MethodInfo.Name, New List(Of Object))
+                Return True
+            Else
+                If test.StartsWith("-" + switch + ":") Then
                     Dim mc = Regex.Matches(value.Right(":"), """(?<a>.+?)""|(?<a>[^,]+)")
                     Dim args As New List(Of Object)
 
-                    For Each iMatch As Match In mc
-                        args.Add(iMatch.Groups("a").Value)
+                    For Each match As Match In mc
+                        args.Add(match.Groups("a").Value)
                     Next
 
                     Dim params = i.MethodInfo.GetParameters
 
                     For x = 0 To params.Length - 1
-                        args(x) = TypeDescriptor.GetConverter(params(x).ParameterType).ConvertFrom(args(x))
+                        If args.Count > x Then
+                            args(x) = TypeDescriptor.GetConverter(params(x).ParameterType).ConvertFrom(args(x))
+                        End If
                     Next
 
                     Process(i.MethodInfo.Name, args)
                     Return True
                 End If
-            Next
+            End If
         Next
     End Function
 
@@ -1306,7 +1285,7 @@ Public Class CommandManager
 
         For Each i As Command In Commands.Values
             If Not i.Attribute.Description Is Nothing Then
-                l.Add(New StringPair(i.Attribute.Name, i.Attribute.Description))
+                l.Add(New StringPair(i.MethodInfo.Name, i.Attribute.Description))
             End If
         Next
 
@@ -1315,55 +1294,12 @@ Public Class CommandManager
 End Class
 
 Public Module MainModule
-    Public Const CrLf As String = VB6.vbCrLf
-    Public Const CrLf2 As String = VB6.vbCrLf + VB6.vbCrLf
-
-    Function OK(value As String) As Boolean
-        Return Not String.IsNullOrEmpty(value)
-    End Function
-
-    Function OK(ParamArray values As String()) As Boolean
-        If values Is Nothing OrElse values.Length = 0 Then Return False
-
-        For Each i In values
-            If i = "" Then Return False
-        Next
-
-        Return True
-    End Function
-
-    Function OK(ParamArray values As Object()) As Boolean
-        If values Is Nothing OrElse values.Length = 0 Then
-            Return False
-        End If
-
-        For Each i In values
-            If i Is Nothing Then
-                Return False
-            End If
-        Next
-
-        Return True
-    End Function
-
-    Function IsOneOf(value As Integer, ParamArray values As Integer()) As Boolean
-        For Each i In values
-            If value = i Then
-                Return True
-            End If
-        Next
-    End Function
-
-    Function IsOneOf(value As String, ParamArray values As String()) As Boolean
-        For Each i In values
-            If value = i Then
-                Return True
-            End If
-        Next
-    End Function
+    Public Const BR As String = VB6.vbCrLf
+    Public Const BR2 As String = VB6.vbCrLf + VB6.vbCrLf
+    Public Log As LogBuilder
 
     Sub MsgInfo(text As String, Optional content As String = Nothing)
-        Msg(text, content, MessageBoxIcon.Information, MessageBoxButtons.OK)
+        Msg(text, content, MsgIcon.Info, TaskDialogButtons.Ok)
     End Sub
 
     Sub MsgError(text As String, Optional content As String = Nothing)
@@ -1373,7 +1309,7 @@ Public Module MainModule
         Using td As New TaskDialog(Of String)
             td.AllowCancel = False
 
-            If content Is Nothing Then
+            If content = "" Then
                 If text.Length < 80 Then
                     td.MainInstruction = text
                 Else
@@ -1390,36 +1326,33 @@ Public Module MainModule
         End Using
     End Sub
 
-    Sub MsgWarn(text As String, Optional content As String = Nothing)
-        Msg(text, content, MessageBoxIcon.Warning, MessageBoxButtons.OK)
+    Private ShownMessages As String
+
+    Sub MsgWarn(text As String, Optional content As String = Nothing, Optional onlyOnce As Boolean = False)
+        If onlyOnce AndAlso ShownMessages?.Contains(text + content) Then Exit Sub
+        Msg(text, content, MsgIcon.Warning, TaskDialogButtons.Ok)
+        If onlyOnce Then ShownMessages += text + content
     End Sub
 
     Function MsgOK(text As String) As Boolean
-        Return Msg(text, Nothing, MessageBoxIcon.Question, MessageBoxButtons.OKCancel) = DialogResult.OK
+        Return Msg(text, Nothing, MsgIcon.Question, TaskDialogButtons.OkCancel) = DialogResult.OK
     End Function
 
     Function MsgQuestion(text As String,
-                         Optional buttons As MessageBoxButtons = MessageBoxButtons.OKCancel) As DialogResult
-        Return Msg(text, Nothing, MessageBoxIcon.Question, buttons)
+                         Optional buttons As TaskDialogButtons = TaskDialogButtons.OkCancel) As DialogResult
+        Return Msg(text, Nothing, MsgIcon.Question, buttons)
     End Function
 
     Function MsgQuestion(heading As String,
                          content As String,
-                         Optional buttons As MessageBoxButtons = MessageBoxButtons.OKCancel) As DialogResult
-        Return Msg(heading, content, MessageBoxIcon.Question, buttons)
-    End Function
-
-    Function Msg(text As String,
-                 icon As MessageBoxIcon,
-                 buttons As MessageBoxButtons) As DialogResult
-
-        Return Msg(text, Nothing, icon, buttons)
+                         Optional buttons As TaskDialogButtons = TaskDialogButtons.OkCancel) As DialogResult
+        Return Msg(heading, content, MsgIcon.Question, buttons)
     End Function
 
     Function Msg(mainInstruction As String,
                  content As String,
-                 icon As MessageBoxIcon,
-                 buttons As MessageBoxButtons,
+                 icon As MsgIcon,
+                 buttons As TaskDialogButtons,
                  Optional defaultButton As DialogResult = DialogResult.None) As DialogResult
 
         If mainInstruction Is Nothing Then mainInstruction = ""
@@ -1440,28 +1373,20 @@ Public Module MainModule
             End If
 
             Select Case icon
-                Case MessageBoxIcon.Error
+                Case MsgIcon.Error
                     td.MainIcon = TaskDialogIcon.Error
-                Case MessageBoxIcon.Warning
-                    td.MainIcon = TaskDialogIcon.Warn
-                Case MessageBoxIcon.Information
+                Case MsgIcon.Warning
+                    td.MainIcon = TaskDialogIcon.Warning
+                Case MsgIcon.Info
                     td.MainIcon = TaskDialogIcon.Info
             End Select
 
-            Select Case buttons
-                Case MessageBoxButtons.OK
-                    td.CommonButtons = TaskDialogButtons.Ok
-                Case MessageBoxButtons.OKCancel
-                    td.CommonButtons = TaskDialogButtons.OkCancel
-                Case MessageBoxButtons.YesNo
-                    td.CommonButtons = TaskDialogButtons.YesNo
-                Case MessageBoxButtons.YesNoCancel
-                    td.CommonButtons = TaskDialogButtons.YesNoCancel
-                Case MessageBoxButtons.RetryCancel
-                    td.CommonButtons = TaskDialogButtons.RetryCancel
-                Case MessageBoxButtons.AbortRetryIgnore
-                    Throw New NotSupportedException
-            End Select
+            If buttons = TaskDialogButtons.OkCancel Then
+                td.AddButton("OK", DialogResult.OK)
+                td.AddButton("Cancel", DialogResult.Cancel) 'don't use system language
+            Else
+                td.CommonButtons = buttons
+            End If
 
             Return td.Show()
         End Using
@@ -1555,118 +1480,23 @@ Public Class Reflector
     End Function
 End Class
 
-Public Class WindowsScript
-    Private R As New Reflector("MSScriptControl.ScriptControl")
-
-    Sub AddCode(code As String)
-        R.Invoke("AddCode", code)
-    End Sub
-
-    Sub AddObject(name As String, obj As Object)
-        R.Invoke("AddObject", name, obj, False)
-    End Sub
-
-    Private Sub ThrowException()
-        Throw New Exception("Line" + R.Invoke("Error",
-            BindingFlags.GetProperty).Invoke("Line",
-            BindingFlags.GetProperty).ToInt.ToString + ": " +
-            R.Invoke("Error", BindingFlags.GetProperty).Invoke(
-            "Description", BindingFlags.GetProperty).ToString)
-    End Sub
-
-    WriteOnly Property Language() As WshLanguage
-        Set(value As WshLanguage)
-            R.Invoke("Language", BindingFlags.PutDispProperty, value.ToString)
-        End Set
-    End Property
-
-    Sub ExecuteStatement(statement As String)
-        Try
-            R.Invoke("ExecuteStatement", statement)
-        Catch ex As Exception
-            ThrowException()
-        End Try
-    End Sub
-
-    Shared Sub ExecuteVB(code As String)
-        Execute(code, WshLanguage.VBScript)
-    End Sub
-
-    Shared Sub ExecuteJS(code As String)
-        Execute(code, WshLanguage.JScript)
-    End Sub
-
-    Private Shared Sub Execute(code As String, language As WshLanguage)
-        Static ws As WindowsScript
-
-        If ws Is Nothing Then
-            Try
-                ws = New WindowsScript
-                ws.Language = language
-            Catch
-                Throw New Exception("Failed to create scripting control.")
-            End Try
-        End If
-
-        ws.ExecuteStatement(code)
-    End Sub
-
-    Function Eval(expression As String) As Object
-        Try
-            Return R.Invoke("Eval", expression).Value
-        Catch ex As Exception
-            ThrowException()
-        End Try
-
-        Return Nothing
-    End Function
-
-    Shared Function EvalVB(code As String) As Object
-        Return Eval(code, WshLanguage.VBScript)
-    End Function
-
-    Shared Function EvalJS(code As String) As Object
-        Return Eval(code, WshLanguage.JScript)
-    End Function
-
-    Private Shared Function Eval(code As String, language As WshLanguage) As Object
-        Static ws As WindowsScript
-
-        If ws Is Nothing Then
-            Try
-                ws = New WindowsScript
-                ws.Language = language
-            Catch
-                Throw New Exception("Failed to create scripting control.")
-            End Try
-        End If
-
-        Return ws.Eval(code)
-    End Function
-End Class
-
-Public Enum WshLanguage
-    VBScript
-    JScript
-End Enum
-
 Public Class Shutdown
     Shared Sub Commit(mode As ShutdownMode)
+        Dim psi = New ProcessStartInfo("shutdown")
+        psi.CreateNoWindow = True
+        psi.UseShellExecute = False
+
         Select Case mode
             Case ShutdownMode.Standby
                 SetSuspendState(False, False, False)
             Case ShutdownMode.Hibernate
                 SetSuspendState(True, False, False)
+            Case ShutdownMode.Hybrid
+                psi.Arguments = "/f /hybrid /t " & s.ShutdownTimeout
+                Process.Start(psi)
             Case ShutdownMode.Shutdown
-                'Const Shutdown = 1
-                Const ForcedShutdown = 5
-                'Const PowerOff = 8
-                'Const ForcedPowerOff = 12
-                Dim mc As New ManagementClass("Win32_OperatingSystem")
-                mc.Scope.Options.EnablePrivileges = True
-                Dim params = mc.GetMethodParameters("Win32Shutdown")
-                params("Flags") = ForcedShutdown.ToString
-                DirectCast(mc.GetInstances()(0), ManagementObject).InvokeMethod("Win32Shutdown", params, Nothing)
+                psi.Arguments = "/f /s /t " & s.ShutdownTimeout
+                Process.Start(psi)
         End Select
     End Sub
 
@@ -1678,180 +1508,57 @@ Public Enum ShutdownMode
     Close
     Standby
     Hibernate
+    Hybrid
     Shutdown
 End Enum
 
-Public Class NativeWindow
-    Private Shared WindowHandles As New ArrayList
-    Private Shared ChildHandles As New ArrayList
-
-    Shared Sub Show(title As String)
-        Show(title, Native.SW_RESTORE)
-    End Sub
-
-    Private Shared Sub Show(title As String, nCmdShow As Integer)
-        For Each handle In GetHandles()
-            If GetTitle(handle).Contains(title) Then
-                Native.ShowWindow(handle, nCmdShow)
-            End If
-        Next
-    End Sub
-
-    Shared Sub Hide(handle As IntPtr)
-        Native.ShowWindow(handle, Native.SW_HIDE)
-    End Sub
-
-    Shared Sub Hide(title As String)
-        For Each handle As IntPtr In GetHandles()
-            If GetTitle(handle).Contains(title) Then
-                Native.ShowWindow(handle, Native.SW_HIDE)
-            End If
-        Next
-    End Sub
-
-    Shared Function GetHandles() As IntPtr()
-        Native.EnumWindows(AddressOf EnumWindowsProc, Nothing)
-        Dim winHandles(WindowHandles.Count - 1) As IntPtr
-        WindowHandles.CopyTo(winHandles)
-        WindowHandles.Clear()
-        Return winHandles
-    End Function
-
-    Private Shared Function EnumWindowsProc(handle As IntPtr, parameter As Integer) As Boolean
-        WindowHandles.Add(handle)
-        Return True
-    End Function
-
-    Shared Function GetTitle(handle As IntPtr) As String
-        Dim sb As New StringBuilder(255)
-        Native.GetWindowText(handle, sb, sb.Capacity)
-        Return sb.ToString
-    End Function
-
-    Private Shared Function GetChildHandles(handle As IntPtr) As IntPtr()
-        Native.EnumChildWindows(handle, AddressOf HandleChildCallback, Nothing)
-        Dim cHandles(ChildHandles.Count - 1) As IntPtr
-        ChildHandles.CopyTo(cHandles)
-        ChildHandles.Clear()
-        Return cHandles
-    End Function
-
-    Private Shared Function HandleChildCallback(handle As IntPtr, parameter As Integer) As Boolean
-        ChildHandles.Add(handle)
-        Return True
-    End Function
-
-    Shared Function GetChildText(handle As IntPtr) As String
-        Dim ip As IntPtr = Marshal.AllocHGlobal(1000)
-        Native.SendMessage(handle, Native.WM_GETTEXT, New IntPtr(1000), ip)
-        Dim ret = Marshal.PtrToStringAuto(ip)
-        Marshal.FreeHGlobal(ip)
-        Return ret
-    End Function
-
-    Shared Function GetHandle(title As String) As IntPtr
-        For Each handle As IntPtr In GetHandles()
-            If GetTitle(handle).Contains(title) Then
-                Return handle
-            End If
-        Next
-    End Function
-
-    Shared Function Exists(title As String, text As String) As Boolean
-        Dim currentTitle, currentChildTitle As String
-
-        For Each handle In GetHandles()
-            currentTitle = GetTitle(handle)
-
-            If currentTitle <> "" AndAlso currentTitle.Contains(title) Then
-                For Each childhandle In GetChildHandles(handle)
-                    currentChildTitle = GetChildText(childhandle)
-
-                    If currentChildTitle <> "" AndAlso currentChildTitle.Contains(text) Then
-                        Return True
-                    End If
-                Next
-            End If
-        Next
-    End Function
-
-    Shared Sub Close(title As String)
-        Dim handle As IntPtr
-        Dim currentTitle As String
-
-        For Each handle In GetHandles()
-            currentTitle = GetTitle(handle)
-
-            If currentTitle <> "" AndAlso currentTitle.Contains(title) Then
-                Native.SendMessage(handle, Native.WM_CLOSE, IntPtr.Zero, IntPtr.Zero)
-            End If
-        Next
-    End Sub
-End Class
-
-Public Enum ToolStripRenderMode
+Public Enum ToolStripRenderModeEx
     <DispName("System Window Color")> SystemAuto
     <DispName("System Default Color")> SystemDefault
     <DispName("Win 7 Window Color")> Win7Auto
     <DispName("Win 7 Default Color")> Win7Default
-    <DispName("Win 8 Window Color")> Win8Auto
-    <DispName("Win 8 Default Color")> Win8Default
-    <DispName(".NET Professional")> Professional
+    <DispName("Win 10 Window Color")> Win10Auto
+    <DispName("Win 10 Default Color")> Win10Default
 End Enum
 
-Class PowerRequest
+Public Class PowerRequest
     Private Shared CurrentPowerRequest As IntPtr
 
     Shared Sub SuppressStandby()
-        'Clear current power request if there is any.
         If CurrentPowerRequest <> IntPtr.Zero Then
             PowerClearRequest(CurrentPowerRequest, PowerRequestType.PowerRequestSystemRequired)
             CurrentPowerRequest = IntPtr.Zero
         End If
 
-        'Create new power request.
         Dim pContext As POWER_REQUEST_CONTEXT
         pContext.Flags = &H1 'POWER_REQUEST_CONTEXT_SIMPLE_STRING
         pContext.Version = 0 'POWER_REQUEST_CONTEXT_VERSION
-        'This is the reason for standby suppression. It is shown when the command "powercfg -requests" is executed.
-        pContext.SimpleReasonString = "Standby suppressed by StaxRip.exe"
+        pContext.SimpleReasonString = "Standby suppressed by StaxRip"  'shown when the command "powercfg -requests" is executed
 
         CurrentPowerRequest = PowerCreateRequest(pContext)
 
         If CurrentPowerRequest = IntPtr.Zero Then
             Dim err = Marshal.GetLastWin32Error()
-
-            If err <> 0 Then
-                Throw New Win32Exception(err)
-            End If
+            If err <> 0 Then Throw New Win32Exception(err)
         End If
 
         Dim success = PowerSetRequest(CurrentPowerRequest, PowerRequestType.PowerRequestSystemRequired)
 
         If Not success Then
-            'Failed to set power request.
             CurrentPowerRequest = IntPtr.Zero
             Dim err = Marshal.GetLastWin32Error()
-
-            If err <> 0 Then
-                Throw New Win32Exception(err)
-            End If
+            If err <> 0 Then Throw New Win32Exception(err)
         End If
     End Sub
 
     Shared Sub EnableStandby()
-        'only try to clear power request if any power request is set.
         If CurrentPowerRequest <> IntPtr.Zero Then
             Dim success = PowerClearRequest(CurrentPowerRequest, PowerRequestType.PowerRequestSystemRequired)
 
             If Not success Then
-                'Failed to clear power request.
                 CurrentPowerRequest = IntPtr.Zero
                 Dim err = Marshal.GetLastWin32Error()
-
-                If err <> 0 Then
-                    Throw New Win32Exception(err)
-                End If
+                If err <> 0 Then Throw New Win32Exception(err)
             Else
                 CurrentPowerRequest = IntPtr.Zero
             End If
@@ -1859,7 +1566,7 @@ Class PowerRequest
     End Sub
 
     Enum PowerRequestType
-        PowerRequestDisplayRequired = 0
+        PowerRequestDisplayRequired
         PowerRequestSystemRequired
         PowerRequestAwayModeRequired
         PowerRequestExecutionRequired

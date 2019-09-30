@@ -29,14 +29,14 @@ Namespace UI
         Shared Function Show(text As String,
                              title As String) As String
 
-            Return Show(Text, Title, "", FormStartPosition.CenterParent)
+            Return Show(text, title, "", FormStartPosition.CenterParent)
         End Function
 
         Shared Function Show(text As String,
                              title As String,
                              value As String) As String
 
-            Return Show(Text, Title, Value, FormStartPosition.CenterParent)
+            Return Show(text, title, value, FormStartPosition.CenterParent)
         End Function
 
         Shared Function Show(text As String,
@@ -45,9 +45,9 @@ Namespace UI
                              startPos As FormStartPosition) As String
 
             Dim b As New InputBox
-            b.Text = Text
-            b.Title = Title
-            b.Value = Value
+            b.Text = text
+            b.Title = title
+            b.Value = value
             b.StartPosition = startPos
 
             If b.Show = DialogResult.OK Then
@@ -64,7 +64,7 @@ Namespace UI
                 f.Text = Title
                 f.StartPosition = StartPosition
 
-                If OK(VerificationText) Then
+                If VerificationText <> "" Then
                     f.cb.Checked = Checked
                     f.cb.Text = VerificationText
                 End If

@@ -1,8 +1,4 @@
-Imports System.Runtime.InteropServices
-Imports System.Text
 Imports System.ComponentModel
-Imports System.Threading
-Imports System.Reflection
 
 Namespace UI
     Public Class KeysHelp
@@ -58,9 +54,7 @@ Namespace UI
         End Sub
 
         Shared Function GetKeyString(k As Keys) As String
-            If k = Keys.None Then
-                Return ""
-            End If
+            If k = Keys.None Then Return ""
 
             Dim s = ""
 
@@ -82,7 +76,7 @@ Namespace UI
             If KeysTexts.ContainsKey(k) Then
                 s += KeysTexts(k)
             Else
-                Dim value = Native.MapVirtualKey(CInt(k), Native.MAPVK_VK_TO_CHAR)
+                Dim value = Native.MapVirtualKey(CInt(k), 2) 'MAPVK_VK_TO_CHAR
 
                 If value = 0 OrElse (value And 1 << 31) = 1 << 31 Then
                     s += k.ToString

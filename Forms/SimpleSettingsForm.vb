@@ -9,6 +9,8 @@ Public Class SimpleSettingsForm
     Friend WithEvents SimpleUI As StaxRip.SimpleUI
     Friend WithEvents LineControl1 As StaxRip.UI.LineControl
     Private components As System.ComponentModel.IContainer
+    Friend WithEvents tlpMain As TableLayoutPanel
+    Friend WithEvents flpButtons As FlowLayoutPanel
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -16,22 +18,28 @@ Public Class SimpleSettingsForm
         Me.bnOK = New StaxRip.UI.ButtonEx()
         Me.SimpleUI = New StaxRip.SimpleUI()
         Me.LineControl1 = New StaxRip.UI.LineControl()
+        Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
+        Me.flpButtons = New System.Windows.Forms.FlowLayoutPanel()
+        Me.tlpMain.SuspendLayout()
+        Me.flpButtons.SuspendLayout()
         Me.SuspendLayout()
         '
         'bnCancel
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(692, 506)
-        Me.bnCancel.Size = New System.Drawing.Size(100, 34)
+        Me.bnCancel.Location = New System.Drawing.Point(265, 0)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(15, 0, 0, 0)
+        Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
         '
         'bnOK
         '
         Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(586, 506)
-        Me.bnOK.Size = New System.Drawing.Size(100, 34)
+        Me.bnOK.Location = New System.Drawing.Point(0, 0)
+        Me.bnOK.Margin = New System.Windows.Forms.Padding(0)
+        Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
         '
         'SimpleUI
@@ -39,34 +47,66 @@ Public Class SimpleSettingsForm
         Me.SimpleUI.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.SimpleUI.Location = New System.Drawing.Point(12, 12)
+        Me.SimpleUI.Location = New System.Drawing.Point(15, 15)
+        Me.SimpleUI.Margin = New System.Windows.Forms.Padding(15, 15, 15, 0)
         Me.SimpleUI.Name = "SimpleUI"
-        Me.SimpleUI.Size = New System.Drawing.Size(780, 464)
+        Me.SimpleUI.Size = New System.Drawing.Size(1161, 667)
         Me.SimpleUI.TabIndex = 2
         '
         'LineControl1
         '
         Me.LineControl1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LineControl1.Location = New System.Drawing.Point(13, 481)
-        Me.LineControl1.Margin = New System.Windows.Forms.Padding(4, 2, 5, 2)
+        Me.LineControl1.Location = New System.Drawing.Point(15, 682)
+        Me.LineControl1.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.LineControl1.Name = "LineControl1"
-        Me.LineControl1.Size = New System.Drawing.Size(777, 20)
+        Me.LineControl1.Size = New System.Drawing.Size(1161, 30)
         Me.LineControl1.TabIndex = 5
+        '
+        'tlpMain
+        '
+        Me.tlpMain.ColumnCount = 1
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpMain.Controls.Add(Me.SimpleUI, 0, 0)
+        Me.tlpMain.Controls.Add(Me.LineControl1, 0, 1)
+        Me.tlpMain.Controls.Add(Me.flpButtons, 0, 2)
+        Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpMain.Location = New System.Drawing.Point(0, 0)
+        Me.tlpMain.Margin = New System.Windows.Forms.Padding(5)
+        Me.tlpMain.Name = "tlpMain"
+        Me.tlpMain.RowCount = 3
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.Size = New System.Drawing.Size(1191, 797)
+        Me.tlpMain.TabIndex = 8
+        '
+        'flpButtons
+        '
+        Me.flpButtons.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.flpButtons.AutoSize = True
+        Me.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.flpButtons.Controls.Add(Me.bnOK)
+        Me.flpButtons.Controls.Add(Me.bnCancel)
+        Me.flpButtons.Location = New System.Drawing.Point(661, 712)
+        Me.flpButtons.Margin = New System.Windows.Forms.Padding(0, 0, 15, 15)
+        Me.flpButtons.Name = "flpButtons"
+        Me.flpButtons.Size = New System.Drawing.Size(515, 70)
+        Me.flpButtons.TabIndex = 6
         '
         'SimpleSettingsForm
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(804, 552)
-        Me.Controls.Add(Me.LineControl1)
-        Me.Controls.Add(Me.SimpleUI)
-        Me.Controls.Add(Me.bnCancel)
-        Me.Controls.Add(Me.bnOK)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Location = New System.Drawing.Point(0, 0)
-        Me.Margin = New System.Windows.Forms.Padding(0, 0, 0, 0)
+        Me.ClientSize = New System.Drawing.Size(1191, 797)
+        Me.Controls.Add(Me.tlpMain)
+        Me.KeyPreview = True
+        Me.Margin = New System.Windows.Forms.Padding(0)
         Me.Name = "SimpleSettingsForm"
+        Me.tlpMain.ResumeLayout(False)
+        Me.tlpMain.PerformLayout()
+        Me.flpButtons.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -77,6 +117,7 @@ Public Class SimpleSettingsForm
 
     Sub New(title As String, ParamArray helpParagraphs As String())
         InitializeComponent()
+        ScaleClientSize(40, 27)
         Text = title
         Me.HelpParagraphs = helpParagraphs
         SimpleUI.Tree.Select()

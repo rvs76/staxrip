@@ -1,12 +1,5 @@
-Imports System.ComponentModel.Design.Serialization
 Imports System.ComponentModel
 Imports System.Drawing.Design
-Imports System.Reflection
-Imports System.Resources
-Imports System.IO
-Imports System.Xml
-Imports System.Text
-Imports System.Text.RegularExpressions
 
 Namespace UI
     <ProvideProperty("TipText", GetType(Control))>
@@ -16,7 +9,7 @@ Namespace UI
 
         Private ToolTip As New ToolTip
         Private TipTitles As New Dictionary(Of Control, String)
-        Private TipURLs As New Dictionary(Of Control, String)
+        Private ShortHelp As New Dictionary(Of Control, String)
         Private TipTexts As New Dictionary(Of Control, String)
         Private CreatedAdded As Boolean
         Private CleanUpAdded As Boolean
@@ -25,11 +18,8 @@ Namespace UI
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Property TipsFunc As Func(Of StringPairList)
 
-        Sub New(component As IContainer)
-            If Not component Is Nothing Then
-                component.Add(Me)
-            End If
-
+        Sub New(Optional component As IContainer = Nothing)
+            If Not component Is Nothing Then component.Add(Me)
             ToolTip.AutomaticDelay = 1000
             ToolTip.AutoPopDelay = 10000
             ToolTip.InitialDelay = 1000
@@ -61,12 +51,6 @@ Namespace UI
             Init(value, c)
         End Sub
 
-        Sub SetURL(url As String, ParamArray controls As Control())
-            For Each i In controls
-                TipURLs(i) = url
-            Next
-        End Sub
-
         Sub SetTip(tipText As String,
                    tipTitle As String,
                    c As Control)
@@ -93,25 +77,22 @@ Namespace UI
             Next
         End Sub
 
-        Sub Init(tipText As String, c As Control)
+        Sub Init(tipText As String, control As Control)
             If Not DesignMode Then
-                AddHandler c.MouseDown, AddressOf TipMouseDown
-
+                AddHandler control.MouseDown, AddressOf TipMouseDown
                 tipText = tipText.TrimEnd("."c)
 
                 If tipText.Length > 80 Then
-                    If HasContextMenu(c) Then
+                    If HasContextMenu(control) Then
                         tipText = Nothing
                     Else
-                        tipText = "Please right-click for help"
+                        tipText = "Right-click for help"
                     End If
                 ElseIf HelpDocument.MustConvert(tipText) Then
                     tipText = HelpDocument.ConvertMarkup(tipText, True)
                 End If
 
-                If OK(tipText) Then
-                    AddHandler c.HandleCreated, Sub() ToolTip.SetToolTip(c, tipText)
-                End If
+                If tipText <> "" Then AddHandler control.HandleCreated, Sub() ToolTip.SetToolTip(control, tipText)
             End If
         End Sub
 
@@ -124,26 +105,15 @@ Namespace UI
         End Sub
 
         Private Sub ShowHelp(c As Control)
-            If TipURLs.ContainsKey(c) Then
-                g.ShellExecute(TipURLs(c))
-            Else
-                Dim t = GetTip(c)
-                g.ShowHelp(t.Name, t.Value)
-            End If
+            Dim t = GetTip(c)
+            g.ShowHelp(t.Name, t.Value)
         End Sub
 
         Private Function GetTip(c As Control) As StringPair
-            Dim r As New StringPair
-
-            If TipTitles.ContainsKey(c) Then
-                r.Name = FormatName(TipTitles(c))
-            End If
-
-            If TipTexts.ContainsKey(c) Then
-                r.Value = TipTexts(c)
-            End If
-
-            Return r
+            Dim ret As New StringPair
+            If TipTitles.ContainsKey(c) Then ret.Name = FormatName(TipTitles(c))
+            If TipTexts.ContainsKey(c) Then ret.Value = TipTexts(c)
+            Return ret
         End Function
 
         Private Function HasContextMenu(c As Control) As Boolean
@@ -157,28 +127,14 @@ Namespace UI
                 Return True
             End If
 
-            If Not c.ContextMenuStrip Is Nothing Then
-                Return True
-            End If
+            If Not c.ContextMenuStrip Is Nothing Then Return True
         End Function
 
         Private Function FormatName(value As String) As String
-            If value.Contains(" ") Then
-                value = value.Trim
-            End If
-
-            If value.Contains("&") AndAlso Not value.Contains(" & ") Then
-                value = value.Replace("&", "")
-            End If
-
-            If value.EndsWith("...") Then
-                value = value.TrimEnd("."c)
-            End If
-
-            If value.EndsWith(":") Then
-                value = value.TrimEnd(":"c)
-            End If
-
+            If value.Contains(" ") Then value = value.Trim
+            If value.Contains("&") AndAlso Not value.Contains(" & ") Then value = value.Replace("&", "")
+            If value.EndsWith("...") Then value = value.TrimEnd("."c)
+            If value.EndsWith(":") Then value = value.TrimEnd(":"c)
             Return value
         End Function
 

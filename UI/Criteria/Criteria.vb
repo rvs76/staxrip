@@ -1,38 +1,15 @@
-Imports System.Reflection
-Imports System.ComponentModel
-
-Imports StaxRip.UI
-
 Namespace UI
     <Serializable()>
     Public MustInherit Class Criteria
+        Property Name As String
+        Property Description As String
+        Property Macro As String
+
         MustOverride Function Eval() As Boolean
         MustOverride Property ValueString() As String
         MustOverride Property PropertyString() As String
         MustOverride ReadOnly Property ConditionNames() As String()
         MustOverride Property ConditionName() As String
-
-        Private NameValue As String
-
-        Property Name() As String
-            Get
-                Return NameValue
-            End Get
-            Set(Value As String)
-                NameValue = Value
-            End Set
-        End Property
-
-        Private MacroValue As String
-
-        Property Macro() As String
-            Get
-                Return MacroValue
-            End Get
-            Set(Value As String)
-                MacroValue = Value
-            End Set
-        End Property
 
         Shared Function Create(t As Type) As Criteria
             If t Is GetType(String) Then
@@ -55,38 +32,9 @@ Namespace UI
     Public MustInherit Class GenericCriteria(Of TCondition, TType)
         Inherits Criteria
 
-        Private PropertyValueValue As TType
-
-        Property PropertyValue() As TType
-            Get
-                Return PropertyValueValue
-            End Get
-            Set(Value As TType)
-                PropertyValueValue = Value
-            End Set
-        End Property
-
-        Private ValueValue As TType
-
-        Property Value() As TType
-            Get
-                Return ValueValue
-            End Get
-            Set(Value As TType)
-                ValueValue = Value
-            End Set
-        End Property
-
-        Private ConditionValue As TCondition
-
-        Property Condition() As TCondition
-            Get
-                Return ConditionValue
-            End Get
-            Set(Value As TCondition)
-                ConditionValue = Value
-            End Set
-        End Property
+        Property Value As TType
+        Property PropertyValue As TType
+        Property Condition As TCondition
 
         Overrides ReadOnly Property ConditionNames() As String()
             Get
@@ -100,9 +48,7 @@ Namespace UI
             End Get
             Set(value As String)
                 For Each i As TCondition In System.Enum.GetValues(GetType(TCondition))
-                    If DispNameAttribute.GetValueForEnum(i) = value Then
-                        Condition = i
-                    End If
+                    If DispNameAttribute.GetValueForEnum(i) = value Then Condition = i
                 Next
             End Set
         End Property
@@ -151,22 +97,19 @@ Namespace UI
         Overrides Function Eval() As Boolean
             Select Case Condition
                 Case StringCondition.Contains
-                    Return PropertyValue.Contains(Value)
+                    Return PropertyValue.Lower.Contains(Value.Lower)
                 Case StringCondition.DoesntContain
-                    Return Not PropertyValue.Contains(Value)
+                    Return Not PropertyValue.Lower.Contains(Value.Lower)
                 Case StringCondition.Is
-                    Return PropertyValue = Value
+                    Return PropertyValue.Lower = Value.Lower
                 Case StringCondition.IsNot
-                    Return PropertyValue <> Value
+                    Return PropertyValue.Lower <> Value.Lower
             End Select
         End Function
 
         Overrides Property ValueString() As String
             Get
-                If Value Is Nothing Then
-                    Value = ""
-                End If
-
+                If Value Is Nothing Then Value = ""
                 Return Value
             End Get
             Set(value As String)
@@ -176,10 +119,7 @@ Namespace UI
 
         Overrides Property PropertyString() As String
             Get
-                If PropertyValue Is Nothing Then
-                    PropertyValue = ""
-                End If
-
+                If PropertyValue Is Nothing Then PropertyValue = ""
                 Return Value
             End Get
             Set(value As String)

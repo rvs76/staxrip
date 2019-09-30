@@ -1,56 +1,27 @@
-Imports System.Collections.Generic
+'TODO: shrink down huge waste of bytes
+
 Imports System.Text
-Imports System.Windows.Forms
 Imports System.ComponentModel
-Imports System.IO
 Imports System.Runtime.InteropServices
 Imports System.Runtime.CompilerServices
 
-''' <summary>
-''' Prompts the user to select a folder.
-''' </summary>
-''' <remarks>
-''' This class will use the Vista style Select Folder dialog if possible, or the regular FolderBrowserDialog
-''' if it is not. Note that the Vista style dialog is very different, so using this class without testing
-''' in both Vista and older Windows versions is not recommended.
-''' </remarks>
-<System.Drawing.ToolboxBitmap(GetType(System.Windows.Forms.FolderBrowserDialog), "FolderBrowserDialog.bmp"), DefaultEvent("HelpRequest"), Designer("System.Windows.Forms.Design.FolderBrowserDialogDesigner, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"), DefaultProperty("SelectedPath"), Description("Prompts the user to select a folder.")> _
+<System.Drawing.ToolboxBitmap(GetType(System.Windows.Forms.FolderBrowserDialog), "FolderBrowserDialog.bmp"), DefaultEvent("HelpRequest"), Designer("System.Windows.Forms.Design.FolderBrowserDialogDesigner, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"), DefaultProperty("SelectedPath"), Description("Prompts the user to select a folder.")>
 Public Class FolderBrowserDialog
     Inherits CommonDialog
+
     Private _downlevelDialog As System.Windows.Forms.FolderBrowserDialog
     Private _description As String
     Private _useDescriptionForTitle As Boolean
     Private _selectedPath As String
     Private _rootFolder As System.Environment.SpecialFolder
 
-    ''' <summary>
-    ''' Occurs when the user clicks the Help button on the dialog box.
-    ''' </summary>
-    '<Browsable(False), EditorBrowsable(EditorBrowsableState.Never)> _
-    'Public Shadows Custom Event HelpRequest As EventHandler
-    '	AddHandler(value As EventHandler)
-    '		MyBase.HelpRequest += value
-    '	End AddHandler
-    '	RemoveHandler(value As EventHandler)
-    '		MyBase.HelpRequest -= value
-    '	End RemoveHandler
-    'End Event
-
-    ''' <summary>
-    ''' Creates a new instance of the <see cref="FolderBrowserDialog" /> class.
-    ''' </summary>
     Public Sub New()
         Me.New(False)
     End Sub
 
-    ''' <summary>
-    ''' Creates a new instance of the <see cref="FolderBrowserDialog" /> class.
-    ''' </summary>
-    ''' <param name="forceDownlevel">true to force the use of the old style folder browser dialog, even when the Vista
-    ''' style dialog is supported; otherwise, false.</param>
     Public Sub New(forceDownlevel As Boolean)
-        If forceDownlevel OrElse Not IsVistaFolderDialogSupported Then
-            _downlevelDialog = New System.Windows.Forms.FolderBrowserDialog()
+        If forceDownlevel Then
+            _downlevelDialog = New Windows.Forms.FolderBrowserDialog()
         Else
             Reset()
         End If
@@ -58,32 +29,14 @@ Public Class FolderBrowserDialog
 
 #Region "Public Properties"
 
-    ''' <summary>
-    ''' Gets a value that indicates whether the current OS supports Vista-style common userToken dialogs.
-    ''' </summary>
-    ''' <value>
-    ''' Returns true on Windows Vista or newer operating systems; otherwise, false.
-    ''' </value>
-    <Browsable(False)> _
-    Public Shared ReadOnly Property IsVistaFolderDialogSupported() As Boolean
+    <Category("Folder Browsing")>
+    <DefaultValue("")>
+    <Localizable(True)>
+    <Browsable(True)>
+    <Description("The descriptive text displayed above the tree view control in the dialog box, or below the list view control in the Vista style dialog.")>
+    Property Description() As String
         Get
-            Return Environment.OSVersion.Platform = PlatformID.Win32NT AndAlso Environment.OSVersion.Version.Major >= 6
-        End Get
-    End Property
-
-    ''' <summary>
-    ''' Gets or sets the descriptive text displayed above the tree view control in the dialog box, or below the list view control
-    ''' in the Vista style dialog.
-    ''' </summary>
-    ''' <value>
-    ''' The description to display. The default is an empty string ("").
-    ''' </value>
-    <Category("Folder Browsing"), DefaultValue(""), Localizable(True), Browsable(True), Description("The descriptive text displayed above the tree view control in the dialog box, or below the list view control in the Vista style dialog.")> _
-    Public Property Description() As String
-        Get
-            If _downlevelDialog IsNot Nothing Then
-                Return _downlevelDialog.Description
-            End If
+            If _downlevelDialog IsNot Nothing Then Return _downlevelDialog.Description
             Return _description
         End Get
         Set(value As String)
@@ -95,16 +48,9 @@ Public Class FolderBrowserDialog
         End Set
     End Property
 
-    ''' <summary>
-    ''' Gets or sets the root folder where the browsing starts from. This property has no effect if the Vista style
-    ''' dialog is used.
-    ''' </summary>
-    ''' <value>
-    ''' One of the <see cref="System.Environment.SpecialFolder" /> values. The default is Desktop.
-    ''' </value>
-    ''' <exception cref="System.ComponentModel.InvalidEnumArgumentException">The value assigned is not one of the <see cref="System.Environment.SpecialFolder" /> values.</exception>
-    <Localizable(False), Description("The root folder where the browsing starts from. This property has no effect if the Vista style dialog is used."), Category("Folder Browsing"), Browsable(True), DefaultValue(GetType(System.Environment.SpecialFolder), "Desktop")> _
-    Public Property RootFolder() As System.Environment.SpecialFolder
+    <Localizable(False),
+        Description("The root folder where the browsing starts from. This property has no effect if the Vista style dialog is used."), Category("Folder Browsing"), Browsable(True), DefaultValue(GetType(System.Environment.SpecialFolder), "Desktop")>
+    Property RootFolder() As System.Environment.SpecialFolder
         Get
             If _downlevelDialog IsNot Nothing Then
                 Return _downlevelDialog.RootFolder
@@ -120,14 +66,9 @@ Public Class FolderBrowserDialog
         End Set
     End Property
 
-    ''' <summary>
-    ''' Gets or sets the path selected by the user.
-    ''' </summary>
-    ''' <value>
-    ''' The path of the folder first selected in the dialog box or the last folder selected by the user. The default is an empty string ("").
-    ''' </value>
-    <Browsable(True), Editor("System.Windows.Forms.Design.SelectedPathEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", GetType(System.Drawing.Design.UITypeEditor)), Description("The path selected by the user."), DefaultValue(""), Localizable(True), Category("Folder Browsing")> _
-    Public Property SelectedPath() As String
+    <Browsable(True),
+        Editor("System.Windows.Forms.Design.SelectedPathEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", GetType(System.Drawing.Design.UITypeEditor)), Description("The path selected by the user."), DefaultValue(""), Localizable(True), Category("Folder Browsing")>
+    Property SelectedPath() As String
         Get
             If _downlevelDialog IsNot Nothing Then
                 Return _downlevelDialog.SelectedPath
@@ -138,22 +79,17 @@ Public Class FolderBrowserDialog
             If _downlevelDialog IsNot Nothing Then
                 _downlevelDialog.SelectedPath = value
             Else
-                _selectedPath = If(value, String.Empty)
+                _selectedPath = If(value, "")
             End If
         End Set
     End Property
 
     Private _showNewFolderButton As Boolean
 
-    ''' <summary>
-    ''' Gets or sets a value indicating whether the New Folder button appears in the folder browser dialog box. This
-    ''' property has no effect if the Vista style dialog is used; in that case, the New Folder button is always shown.
-    ''' </summary>
-    ''' <value>
-    ''' true if the New Folder button is shown in the dialog box; otherwise, false. The default is true.
-    ''' </value>
-    <Browsable(True), Localizable(False), Description("A value indicating whether the New Folder button appears in the folder browser dialog box. This property has no effect if the Vista style dialog is used; in that case, the New Folder button is always shown."), DefaultValue(True), Category("Folder Browsing")> _
-    Public Property ShowNewFolderButton() As Boolean
+    <Browsable(True),
+        Localizable(False),
+        Description("A value indicating whether the New Folder button appears in the folder browser dialog box. This property has no effect if the Vista style dialog is used; in that case, the New Folder button is always shown."), DefaultValue(True), Category("Folder Browsing")>
+    Property ShowNewFolderButton() As Boolean
         Get
             If _downlevelDialog IsNot Nothing Then
                 Return _downlevelDialog.ShowNewFolderButton
@@ -169,15 +105,10 @@ Public Class FolderBrowserDialog
         End Set
     End Property
 
-
-    ''' <summary>
-    ''' Gets or sets a value that indicates whether to use the value of the <see cref="Description" /> property
-    ''' as the dialog title for Vista style dialogs. This property has no effect on old style dialogs.
-    ''' </summary>
-    ''' <value>true to indicate that the value of the <see cref="Description" /> property is used as dialog title; false
-    ''' to indicate the value is added as additional text to the dialog. The default is false.</value>
-    <Category("Folder Browsing"), DefaultValue(False), Description("A value that indicates whether to use the value of the Description property as the dialog title for Vista style dialogs. This property has no effect on old style dialogs.")> _
-    Public Property UseDescriptionForTitle() As Boolean
+    <Category("Folder Browsing")>
+    <DefaultValue(False)>
+    <Description("A value that indicates whether to use the value of the Description property as the dialog title for Vista style dialogs. This property has no effect on old style dialogs.")>
+    Property UseDescriptionForTitle() As Boolean
         Get
             Return _useDescriptionForTitle
         End Get
@@ -190,13 +121,10 @@ Public Class FolderBrowserDialog
 
 #Region "Public Methods"
 
-    ''' <summary>
-    ''' Resets all properties to their default values.
-    ''' </summary>
     Public Overrides Sub Reset()
-        _description = String.Empty
+        _description = ""
         _useDescriptionForTitle = False
-        _selectedPath = String.Empty
+        _selectedPath = ""
         _rootFolder = Environment.SpecialFolder.Desktop
         _showNewFolderButton = True
     End Sub
@@ -221,13 +149,15 @@ Public Class FolderBrowserDialog
             dialog = CType(New FileOpenDialogRCW(), IFileDialog)
             SetDialogProperties(dialog)
             Dim result As Integer = dialog.Show(hwndOwner)
+
             If result < 0 Then
                 If result = NativeMethods.ERROR_CANCELLED Then
                     Return False
                 Else
-                    Throw System.Runtime.InteropServices.Marshal.GetExceptionForHR(result)
+                    Throw Marshal.GetExceptionForHR(result)
                 End If
             End If
+
             GetResult(dialog)
             Return True
         Finally
@@ -256,24 +186,25 @@ Public Class FolderBrowserDialog
 #Region "Private Methods"
 
     Private Sub SetDialogProperties(dialog As IFileDialog)
-        ' Description
-        If Not String.IsNullOrEmpty(_description) Then
+        If _description <> "" Then
             If _useDescriptionForTitle Then
                 dialog.SetTitle(_description)
             Else
-                Dim customize As IFileDialogCustomize = DirectCast(dialog, IFileDialogCustomize)
-                customize.AddText(0, _description)
+                DirectCast(dialog, IFileDialogCustomize).AddText(0, _description)
             End If
         End If
 
-        dialog.SetOptions(NativeMethods.FOS.FOS_PICKFOLDERS Or NativeMethods.FOS.FOS_FORCEFILESYSTEM Or NativeMethods.FOS.FOS_FILEMUSTEXIST)
+        dialog.SetOptions(NativeMethods.FOS.FOS_PICKFOLDERS Or
+                          NativeMethods.FOS.FOS_FORCEFILESYSTEM Or
+                          NativeMethods.FOS.FOS_FILEMUSTEXIST)
 
-        If Not String.IsNullOrEmpty(_selectedPath) Then
-            Dim parent As String = Path.GetDirectoryName(_selectedPath)
+        If _selectedPath <> "" Then
+            Dim parent = Path.GetDirectoryName(_selectedPath)
+
             If parent Is Nothing OrElse Not Directory.Exists(parent) Then
                 dialog.SetFileName(_selectedPath)
             Else
-                Dim folder As String = Path.GetFileName(_selectedPath)
+                Dim folder = Path.GetFileName(_selectedPath)
                 dialog.SetFolder(NativeMethods.CreateItemFromParsingName(parent))
                 dialog.SetFileName(folder)
             End If
@@ -289,179 +220,179 @@ Public Class FolderBrowserDialog
 #End Region
 
 #Region "Interfaces"
-    <ComImport(), Guid(IIDGuid.IModalWindow), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)> _
+    <ComImport(), Guid(IIDGuid.IModalWindow), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)>
     Friend Interface IModalWindow
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime), PreserveSig()> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime), PreserveSig()>
         Function Show(<[In]()> parent As IntPtr) As Integer
     End Interface
 
-    <ComImport(), Guid(IIDGuid.IFileDialog), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)> _
+    <ComImport(), Guid(IIDGuid.IFileDialog), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)>
     Friend Interface IFileDialog
         Inherits IModalWindow
         ' Defined on IModalWindow - repeated here due to requirements of COM interop layer
         ' --------------------------------------------------------------------------------
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime), PreserveSig()> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime), PreserveSig()>
         Overloads Function Show(<[In]()> parent As IntPtr) As Integer
 
         ' IFileDialog-Specific interface members
         ' --------------------------------------------------------------------------------
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetFileTypes(<[In]()> cFileTypes As UInteger, <[In](), MarshalAs(UnmanagedType.LPArray)> rgFilterSpec As NativeMethods.COMDLG_FILTERSPEC())
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetFileTypeIndex(<[In]()> iFileType As UInteger)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetFileTypeIndex(piFileType As UInteger)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub Advise(<[In](), MarshalAs(UnmanagedType.[Interface])> pfde As IFileDialogEvents, pdwCookie As UInteger)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub Unadvise(<[In]()> dwCookie As UInteger)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetOptions(<[In]()> fos As NativeMethods.FOS)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetOptions(pfos As NativeMethods.FOS)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetDefaultFolder(<[In](), MarshalAs(UnmanagedType.[Interface])> psi As IShellItem)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetFolder(<[In](), MarshalAs(UnmanagedType.[Interface])> psi As IShellItem)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetFolder(<MarshalAs(UnmanagedType.[Interface])> ppsi As IShellItem)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetCurrentSelection(<MarshalAs(UnmanagedType.[Interface])> ppsi As IShellItem)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetFileName(<[In](), MarshalAs(UnmanagedType.LPWStr)> pszName As String)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetFileName(<MarshalAs(UnmanagedType.LPWStr)> pszName As String)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetTitle(<[In](), MarshalAs(UnmanagedType.LPWStr)> pszTitle As String)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetOkButtonLabel(<[In](), MarshalAs(UnmanagedType.LPWStr)> pszText As String)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetFileNameLabel(<[In](), MarshalAs(UnmanagedType.LPWStr)> pszLabel As String)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetResult(<MarshalAs(UnmanagedType.[Interface])> ByRef ppsi As IShellItem)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub AddPlace(<[In](), MarshalAs(UnmanagedType.[Interface])> psi As IShellItem, fdap As NativeMethods.FDAP)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetDefaultExtension(<[In](), MarshalAs(UnmanagedType.LPWStr)> pszDefaultExtension As String)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub Close(<MarshalAs(UnmanagedType.[Error])> hr As Integer)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetClientGuid(<[In]()> ByRef guid As Guid)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub ClearClientData()
 
         ' Not supported:  IShellItemFilter is not defined, converting to IntPtr
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetFilter(<MarshalAs(UnmanagedType.[Interface])> pFilter As IntPtr)
     End Interface
 
-    <ComImport(), Guid(IIDGuid.IFileOpenDialog), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)> _
+    <ComImport(), Guid(IIDGuid.IFileOpenDialog), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)>
     Friend Interface IFileOpenDialog
         Inherits IFileDialog
         ' Defined on IModalWindow - repeated here due to requirements of COM interop layer
         ' --------------------------------------------------------------------------------
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime), PreserveSig()> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime), PreserveSig()>
         Overloads Function Show(<[In]()> parent As IntPtr) As Integer
 
         ' Defined on IFileDialog - repeated here due to requirements of COM interop layer
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub SetFileTypes(<[In]()> cFileTypes As UInteger, <[In]()> ByRef rgFilterSpec As NativeMethods.COMDLG_FILTERSPEC)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub SetFileTypeIndex(<[In]()> iFileType As UInteger)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub GetFileTypeIndex(piFileType As UInteger)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub Advise(<[In](), MarshalAs(UnmanagedType.[Interface])> pfde As IFileDialogEvents, pdwCookie As UInteger)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub Unadvise(<[In]()> dwCookie As UInteger)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub SetOptions(<[In]()> fos As NativeMethods.FOS)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub GetOptions(pfos As NativeMethods.FOS)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub SetDefaultFolder(<[In](), MarshalAs(UnmanagedType.[Interface])> psi As IShellItem)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub SetFolder(<[In](), MarshalAs(UnmanagedType.[Interface])> psi As IShellItem)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub GetFolder(<MarshalAs(UnmanagedType.[Interface])> ppsi As IShellItem)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub GetCurrentSelection(<MarshalAs(UnmanagedType.[Interface])> ppsi As IShellItem)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub SetFileName(<[In](), MarshalAs(UnmanagedType.LPWStr)> pszName As String)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub GetFileName(<MarshalAs(UnmanagedType.LPWStr)> pszName As String)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub SetTitle(<[In](), MarshalAs(UnmanagedType.LPWStr)> pszTitle As String)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub SetOkButtonLabel(<[In](), MarshalAs(UnmanagedType.LPWStr)> pszText As String)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub SetFileNameLabel(<[In](), MarshalAs(UnmanagedType.LPWStr)> pszLabel As String)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub GetResult(<MarshalAs(UnmanagedType.[Interface])> ppsi As IShellItem)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub AddPlace(<[In](), MarshalAs(UnmanagedType.[Interface])> psi As IShellItem, fdap As NativeMethods.FDAP)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub SetDefaultExtension(<[In](), MarshalAs(UnmanagedType.LPWStr)> pszDefaultExtension As String)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub Close(<MarshalAs(UnmanagedType.[Error])> hr As Integer)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub SetClientGuid(<[In]()> ByRef guid As Guid)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub ClearClientData()
 
         ' Not supported:  IShellItemFilter is not defined, converting to IntPtr
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Overloads Sub SetFilter(<MarshalAs(UnmanagedType.[Interface])> pFilter As IntPtr)
 
         ' Defined by IFileOpenDialog
         ' ---------------------------------------------------------------------------------
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetResults(<MarshalAs(UnmanagedType.[Interface])> ppenum As IShellItemArray)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetSelectedItems(<MarshalAs(UnmanagedType.[Interface])> ppsai As IShellItemArray)
     End Interface
 
@@ -514,83 +445,83 @@ Public Class FolderBrowserDialog
         Sub ApplyProperties(<[In](), MarshalAs(UnmanagedType.[Interface])> psi As IShellItem, <[In](), MarshalAs(UnmanagedType.[Interface])> pStore As IntPtr, <[In](), ComAliasName("Interop.wireHWND")> ByRef hwnd As IntPtr, <[In](), MarshalAs(UnmanagedType.[Interface])> pSink As IntPtr)
     End Interface
 
-    <ComImport(), Guid(IIDGuid.IFileDialogEvents), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)> _
+    <ComImport(), Guid(IIDGuid.IFileDialogEvents), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)>
     Friend Interface IFileDialogEvents
         ' NOTE: some of these callbacks are cancelable - returning S_FALSE means that 
         ' the dialog should not proceed (e.g. with closing, changing folder); to 
         ' support this, we need to use the PreserveSig attribute to enable us to return
         ' the proper HRESULT
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime), PreserveSig()> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime), PreserveSig()>
         Function OnFileOk(<[In](), MarshalAs(UnmanagedType.[Interface])> pfd As IFileDialog) As HRESULT
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime), PreserveSig()> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime), PreserveSig()>
         Function OnFolderChanging(<[In](), MarshalAs(UnmanagedType.[Interface])> pfd As IFileDialog, <[In](), MarshalAs(UnmanagedType.[Interface])> psiFolder As IShellItem) As HRESULT
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub OnFolderChange(<[In](), MarshalAs(UnmanagedType.[Interface])> pfd As IFileDialog)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub OnSelectionChange(<[In](), MarshalAs(UnmanagedType.[Interface])> pfd As IFileDialog)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub OnShareViolation(<[In](), MarshalAs(UnmanagedType.[Interface])> pfd As IFileDialog, <[In](), MarshalAs(UnmanagedType.[Interface])> psi As IShellItem, pResponse As NativeMethods.FDE_SHAREVIOLATION_RESPONSE)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub OnTypeChange(<[In](), MarshalAs(UnmanagedType.[Interface])> pfd As IFileDialog)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub OnOverwrite(<[In](), MarshalAs(UnmanagedType.[Interface])> pfd As IFileDialog, <[In](), MarshalAs(UnmanagedType.[Interface])> psi As IShellItem, pResponse As NativeMethods.FDE_OVERWRITE_RESPONSE)
     End Interface
 
-    <ComImport(), Guid(IIDGuid.IShellItem), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)> _
+    <ComImport(), Guid(IIDGuid.IShellItem), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)>
     Friend Interface IShellItem
         ' Not supported: IBindCtx
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub BindToHandler(<[In](), MarshalAs(UnmanagedType.[Interface])> pbc As IntPtr, <[In]()> ByRef bhid As Guid, <[In]()> ByRef riid As Guid, ppv As IntPtr)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetParent(<MarshalAs(UnmanagedType.[Interface])> ppsi As IShellItem)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetDisplayName(<[In]()> sigdnName As NativeMethods.SIGDN,
                        <MarshalAs(UnmanagedType.LPWStr)> ByRef ppszName As String)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetAttributes(<[In]()> sfgaoMask As UInteger, psfgaoAttribs As UInteger)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub Compare(<[In](), MarshalAs(UnmanagedType.[Interface])> psi As IShellItem, <[In]()> hint As UInteger, piOrder As Integer)
     End Interface
 
-    <ComImport(), Guid(IIDGuid.IShellItemArray), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)> _
+    <ComImport(), Guid(IIDGuid.IShellItemArray), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)>
     Friend Interface IShellItemArray
         ' Not supported: IBindCtx
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub BindToHandler(<[In](), MarshalAs(UnmanagedType.[Interface])> pbc As IntPtr, <[In]()> ByRef rbhid As Guid, <[In]()> ByRef riid As Guid, ppvOut As IntPtr)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetPropertyStore(<[In]()> Flags As Integer, <[In]()> ByRef riid As Guid, ppv As IntPtr)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetPropertyDescriptionList(<[In]()> ByRef keyType As NativeMethods.PROPERTYKEY, <[In]()> ByRef riid As Guid, ppv As IntPtr)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetAttributes(<[In]()> dwAttribFlags As NativeMethods.SIATTRIBFLAGS, <[In]()> sfgaoMask As UInteger, psfgaoAttribs As UInteger)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetCount(pdwNumItems As UInteger)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetItemAt(<[In]()> dwIndex As UInteger, <MarshalAs(UnmanagedType.[Interface])> ppsi As IShellItem)
 
         ' Not supported: IEnumShellItems (will use GetCount and GetItemAt instead)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub EnumItems(<MarshalAs(UnmanagedType.[Interface])> ppenumShellItems As IntPtr)
     End Interface
 
-    <ComImport(), Guid(IIDGuid.IKnownFolder), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)> _
+    <ComImport(), Guid(IIDGuid.IKnownFolder), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)>
     Friend Interface IKnownFolder
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetId(pkfid As Guid)
 
         ' Not yet supported - adding to fill slot in vtable
@@ -598,17 +529,17 @@ Public Class FolderBrowserDialog
         '[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         'void GetCategory(out mbtagKF_CATEGORY pCategory);
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetShellItem(<[In]()> dwFlags As UInteger, ByRef riid As Guid, ppv As IShellItem)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetPath(<[In]()> dwFlags As UInteger, <MarshalAs(UnmanagedType.LPWStr)> ppszPath As String)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetPath(<[In]()> dwFlags As UInteger, <[In](), MarshalAs(UnmanagedType.LPWStr)> pszPath As String)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetLocation(<[In]()> dwFlags As UInteger, <Out(), ComAliasName("Interop.wirePIDL")> ppidl As IntPtr)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetFolderType(pftid As Guid)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetRedirectionCapabilities(pCapabilities As UInteger)
 
         ' Not yet supported - adding to fill slot in vtable
@@ -618,125 +549,119 @@ Public Class FolderBrowserDialog
     End Interface
 
 
-    <ComImport(), Guid(IIDGuid.IKnownFolderManager), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)> _
+    <ComImport(), Guid(IIDGuid.IKnownFolderManager), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)>
     Friend Interface IKnownFolderManager
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub FolderIdFromCsidl(<[In]()> nCsidl As Integer, pfid As Guid)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub FolderIdToCsidl(<[In]()> ByRef rfid As Guid, pnCsidl As Integer)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetFolderIds(<Out()> ppKFId As IntPtr, <[In](), Out()> ByRef pCount As UInteger)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetFolder(<[In]()> ByRef rfid As Guid, <MarshalAs(UnmanagedType.[Interface])> ppkf As IKnownFolder)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetFolderByName(<[In](), MarshalAs(UnmanagedType.LPWStr)> pszCanonicalName As String, <MarshalAs(UnmanagedType.[Interface])> ppkf As IKnownFolder)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub RegisterFolder(<[In]()> ByRef rfid As Guid, <[In]()> ByRef pKFD As NativeMethods.KNOWNFOLDER_DEFINITION)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub UnregisterFolder(<[In]()> ByRef rfid As Guid)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub FindFolderFromPath(<[In](), MarshalAs(UnmanagedType.LPWStr)> pszPath As String, <[In]()> mode As NativeMethods.FFFP_MODE, <MarshalAs(UnmanagedType.[Interface])> ppkf As IKnownFolder)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub FindFolderFromIDList(<[In]()> pidl As IntPtr, <MarshalAs(UnmanagedType.[Interface])> ppkf As IKnownFolder)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
-        Sub Redirect(<[In]()> ByRef rfid As Guid, <[In]()> hwnd As IntPtr, <[In]()> Flags As UInteger, <[In](), MarshalAs(UnmanagedType.LPWStr)> pszTargetPath As String, <[In]()> cFolders As UInteger, <[In]()> ByRef pExclusion As Guid, _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
+        Sub Redirect(<[In]()> ByRef rfid As Guid, <[In]()> hwnd As IntPtr, <[In]()> Flags As UInteger, <[In](), MarshalAs(UnmanagedType.LPWStr)> pszTargetPath As String, <[In]()> cFolders As UInteger, <[In]()> ByRef pExclusion As Guid,
    <MarshalAs(UnmanagedType.LPWStr)> ppszError As String)
     End Interface
 
-    <ComImport(), Guid(IIDGuid.IFileDialogCustomize), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)> _
+    <ComImport(), Guid(IIDGuid.IFileDialogCustomize), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)>
     Friend Interface IFileDialogCustomize
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub EnableOpenDropDown(<[In]()> dwIDCtl As Integer)
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub AddMenu(<[In]()> dwIDCtl As Integer, <[In](), MarshalAs(UnmanagedType.LPWStr)> pszLabel As String)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub AddPushButton(<[In]()> dwIDCtl As Integer, <[In](), MarshalAs(UnmanagedType.LPWStr)> pszLabel As String)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub AddComboBox(<[In]()> dwIDCtl As Integer)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub AddRadioButtonList(<[In]()> dwIDCtl As Integer)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub AddCheckButton(<[In]()> dwIDCtl As Integer, <[In](), MarshalAs(UnmanagedType.LPWStr)> pszLabel As String, <[In]()> bChecked As Boolean)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub AddEditBox(<[In]()> dwIDCtl As Integer, <[In](), MarshalAs(UnmanagedType.LPWStr)> pszText As String)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub AddSeparator(<[In]()> dwIDCtl As Integer)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub AddText(<[In]()> dwIDCtl As Integer, <[In](), MarshalAs(UnmanagedType.LPWStr)> pszText As String)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetControlLabel(<[In]()> dwIDCtl As Integer, <[In](), MarshalAs(UnmanagedType.LPWStr)> pszLabel As String)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetControlState(<[In]()> dwIDCtl As Integer, <Out()> pdwState As NativeMethods.CDCONTROLSTATE)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetControlState(<[In]()> dwIDCtl As Integer, <[In]()> dwState As NativeMethods.CDCONTROLSTATE)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetEditBoxText(<[In]()> dwIDCtl As Integer, <Out()> ppszText As IntPtr)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetEditBoxText(<[In]()> dwIDCtl As Integer, <[In](), MarshalAs(UnmanagedType.LPWStr)> pszText As String)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetCheckButtonState(<[In]()> dwIDCtl As Integer, <Out()> pbChecked As Boolean)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetCheckButtonState(<[In]()> dwIDCtl As Integer, <[In]()> bChecked As Boolean)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub AddControlItem(<[In]()> dwIDCtl As Integer, <[In]()> dwIDItem As Integer, <[In](), MarshalAs(UnmanagedType.LPWStr)> pszLabel As String)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub RemoveControlItem(<[In]()> dwIDCtl As Integer, <[In]()> dwIDItem As Integer)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub RemoveAllControlItems(<[In]()> dwIDCtl As Integer)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetControlItemState(<[In]()> dwIDCtl As Integer, <[In]()> dwIDItem As Integer, <Out()> pdwState As NativeMethods.CDCONTROLSTATE)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetControlItemState(<[In]()> dwIDCtl As Integer, <[In]()> dwIDItem As Integer, <[In]()> dwState As NativeMethods.CDCONTROLSTATE)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetSelectedControlItem(<[In]()> dwIDCtl As Integer, <Out()> pdwIDItem As Integer)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetSelectedControlItem(<[In]()> dwIDCtl As Integer, <[In]()> dwIDItem As Integer)
         ' Not valid for OpenDropDown
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub StartVisualGroup(<[In]()> dwIDCtl As Integer, <[In](), MarshalAs(UnmanagedType.LPWStr)> pszLabel As String)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub EndVisualGroup()
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub MakeProminent(<[In]()> dwIDCtl As Integer)
     End Interface
 
-    <ComImport(), Guid(IIDGuid.IFileDialogControlEvents), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)> _
+    <ComImport(), Guid(IIDGuid.IFileDialogControlEvents), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)>
     Friend Interface IFileDialogControlEvents
 
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub OnItemSelected(<[In](), MarshalAs(UnmanagedType.[Interface])> pfdc As IFileDialogCustomize, <[In]()> dwIDCtl As Integer, <[In]()> dwIDItem As Integer)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub OnButtonClicked(<[In](), MarshalAs(UnmanagedType.[Interface])> pfdc As IFileDialogCustomize, <[In]()> dwIDCtl As Integer)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub OnCheckButtonToggled(<[In](), MarshalAs(UnmanagedType.[Interface])> pfdc As IFileDialogCustomize, <[In]()> dwIDCtl As Integer, <[In]()> bChecked As Boolean)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub OnControlActivating(<[In](), MarshalAs(UnmanagedType.[Interface])> pfdc As IFileDialogCustomize, <[In]()> dwIDCtl As Integer)
     End Interface
 
-    <ComImport(), Guid(IIDGuid.IPropertyStore), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)> _
+    <ComImport(), Guid(IIDGuid.IPropertyStore), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)>
     Friend Interface IPropertyStore
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetCount(<Out()> cProps As UInteger)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetAt(<[In]()> iProp As UInteger, pkey As NativeMethods.PROPERTYKEY)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub GetValue(<[In]()> ByRef key As NativeMethods.PROPERTYKEY, pv As Object)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub SetValue(<[In]()> ByRef key As NativeMethods.PROPERTYKEY, <[In]()> ByRef pv As Object)
-        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)> _
+        <MethodImpl(MethodImplOptions.InternalCall, MethodCodeType:=MethodCodeType.Runtime)>
         Sub Commit()
     End Interface
 
-    ' Dummy base interface for CommonFileDialog coclasses
     Friend Interface NativeCommonFileDialog
     End Interface
 
-    ' ---------------------------------------------------------
-    ' Coclass interfaces - designed to "look like" the object 
-    ' in the API, so that the 'new' operator can be used in a 
-    ' straightforward way. Behind the scenes, the C# compiler
-    ' morphs all 'new CoClass()' calls to 'new CoClassWrapper()'
     <ComImport(), Guid(IIDGuid.IFileOpenDialog), CoClass(GetType(FileOpenDialogRCW))>
     Friend Interface NativeFileOpenDialog
         Inherits IFileOpenDialog
@@ -817,28 +742,18 @@ Public Class FolderBrowserDialog
     Friend NotInheritable Class NativeMethods
         Private Sub New()
         End Sub
-        ''' <value>
-        ''' Returns true on Windows Vista or newer operating systems; otherwise, false.
-        ''' </value>
-        <Browsable(False)> _
-        Public Shared ReadOnly Property IsVistaOrLater() As Boolean
-            Get
-                Return Environment.OSVersion.Platform = PlatformID.Win32NT AndAlso Environment.OSVersion.Version.Major >= 6
-            End Get
-        End Property
 
-        Public Const BS_COMMANDLINK As Integer = &HE
-        Public Const BCM_SETNOTE As Integer = &H1609
-        Public Const BCM_SETSHIELD As Integer = &H160C
-
-        Public Const TV_FIRST As Integer = &H1100
-        Public Const TVM_SETEXTENDEDSTYLE As Integer = TV_FIRST + 44
-        Public Const TVM_GETEXTENDEDSTYLE As Integer = TV_FIRST + 45
-        Public Const TVM_SETAUTOSCROLLINFO As Integer = TV_FIRST + 59
-        Public Const TVS_NOHSCROLL As Integer = &H8000
-        Public Const TVS_EX_AUTOHSCROLL As Integer = &H20
-        Public Const TVS_EX_FADEINOUTEXPANDOS As Integer = &H40
-        Public Const GWL_STYLE As Integer = -16
+        Friend Const BS_COMMANDLINK As Integer = &HE
+        Friend Const BCM_SETNOTE As Integer = &H1609
+        Friend Const BCM_SETSHIELD As Integer = &H160C
+        Friend Const TV_FIRST As Integer = &H1100
+        Friend Const TVM_SETEXTENDEDSTYLE As Integer = TV_FIRST + 44
+        Friend Const TVM_GETEXTENDEDSTYLE As Integer = TV_FIRST + 45
+        Friend Const TVM_SETAUTOSCROLLINFO As Integer = TV_FIRST + 59
+        Friend Const TVS_NOHSCROLL As Integer = &H8000
+        Friend Const TVS_EX_AUTOHSCROLL As Integer = &H20
+        Friend Const TVS_EX_FADEINOUTEXPANDOS As Integer = &H40
+        Friend Const GWL_STYLE As Integer = -16
 
         <DllImport("user32.dll", CharSet:=CharSet.Unicode)>
         Friend Shared Function SendMessage(hWnd As IntPtr, Msg As UInt32, wParam As Integer, lParam As Integer) As Integer
@@ -854,23 +769,19 @@ Public Class FolderBrowserDialog
 
 #Region "General Definitions"
 
-
         ' Various important window messages
         Friend Const WM_USER As Integer = &H400
         Friend Const WM_ENTERIDLE As Integer = &H121
-
-        ' FormatMessage constants and structs
-        Friend Const FORMAT_MESSAGE_FROM_SYSTEM As Integer = &H1000
 
 #End Region
 
 #Region "File Operations Definitions"
 
-        <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode, Pack:=4)> _
+        <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode, Pack:=4)>
         Friend Structure COMDLG_FILTERSPEC
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszName As String
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszSpec As String
         End Structure
 
@@ -921,7 +832,7 @@ Public Class FolderBrowserDialog
             ' SHGDN_INFOLDER
         End Enum
 
-        <Flags()> _
+        <Flags()>
         Friend Enum FOS As UInteger
             FOS_OVERWRITEPROMPT = &H2
             FOS_STRICTFILETYPES = &H4
@@ -962,27 +873,27 @@ Public Class FolderBrowserDialog
             FFFP_NEARESTPARENTMATCH
         End Enum
 
-        <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode, Pack:=4)> _
+        <StructLayout(LayoutKind.Sequential, CharSet:=CharSet.Unicode, Pack:=4)>
         Friend Structure KNOWNFOLDER_DEFINITION
             Friend category As NativeMethods.KF_CATEGORY
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszName As String
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszCreator As String
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszDescription As String
             Friend fidParent As Guid
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszRelativePath As String
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszParsingName As String
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszToolTip As String
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszLocalizedName As String
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszIcon As String
-            <MarshalAs(UnmanagedType.LPWStr)> _
+            <MarshalAs(UnmanagedType.LPWStr)>
             Friend pszSecurity As String
             Friend dwAttributes As UInteger
             Friend kfdFlags As NativeMethods.KF_DEFINITION_FLAGS
@@ -996,16 +907,15 @@ Public Class FolderBrowserDialog
             KF_CATEGORY_PERUSER = &H4
         End Enum
 
-        <Flags()> _
+        <Flags()>
         Friend Enum KF_DEFINITION_FLAGS
             KFDF_PERSONALIZE = &H1
             KFDF_LOCAL_REDIRECT_ONLY = &H2
             KFDF_ROAMABLE = &H4
         End Enum
 
-
         ' Property System structs and consts
-        <StructLayout(LayoutKind.Sequential, Pack:=4)> _
+        <StructLayout(LayoutKind.Sequential, Pack:=4)>
         Friend Structure PROPERTYKEY
             Friend fmtid As Guid
             Friend pid As UInteger
@@ -1013,27 +923,9 @@ Public Class FolderBrowserDialog
 
 #End Region
 
-        '800704C7
+        Friend Const ERROR_CANCELLED As Integer = &H800704C7
 
-        Public Const ERROR_CANCELLED As Integer = &H800704C7 'UI
-
-        <Flags()> _
-        Public Enum FormatMessageFlags
-            FORMAT_MESSAGE_ALLOCATE_BUFFER = &H100
-            FORMAT_MESSAGE_IGNORE_INSERTS = &H200
-            FORMAT_MESSAGE_FROM_STRING = &H400
-            FORMAT_MESSAGE_FROM_HMODULE = &H800
-            FORMAT_MESSAGE_FROM_SYSTEM = &H1000
-            FORMAT_MESSAGE_ARGUMENT_ARRAY = &H2000
-        End Enum
-
-        'HRESULT SHCreateItemFromParsingName(          PCWSTR pszPath,
-        '    IBindCtx *pbc,
-        '    REFIID riid,
-        '    void **ppv
-        ');
-
-        <DllImport("kernel32.dll", CharSet:=CharSet.Unicode, SetLastError:=True)> _
+        <DllImport("kernel32.dll", CharSet:=CharSet.Unicode, SetLastError:=True)>
         Public Shared Function LoadLibrary(name As String) As SafeModuleHandle
         End Function
 
@@ -1043,10 +935,6 @@ Public Class FolderBrowserDialog
 
         <DllImport("user32.dll", SetLastError:=True, CharSet:=CharSet.Unicode)>
         Public Shared Function LoadString(hInstance As SafeModuleHandle, uID As UInteger, lpBuffer As StringBuilder, nBufferMax As Integer) As Integer
-        End Function
-
-        <DllImport("Kernel32.dll", SetLastError:=True, CharSet:=CharSet.Unicode)>
-        Public Shared Function FormatMessage(<MarshalAs(UnmanagedType.U4)> dwFlags As FormatMessageFlags, lpSource As IntPtr, dwMessageId As UInteger, dwLanguageId As UInteger, ByRef lpBuffer As IntPtr, nSize As UInteger, Arguments As String()) As UInteger
         End Function
 
         <DllImport("shell32.dll", CharSet:=CharSet.Unicode)>
@@ -1060,10 +948,8 @@ Public Class FolderBrowserDialog
             Dim item As Object = Nothing
             Dim guid As New Guid("43826d1e-e718-42ee-bc55-a1e261c37bfe")
             ' IID_IShellItem
-            Dim hr As Integer = NativeMethods.SHCreateItemFromParsingName(path, IntPtr.Zero, guid, item)
-            If hr <> 0 Then
-                Throw New System.ComponentModel.Win32Exception(hr)
-            End If
+            Dim hr = NativeMethods.SHCreateItemFromParsingName(path, IntPtr.Zero, guid, item)
+            If hr <> 0 Then Throw New Win32Exception(hr)
             Return DirectCast(item, IShellItem)
         End Function
     End Class

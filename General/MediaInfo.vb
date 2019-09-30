@@ -1,86 +1,22 @@
 Imports System.Runtime.InteropServices
 Imports System.Text.RegularExpressions
+Imports Microsoft.Win32
 
-Class MediaInfo
+Public Class MediaInfo
     Implements IDisposable
 
     Private Handle As IntPtr
-
-    <DllImport("MediaInfo.dll")>
-    Private Shared Function MediaInfo_New() As IntPtr
-    End Function
-
-    <DllImport("MediaInfo.dll")>
-    Private Shared Sub MediaInfo_Delete(Handle As IntPtr)
-    End Sub
-
-    <DllImport("MediaInfo.dll", CharSet:=CharSet.Unicode)>
-    Private Shared Function MediaInfo_Open(Handle As IntPtr, FileName As String) As Integer
-    End Function
-
-    <DllImport("MediaInfo.dll")>
-    Private Shared Function MediaInfo_Close(Handle As IntPtr) As Integer
-    End Function
-
-    <DllImport("MediaInfo.dll", CharSet:=CharSet.Unicode)>
-    Private Shared Function MediaInfo_Inform(Handle As IntPtr,
-                                             Reserved As Integer) As IntPtr
-    End Function
-
-    <DllImport("MediaInfo.dll", CharSet:=CharSet.Unicode)>
-    Private Shared Function MediaInfo_Get(Handle As IntPtr,
-                                          StreamKind As MediaInfoStreamKind,
-                                          StreamNumber As Integer, Parameter As String,
-                                          KindOfInfo As MediaInfoInfoKind,
-                                          KindOfSearch As MediaInfoInfoKind) As IntPtr
-    End Function
-
-    <DllImport("MediaInfo.dll", CharSet:=CharSet.Unicode)>
-    Private Shared Function MediaInfo_Option(Handle As IntPtr,
-                                             OptionString As String,
-                                             Value As String) As IntPtr
-    End Function
-
-    <DllImport("MediaInfo.dll")>
-    Private Shared Function MediaInfo_State_Get(Handle As IntPtr) As Integer
-    End Function
-
-    <DllImport("MediaInfo.dll")>
-    Private Shared Function MediaInfo_Count_Get(Handle As IntPtr,
-                                                StreamKind As MediaInfoStreamKind,
-                                                StreamNumber As Integer) As Integer
-    End Function
-
     Private Shared Loaded As Boolean
 
     Sub New(path As String)
         If Not Loaded Then
             Loaded = True
-            Native.LoadLibrary(Packs.MediaInfo.GetPath)
+            Native.LoadLibrary(Package.MediaInfo.Path)
         End If
 
         Handle = MediaInfo_New()
         MediaInfo_Open(Handle, path)
-    End Sub
-
-    Private WasDisposed As Boolean
-
-    Protected Overridable Sub Dispose(disposing As Boolean)
-        If Not WasDisposed Then
-            MediaInfo_Close(Handle)
-            MediaInfo_Delete(Handle)
-            WasDisposed = True
-        End If
-    End Sub
-
-    Sub Dispose() Implements IDisposable.Dispose
-        Dispose(True)
-        GC.SuppressFinalize(Me)
-    End Sub
-
-    Protected Overrides Sub Finalize()
-        Dispose(False)
-        MyBase.Finalize()
+        If Registry.CurrentUser.GetBoolean("Software\" + Application.ProductName, "DevMode") Then MediaInfo_Option(Handle, "Language", "raw")
     End Sub
 
     Private VideoStreamsValue As List(Of VideoStream)
@@ -92,14 +28,16 @@ Class MediaInfo
                 Dim count = MediaInfo_Count_Get(Handle, MediaInfoStreamKind.Video, -1)
 
                 If count > 0 Then
-                    For i = 0 To count - 1
+                    For index = 0 To count - 1
                         Dim at As New VideoStream
+                        at.Index = index
 
-                        Dim streamOrder = GetVideo(i, "StreamOrder")
-                        If Not streamOrder.IsInt Then streamOrder = (i + 1).ToString
+                        Dim streamOrder = GetVideo(index, "StreamOrder")
+                        If Not streamOrder.IsInt Then streamOrder = (index + 1).ToString
                         at.StreamOrder = streamOrder.ToInt
 
-                        at.Format = GetVideo(i, "Format")
+                        at.Format = GetVideo(index, "Format")
+                        at.ID = GetVideo(index, "ID").ToInt
 
                         VideoStreamsValue.Add(at)
                     Next
@@ -114,38 +52,43 @@ Class MediaInfo
         Get
             Dim ret As New List(Of AudioStream)
             Dim count = MediaInfo_Count_Get(Handle, MediaInfoStreamKind.Audio, -1)
+            Dim offset As Integer
 
             If count > 0 Then
-                For i = 0 To count - 1
+                For index = 0 To count - 1
                     Dim at As New AudioStream
+                    at.Index = index
 
-                    Dim streamOrder = GetAudio(i, "StreamOrder")
-                    If Not streamOrder.IsInt Then streamOrder = (i + 1).ToString
-                    at.StreamOrder = streamOrder.ToInt
+                    Dim streamOrder = GetAudio(index, "StreamOrder")
+                    If Not streamOrder.IsInt Then streamOrder = (index + 1).ToString
+                    at.StreamOrder = streamOrder.ToInt + offset
 
-                    Dim id = GetAudio(i, "ID")
-                    If Not id.IsInt Then id = (i + 2).ToString
-                    at.ID = id.ToInt
+                    Dim id = GetAudio(index, "ID")
+                    If Not id.IsInt Then id = (index + 2).ToString
+                    at.ID = id.ToInt + offset
 
-                    at.SamplingRate = GetAudio(i, "SamplingRate").ToInt
-                    at.BitDepth = GetAudio(i, "BitDepth").ToInt
-                    at.CodecString = GetAudio(i, "Codec/String")
-                    at.Codec = GetAudio(i, "Codec")
-                    at.Format = GetAudio(i, "Format")
-                    at.FormatProfile = GetAudio(i, "Format_Profile")
-                    at.Title = GetAudio(i, "Title").Trim
+                    at.Codec = GetAudio(index, "Codec")
+                    If at.Codec = "TrueHD / AC3" Then offset += 1
 
-                    If at.Title.Contains("IsoMedia") OrElse at.Title.Contains("GPAC") OrElse at.Title.Contains("PID ") OrElse
-                            {"Surround 7.1", "Surround 5.1", "Stereo", "3/2+1", "2/0"}.Contains(at.Title) Then
+                    at.Lossy = GetAudio(index, "Compression_Mode") = "Lossy"
+                    at.SamplingRate = GetAudio(index, "SamplingRate").ToInt
+                    at.BitDepth = GetAudio(index, "BitDepth").ToInt
+                    at.CodecString = GetAudio(index, "Codec/String")
+                    at.Format = GetAudio(index, "Format")
+                    at.FormatProfile = GetAudio(index, "Format_Profile")
+                    at.Title = GetAudio(index, "Title").Trim
+                    at.Forced = GetAudio(index, "Forced") = "Yes"
+                    at.Default = GetAudio(index, "Default") = "Yes"
 
+                    If at.Title.ContainsAny({"IsoMedia", "GPAC", "PID ", "Surround ", "Stereo", "3/2+1", "2/0"}) Then
                         at.Title = ""
                     End If
 
-                    If Not Filepath.IsValidFileSystemName(at.Title) Then
-                        at.Title = Filepath.RemoveIllegalCharsFromName(at.Title)
+                    If Not FilePath.IsValidFileSystemName(at.Title) Then
+                        at.Title = FilePath.RemoveIllegalCharsFromName(at.Title)
                     End If
 
-                    Dim lm = GetAudio(i, "Language_More")
+                    Dim lm = GetAudio(index, "Language_More")
 
                     If lm <> "" Then
                         If at.Title = "" Then
@@ -155,43 +98,45 @@ Class MediaInfo
                         End If
                     End If
 
-                    Dim bitrate = GetAudio(i, "BitRate")
+                    Dim bitrate = GetAudio(index, "BitRate")
 
                     If bitrate.IsInt Then
                         at.Bitrate = CInt(bitrate.ToInt / 1000)
-                    Else
-                        Dim match = Regex.Match(bitrate, "(.+)/(.+)")
-
-                        If match.Success Then
-                            If match.Groups(1).Value.IsInt Then
-                                at.Bitrate = CInt(match.Groups(1).Value.ToInt / 1000)
-                            End If
-
-                            If match.Groups(2).Value.IsInt Then
-                                at.BitrateCore = CInt(match.Groups(2).Value.ToInt / 1000)
-                            End If
-                        End If
+                    ElseIf bitrate.Contains("/") Then
+                        Dim values = bitrate.Split("/"c)
+                        at.Bitrate = CInt(values(0).ToInt / 1000)
+                        at.Bitrate2 = CInt(values(1).ToInt / 1000)
                     End If
 
-                    at.Delay = GetAudio(i, "Video_Delay").ToInt
-                    If at.Delay = 0 Then at.Delay = GetAudio(i, "Source_Delay").ToInt
+                    If at.Bitrate = 0 Then at.Bitrate = GetAudio(index, "FromStats_BitRate").ToInt
 
-                    Dim channels = GetAudio(i, "Channel(s)")
+                    at.Delay = GetAudio(index, "Video_Delay").ToInt
+                    If at.Delay = 0 Then at.Delay = GetAudio(index, "Source_Delay").ToInt
+
+                    Dim channels = GetAudio(index, "Channel(s)")
                     at.Channels = channels.ToInt
-                    If at.Channels = 0 Then at.Channels = GetAudio(i, "Channel(s)_Original").ToInt
+                    If at.Channels = 0 Then at.Channels = GetAudio(index, "Channel(s)_Original").ToInt
 
                     If at.Channels = 0 Then
-                        Dim match = Regex.Match(channels, "(\d+) */ *(\d+)")
-
-                        If match.Success Then
-                            at.Channels = match.Groups(1).Value.ToInt
-                            at.ChannelsCore = match.Groups(2).Value.ToInt
-                        Else
-                            at.Channels = 2
+                        If channels.Contains("/") Then
+                            Dim values = channels.Split("/"c)
+                            at.Channels = values(0).ToInt
+                            at.Channels2 = values(1).ToInt
                         End If
                     End If
 
-                    at.Language = New Language(GetAudio(i, "Language/String2"))
+                    at.Language = New Language(GetAudio(index, "Language/String2"))
+
+                    Select Case p.DemuxAudio
+                        Case DemuxMode.All
+                            at.Enabled = True
+                        Case DemuxMode.None
+                            at.Enabled = False
+                        Case DemuxMode.Preferred, DemuxMode.Dialog
+                            Dim autoCode = p.PreferredAudio.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                            at.Enabled = autoCode.ContainsAny("all", at.Language.TwoLetterCode, at.Language.ThreeLetterCode)
+                    End Select
+
                     ret.Add(at)
                 Next
             End If
@@ -204,18 +149,38 @@ Class MediaInfo
         Get
             Dim ret As New List(Of Subtitle)
             Dim count = MediaInfo_Count_Get(Handle, MediaInfoStreamKind.Text, -1)
+            Dim offset As Integer
 
             If count > 0 Then
-                For i = 0 To count - 1
-                    Dim s As New Subtitle(New Language(GetInfo(MediaInfoStreamKind.Text, i, "Language")))
+                For Each i In AudioStreams
+                    If i.Codec = "TrueHD / AC3" Then offset += 1
+                Next
 
-                    s.StreamOrder = GetInfo(MediaInfoStreamKind.Text, i, "StreamOrder").ToInt
-                    s.ID = GetInfo(MediaInfoStreamKind.Text, i, "ID").ToInt
-                    s.Title = GetInfo(MediaInfoStreamKind.Text, i, "Title").Trim
-                    s.CodecString = GetInfo(MediaInfoStreamKind.Text, i, "Codec/String")
-                    s.Format = GetInfo(MediaInfoStreamKind.Text, i, "Format")
+                For index = 0 To count - 1
+                    Dim subtitle As New Subtitle(New Language(GetText(index, "Language")))
+                    subtitle.Index = index
+                    Dim streamOrder = GetText(index, "StreamOrder")
 
-                    ret.Add(s)
+                    If streamOrder <> "" Then
+                        If streamOrder.Contains("-") Then
+                            subtitle.StreamOrder = streamOrder.Right("-").ToInt + offset
+                        Else
+                            subtitle.StreamOrder = streamOrder.ToInt
+                        End If
+                    End If
+
+                    subtitle.Forced = GetText(index, "Forced") = "Yes"
+                    subtitle.Default = GetText(index, "Default") = "Yes"
+                    subtitle.ID = GetText(index, "ID").ToInt
+                    subtitle.Title = GetText(index, "Title").Trim
+                    subtitle.CodecString = GetText(index, "Codec/String")
+                    subtitle.Format = GetText(index, "Format")
+                    subtitle.Size = GetText(index, "StreamSize").ToInt
+
+                    Dim autoCode = p.PreferredSubtitles.ToLower.SplitNoEmptyAndWhiteSpace(",", ";", " ")
+                    subtitle.Enabled = autoCode.ContainsAny("all", subtitle.Language.TwoLetterCode, subtitle.Language.ThreeLetterCode) OrElse p.DemuxSubtitles = DemuxMode.All
+
+                    ret.Add(subtitle)
                 Next
             End If
 
@@ -238,12 +203,18 @@ Class MediaInfo
     Shared Function GetSummary(path As String) As String
         Dim mi = GetMediaInfo(path)
         MediaInfo_Option(mi.Handle, "Complete", "0")
-        Return Marshal.PtrToStringUni(MediaInfo_Inform(mi.Handle, 0)).FormatColumn(":")
+        Dim ret = Marshal.PtrToStringUni(MediaInfo_Inform(mi.Handle, 0))
+        If ret.Contains("UniqueID/String") Then ret = Regex.Replace(ret, "UniqueID/String +: .+\n", "")
+        If ret.Contains("Unique ID") Then ret = Regex.Replace(ret, "Unique ID +: .+\n", "")
+        If ret.Contains("Encoded_Library_Settings") Then ret = Regex.Replace(ret, "Encoded_Library_Settings +: .+\n", "")
+        If ret.Contains("Encoding settings") Then ret = Regex.Replace(ret, "Encoding settings +: .+\n", "")
+        If ret.Contains("Format settings, ") Then ret = ret.Replace("Format settings, ", "Format, ")
+
+        Return ret.FormatColumn(":").Trim
     End Function
 
-    Shared Function GetFullSummary(path As String) As String
+    Shared Function GetCompleteSummary(path As String) As String
         Dim mi = GetMediaInfo(path)
-        MediaInfo_Option(mi.Handle, "Info_Parameters", "")
         MediaInfo_Option(mi.Handle, "Complete", "1")
         Return Marshal.PtrToStringUni(MediaInfo_Inform(mi.Handle, 0))
     End Function
@@ -256,6 +227,10 @@ Class MediaInfo
         Return Marshal.PtrToStringUni(MediaInfo_Get(Handle, MediaInfoStreamKind.Audio, streamNumber, parameter, MediaInfoInfoKind.Text, MediaInfoInfoKind.Name))
     End Function
 
+    Function GetText(streamNumber As Integer, parameter As String) As String
+        Return Marshal.PtrToStringUni(MediaInfo_Get(Handle, MediaInfoStreamKind.Text, streamNumber, parameter, MediaInfoInfoKind.Text, MediaInfoInfoKind.Name))
+    End Function
+
     Function GetInfo(streamKind As MediaInfoStreamKind, streamNumber As Integer, parameter As String) As String
         Return Marshal.PtrToStringUni(MediaInfo_Get(Handle, streamKind, streamNumber, parameter, MediaInfoInfoKind.Text, MediaInfoInfoKind.Name))
     End Function
@@ -263,6 +238,10 @@ Class MediaInfo
     Shared Function GetInfo(path As String, streamKind As MediaInfoStreamKind, parameter As String) As String
         If path = "" Then Return ""
         Return GetMediaInfo(path).GetInfo(streamKind, parameter)
+    End Function
+
+    Shared Function GetMenu(path As String, parameter As String) As String
+        Return GetInfo(path, MediaInfoStreamKind.Menu, parameter)
     End Function
 
     Shared Function GetAudio(path As String, parameter As String) As String
@@ -281,21 +260,48 @@ Class MediaInfo
         Return GetInfo(path, MediaInfoStreamKind.Video, parameter)
     End Function
 
+    Function GetGeneral(parameter As String) As String
+        Return GetInfo(MediaInfoStreamKind.General, parameter)
+    End Function
+
     Shared Function GetGeneral(path As String, parameter As String) As String
         Return GetInfo(path, MediaInfoStreamKind.General, parameter)
     End Function
 
-    Function GetFrameRate() As Double
-        Dim ret = GetInfo(MediaInfoStreamKind.Video, "FrameRate")
-
-        If ret = "" Then ret = GetInfo(MediaInfoStreamKind.Video, "FrameRate_Original")
-        If ret = "" Then ret = GetInfo(MediaInfoStreamKind.Video, "FrameRate_Nominal")
-
-        If ret.IsDouble Then Return ret.ToDouble Else Return 25
+    Function GetFrameRate(Optional defaultValue As Double = 25) As Double
+        Dim num = GetVideo("FrameRate_Num").ToInt
+        Dim den = GetVideo("FrameRate_Den").ToInt
+        If num > 0 AndAlso den > 0 Then Return num / den
+        Dim ret = GetVideo("FrameRate")
+        If ret = "" Then ret = GetVideo("FrameRate_Original")
+        If ret = "" Then ret = GetVideo("FrameRate_Nominal")
+        If ret.IsDouble Then Return ret.ToDouble Else Return defaultValue
     End Function
 
-    Shared Function GetFrameRate(path As String) As Double
-        Return GetMediaInfo(path).GetFrameRate
+    Shared Function GetFrameRate(path As String, Optional defaultValue As Double = 25) As Double
+        Return GetMediaInfo(path).GetFrameRate(defaultValue)
+    End Function
+
+    Function GetChannels() As Integer
+        Dim channelsString = GetInfo(MediaInfoStreamKind.Audio, "Channel(s)")
+        Dim ret = channelsString.ToInt
+        If ret = 0 Then ret = GetInfo(MediaInfoStreamKind.Audio, "Channel(s)_Original").ToInt
+
+        If ret = 0 Then
+            If channelsString.Contains("/") Then
+                Dim values = channelsString.Split("/"c)
+                Dim value0 = values(0).ToInt
+                Dim value1 = values(1).ToInt
+                If value0 >= value1 Then ret = value0 Else ret = value1
+            End If
+        End If
+
+        If ret = 0 Then ret = 2
+        Return ret
+    End Function
+
+    Shared Function GetChannels(path As String) As Integer
+        Return GetMediaInfo(path).GetChannels
     End Function
 
     Shared Function GetAudioCodecs(path As String) As String
@@ -373,6 +379,74 @@ Class MediaInfo
 
         Cache.Clear()
     End Sub
+
+#Region "IDisposable"
+
+    Private Disposed As Boolean
+
+    Sub Dispose() Implements IDisposable.Dispose
+        If Not Disposed Then
+            Disposed = True
+            MediaInfo_Close(Handle)
+            MediaInfo_Delete(Handle)
+        End If
+    End Sub
+
+    Protected Overrides Sub Finalize()
+        Dispose()
+    End Sub
+
+#End Region
+
+#Region "native"
+
+    <DllImport("MediaInfo.dll")>
+    Private Shared Function MediaInfo_New() As IntPtr
+    End Function
+
+    <DllImport("MediaInfo.dll")>
+    Private Shared Sub MediaInfo_Delete(Handle As IntPtr)
+    End Sub
+
+    <DllImport("MediaInfo.dll", CharSet:=CharSet.Unicode)>
+    Private Shared Function MediaInfo_Open(Handle As IntPtr, FileName As String) As Integer
+    End Function
+
+    <DllImport("MediaInfo.dll")>
+    Private Shared Function MediaInfo_Close(Handle As IntPtr) As Integer
+    End Function
+
+    <DllImport("MediaInfo.dll")>
+    Private Shared Function MediaInfo_Inform(Handle As IntPtr,
+                                             Reserved As Integer) As IntPtr
+    End Function
+
+    <DllImport("MediaInfo.dll", CharSet:=CharSet.Unicode)>
+    Private Shared Function MediaInfo_Get(Handle As IntPtr,
+                                          StreamKind As MediaInfoStreamKind,
+                                          StreamNumber As Integer, Parameter As String,
+                                          KindOfInfo As MediaInfoInfoKind,
+                                          KindOfSearch As MediaInfoInfoKind) As IntPtr
+    End Function
+
+    <DllImport("MediaInfo.dll", CharSet:=CharSet.Unicode)>
+    Private Shared Function MediaInfo_Option(Handle As IntPtr,
+                                             OptionString As String,
+                                             Value As String) As IntPtr
+    End Function
+
+    <DllImport("MediaInfo.dll")>
+    Private Shared Function MediaInfo_State_Get(Handle As IntPtr) As Integer
+    End Function
+
+    <DllImport("MediaInfo.dll")>
+    Private Shared Function MediaInfo_Count_Get(Handle As IntPtr,
+                                                StreamKind As MediaInfoStreamKind,
+                                                StreamNumber As Integer) As Integer
+    End Function
+
+#End Region
+
 End Class
 
 Public Enum MediaInfoStreamKind
@@ -380,8 +454,10 @@ Public Enum MediaInfoStreamKind
     Video
     Audio
     Text
-    Chapters
+    Other
     Image
+    Menu
+    Max
 End Enum
 
 Public Enum MediaInfoInfoKind

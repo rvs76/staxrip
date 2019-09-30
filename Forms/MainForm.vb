@@ -1,29 +1,22 @@
 Imports System.ComponentModel
 Imports System.Drawing.Design
 Imports System.Globalization
-Imports System.Reflection
+Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
-Imports System.Windows.Forms.VisualStyles
-
+Imports System.Threading.Tasks
 Imports Microsoft.Win32
 Imports StaxRip.UI
-Imports SWF = System.Windows.Forms
 Imports VB6 = Microsoft.VisualBasic
-Imports System.Threading.Tasks
-Imports System.Runtime.InteropServices
 
-Class MainForm
+Public Class MainForm
     Inherits FormBase
 
 #Region " Designer "
+
     Protected Overloads Overrides Sub Dispose(disposing As Boolean)
-        If disposing Then
-            If Not (components Is Nothing) Then
-                components.Dispose()
-            End If
-        End If
+        If disposing Then If Not components Is Nothing Then components.Dispose()
         MyBase.Dispose(disposing)
     End Sub
 
@@ -31,173 +24,172 @@ Class MainForm
 
     Public WithEvents tbAudioFile0 As StaxRip.UI.TextBoxEx
     Public WithEvents tbAudioFile1 As StaxRip.UI.TextBoxEx
-    Friend WithEvents llEditAudio1 As System.Windows.Forms.LinkLabel
-    Friend WithEvents llEditAudio0 As System.Windows.Forms.LinkLabel
-    Public WithEvents bNext As System.Windows.Forms.Button
+    Public WithEvents llEditAudio1 As ButtonLabel
+    Public WithEvents llEditAudio0 As ButtonLabel
+    Public WithEvents bnNext As System.Windows.Forms.Button
     Public WithEvents tbSourceFile As StaxRip.UI.TextBoxEx
     Public WithEvents tbTargetFile As StaxRip.UI.TextBoxEx
     Public WithEvents gbAssistant As System.Windows.Forms.GroupBox
-    Friend WithEvents lgbFilters As LinkGroupBox
-    Friend WithEvents lTargetLength As System.Windows.Forms.Label
-    Friend WithEvents tbSize As System.Windows.Forms.TextBox
-    Public WithEvents lAudioBitrate As System.Windows.Forms.Label
-    Public WithEvents lAudioBitrateText As System.Windows.Forms.Label
-    Friend WithEvents lBitrate As System.Windows.Forms.Label
-    Friend WithEvents tbBitrate As System.Windows.Forms.TextBox
-    Friend WithEvents lTargetLengthText As System.Windows.Forms.Label
-    Friend WithEvents lbSourceLength As System.Windows.Forms.Label
-    Friend WithEvents lbSourceLengthText As System.Windows.Forms.Label
-    Friend WithEvents lSourceFramerate As System.Windows.Forms.Label
-    Friend WithEvents lSourceFramerateText As System.Windows.Forms.Label
-    Friend WithEvents lgbResize As LinkGroupBox
-    Friend WithEvents lPixel As System.Windows.Forms.Label
-    Friend WithEvents lPixelText As System.Windows.Forms.Label
-    Friend WithEvents tbResize As System.Windows.Forms.TrackBar
-    Friend WithEvents lZoom As System.Windows.Forms.Label
-    Friend WithEvents lZoomText As System.Windows.Forms.Label
+    Public WithEvents lgbFilters As LinkGroupBox
+    Public WithEvents tbTargetSize As System.Windows.Forms.TextBox
+    Public WithEvents lBitrate As System.Windows.Forms.Label
+    Public WithEvents tbBitrate As System.Windows.Forms.TextBox
+    Public WithEvents lTarget1 As System.Windows.Forms.Label
+    Public WithEvents lSource1 As System.Windows.Forms.Label
+    Public WithEvents lgbResize As LinkGroupBox
+    Public WithEvents lPixel As System.Windows.Forms.Label
+    Public WithEvents lPixelText As System.Windows.Forms.Label
+    Public WithEvents tbResize As System.Windows.Forms.TrackBar
+    Public WithEvents lZoom As System.Windows.Forms.Label
+    Public WithEvents lZoomText As System.Windows.Forms.Label
     Public WithEvents tbTargetHeight As System.Windows.Forms.TextBox
     Public WithEvents tbTargetWidth As System.Windows.Forms.TextBox
-    Friend WithEvents lTargetHeight As System.Windows.Forms.Label
-    Friend WithEvents lTargetWidth As System.Windows.Forms.Label
-    Friend WithEvents lDAR As System.Windows.Forms.Label
-    Friend WithEvents lDarText As System.Windows.Forms.Label
+    Public WithEvents lTargetHeight As System.Windows.Forms.Label
+    Public WithEvents lTargetWidth As System.Windows.Forms.Label
+    Public WithEvents lDAR As System.Windows.Forms.Label
+    Public WithEvents blTargetDarText As ButtonLabel
     Public WithEvents lCrop As System.Windows.Forms.Label
-    Friend WithEvents lCropText As System.Windows.Forms.Label
-    Friend WithEvents lgbSource As LinkGroupBox
-    Friend WithEvents lSourceImageSize As System.Windows.Forms.Label
-    Friend WithEvents lSourceImageSizeText As System.Windows.Forms.Label
-    Friend WithEvents lgbTarget As LinkGroupBox
-    Friend WithEvents GroupBox1 As System.Windows.Forms.GroupBox
-    Friend WithEvents lTip As System.Windows.Forms.Label
-    Friend WithEvents lgbEncoder As LinkGroupBox
-    Public WithEvents lQuality As System.Windows.Forms.Label
-    Public WithEvents lQualityText As System.Windows.Forms.Label
-    Public WithEvents lCompCheck As System.Windows.Forms.Label
-    Friend WithEvents MenuStrip As System.Windows.Forms.MenuStrip
-    Friend WithEvents llAudioProfile0 As LinkLabel
-    Friend WithEvents llAudioProfile1 As LinkLabel
-    Friend WithEvents pEncoder As System.Windows.Forms.Panel
-    Friend WithEvents AviSynthListView As StaxRip.AviSynthListView
-    Friend WithEvents llFilesize As System.Windows.Forms.LinkLabel
-    Friend WithEvents llMuxer As System.Windows.Forms.LinkLabel
-    Friend WithEvents lPAR As StaxRip.UI.LabelEx
-    Friend WithEvents lParText As StaxRip.UI.LabelEx
-    Friend WithEvents lAspectRatioError As StaxRip.UI.LabelEx
-    Friend WithEvents lAspectRatioErrorText As StaxRip.UI.LabelEx
-    Friend WithEvents gbAudio As System.Windows.Forms.GroupBox
-    Friend WithEvents llSourceParText As System.Windows.Forms.LinkLabel
-    Friend WithEvents lSourcePAR As System.Windows.Forms.Label
-    Friend WithEvents lSourceDar As System.Windows.Forms.Label
-    Friend WithEvents lSourceDarText As System.Windows.Forms.Label
-    Friend WithEvents lSAR As StaxRip.UI.LabelEx
-    Friend WithEvents lSarText As StaxRip.UI.LabelEx
-    Friend WithEvents TipProvider As StaxRip.UI.TipProvider
-    Friend WithEvents lCodec As System.Windows.Forms.Label
-    Friend WithEvents lCodecProfile As System.Windows.Forms.Label
-    Friend WithEvents Label1 As System.Windows.Forms.Label
-    Friend WithEvents Label2 As System.Windows.Forms.Label
-    Friend WithEvents Label3 As System.Windows.Forms.Label
-    Public WithEvents lCompCheckText As System.Windows.Forms.Label
+    Public WithEvents lCropText As System.Windows.Forms.Label
+    Public WithEvents lgbSource As LinkGroupBox
+    Public WithEvents lSource2 As System.Windows.Forms.Label
+    Public WithEvents lgbTarget As LinkGroupBox
+    Public WithEvents GroupBox1 As System.Windows.Forms.GroupBox
+    Public WithEvents lTip As System.Windows.Forms.Label
+    Public WithEvents lgbEncoder As LinkGroupBox
+    Public WithEvents lTarget2 As System.Windows.Forms.Label
+    Public WithEvents MenuStrip As System.Windows.Forms.MenuStrip
+    Public WithEvents llAudioProfile0 As ButtonLabel
+    Public WithEvents llAudioProfile1 As ButtonLabel
+    Public WithEvents pnEncoder As System.Windows.Forms.Panel
+    Public WithEvents FiltersListView As StaxRip.FiltersListView
+    Public WithEvents blFilesize As ButtonLabel
+    Public WithEvents llMuxer As ButtonLabel
+    Public WithEvents lPAR As StaxRip.UI.LabelEx
+    Public WithEvents blTargetParText As ButtonLabel
+    Public WithEvents lAspectRatioError As StaxRip.UI.LabelEx
+    Public WithEvents lAspectRatioErrorText As StaxRip.UI.LabelEx
+    Public WithEvents gbAudio As System.Windows.Forms.GroupBox
+    Public WithEvents blSourceParText As ButtonLabel
+    Public WithEvents lSourcePAR As System.Windows.Forms.Label
+    Public WithEvents lSourceDar As System.Windows.Forms.Label
+    Public WithEvents lSAR As StaxRip.UI.LabelEx
+    Public WithEvents lSarText As StaxRip.UI.LabelEx
+    Friend WithEvents tlpTarget As TableLayoutPanel
+    Friend WithEvents tlpMain As TableLayoutPanel
+    Friend WithEvents tlpSource As TableLayoutPanel
+    Friend WithEvents tlpResizeValues As TableLayoutPanel
+    Friend WithEvents tlpResize As TableLayoutPanel
+    Friend WithEvents tlpAudio As TableLayoutPanel
+    Friend WithEvents tlpAssistant As TableLayoutPanel
+    Friend WithEvents blSourceDarText As ButtonLabel
+    Friend WithEvents tlpSourceValues As TableLayoutPanel
+    Public WithEvents TipProvider As StaxRip.UI.TipProvider
 
     '<System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.bNext = New System.Windows.Forms.Button()
-        Me.llEditAudio0 = New System.Windows.Forms.LinkLabel()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
+        Me.bnNext = New System.Windows.Forms.Button()
+        Me.llEditAudio0 = New StaxRip.UI.ButtonLabel()
         Me.gbAssistant = New System.Windows.Forms.GroupBox()
+        Me.tlpAssistant = New System.Windows.Forms.TableLayoutPanel()
         Me.lTip = New System.Windows.Forms.Label()
-        Me.llEditAudio1 = New System.Windows.Forms.LinkLabel()
+        Me.llEditAudio1 = New StaxRip.UI.ButtonLabel()
         Me.gbAudio = New System.Windows.Forms.GroupBox()
-        Me.llAudioProfile1 = New System.Windows.Forms.LinkLabel()
-        Me.llAudioProfile0 = New System.Windows.Forms.LinkLabel()
+        Me.tlpAudio = New System.Windows.Forms.TableLayoutPanel()
         Me.tbAudioFile0 = New StaxRip.UI.TextBoxEx()
         Me.tbAudioFile1 = New StaxRip.UI.TextBoxEx()
+        Me.llAudioProfile1 = New StaxRip.UI.ButtonLabel()
+        Me.llAudioProfile0 = New StaxRip.UI.ButtonLabel()
         Me.MenuStrip = New System.Windows.Forms.MenuStrip()
         Me.lgbTarget = New StaxRip.UI.LinkGroupBox()
-        Me.lCompCheck = New System.Windows.Forms.Label()
-        Me.lAudioBitrate = New System.Windows.Forms.Label()
-        Me.llFilesize = New System.Windows.Forms.LinkLabel()
-        Me.lTargetLength = New System.Windows.Forms.Label()
-        Me.tbSize = New System.Windows.Forms.TextBox()
-        Me.lAudioBitrateText = New System.Windows.Forms.Label()
-        Me.lQuality = New System.Windows.Forms.Label()
-        Me.lQualityText = New System.Windows.Forms.Label()
-        Me.lCompCheckText = New System.Windows.Forms.Label()
-        Me.lBitrate = New System.Windows.Forms.Label()
-        Me.tbBitrate = New System.Windows.Forms.TextBox()
-        Me.lTargetLengthText = New System.Windows.Forms.Label()
+        Me.tlpTarget = New System.Windows.Forms.TableLayoutPanel()
         Me.tbTargetFile = New StaxRip.UI.TextBoxEx()
+        Me.lTarget2 = New System.Windows.Forms.Label()
+        Me.tbTargetSize = New System.Windows.Forms.TextBox()
+        Me.lTarget1 = New System.Windows.Forms.Label()
+        Me.tbBitrate = New System.Windows.Forms.TextBox()
+        Me.lBitrate = New System.Windows.Forms.Label()
+        Me.blFilesize = New StaxRip.UI.ButtonLabel()
         Me.lgbSource = New StaxRip.UI.LinkGroupBox()
-        Me.lCodec = New System.Windows.Forms.Label()
-        Me.lCodecProfile = New System.Windows.Forms.Label()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.Label3 = New System.Windows.Forms.Label()
-        Me.lCrop = New System.Windows.Forms.Label()
-        Me.lSourceImageSize = New System.Windows.Forms.Label()
-        Me.lbSourceLength = New System.Windows.Forms.Label()
-        Me.lSourceFramerate = New System.Windows.Forms.Label()
-        Me.lSourceDar = New System.Windows.Forms.Label()
-        Me.lSourceDarText = New System.Windows.Forms.Label()
+        Me.tlpSource = New System.Windows.Forms.TableLayoutPanel()
+        Me.tlpSourceValues = New System.Windows.Forms.TableLayoutPanel()
+        Me.blSourceDarText = New StaxRip.UI.ButtonLabel()
         Me.lSourcePAR = New System.Windows.Forms.Label()
-        Me.llSourceParText = New System.Windows.Forms.LinkLabel()
+        Me.blSourceParText = New StaxRip.UI.ButtonLabel()
+        Me.lCrop = New System.Windows.Forms.Label()
         Me.lCropText = New System.Windows.Forms.Label()
-        Me.lSourceImageSizeText = New System.Windows.Forms.Label()
-        Me.lbSourceLengthText = New System.Windows.Forms.Label()
-        Me.lSourceFramerateText = New System.Windows.Forms.Label()
+        Me.lSourceDar = New System.Windows.Forms.Label()
         Me.tbSourceFile = New StaxRip.UI.TextBoxEx()
+        Me.lSource1 = New System.Windows.Forms.Label()
+        Me.lSource2 = New System.Windows.Forms.Label()
         Me.lgbResize = New StaxRip.UI.LinkGroupBox()
-        Me.lPAR = New StaxRip.UI.LabelEx()
-        Me.lAspectRatioError = New StaxRip.UI.LabelEx()
-        Me.lZoom = New System.Windows.Forms.Label()
-        Me.lPixel = New System.Windows.Forms.Label()
-        Me.lSarText = New StaxRip.UI.LabelEx()
-        Me.lAspectRatioErrorText = New StaxRip.UI.LabelEx()
-        Me.lParText = New StaxRip.UI.LabelEx()
-        Me.lPixelText = New System.Windows.Forms.Label()
-        Me.lZoomText = New System.Windows.Forms.Label()
-        Me.lDarText = New System.Windows.Forms.Label()
-        Me.lSAR = New StaxRip.UI.LabelEx()
-        Me.lDAR = New System.Windows.Forms.Label()
-        Me.tbResize = New System.Windows.Forms.TrackBar()
+        Me.tlpResize = New System.Windows.Forms.TableLayoutPanel()
         Me.lTargetWidth = New System.Windows.Forms.Label()
+        Me.tlpResizeValues = New System.Windows.Forms.TableLayoutPanel()
+        Me.blTargetDarText = New StaxRip.UI.ButtonLabel()
+        Me.lAspectRatioError = New StaxRip.UI.LabelEx()
+        Me.lPAR = New StaxRip.UI.LabelEx()
+        Me.lZoom = New System.Windows.Forms.Label()
+        Me.lSarText = New StaxRip.UI.LabelEx()
+        Me.lPixel = New System.Windows.Forms.Label()
+        Me.blTargetParText = New StaxRip.UI.ButtonLabel()
+        Me.lAspectRatioErrorText = New StaxRip.UI.LabelEx()
+        Me.lDAR = New System.Windows.Forms.Label()
+        Me.lZoomText = New System.Windows.Forms.Label()
+        Me.lPixelText = New System.Windows.Forms.Label()
+        Me.lSAR = New StaxRip.UI.LabelEx()
+        Me.tbResize = New System.Windows.Forms.TrackBar()
         Me.tbTargetWidth = New System.Windows.Forms.TextBox()
         Me.tbTargetHeight = New System.Windows.Forms.TextBox()
         Me.lTargetHeight = New System.Windows.Forms.Label()
         Me.lgbFilters = New StaxRip.UI.LinkGroupBox()
-        Me.AviSynthListView = New StaxRip.AviSynthListView()
+        Me.FiltersListView = New StaxRip.FiltersListView()
         Me.lgbEncoder = New StaxRip.UI.LinkGroupBox()
-        Me.llMuxer = New System.Windows.Forms.LinkLabel()
-        Me.pEncoder = New System.Windows.Forms.Panel()
+        Me.llMuxer = New StaxRip.UI.ButtonLabel()
+        Me.pnEncoder = New System.Windows.Forms.Panel()
         Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
+        Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
         Me.gbAssistant.SuspendLayout()
+        Me.tlpAssistant.SuspendLayout()
         Me.gbAudio.SuspendLayout()
+        Me.tlpAudio.SuspendLayout()
         Me.lgbTarget.SuspendLayout()
+        Me.tlpTarget.SuspendLayout()
         Me.lgbSource.SuspendLayout()
+        Me.tlpSource.SuspendLayout()
+        Me.tlpSourceValues.SuspendLayout()
         Me.lgbResize.SuspendLayout()
+        Me.tlpResize.SuspendLayout()
+        Me.tlpResizeValues.SuspendLayout()
         CType(Me.tbResize, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.lgbFilters.SuspendLayout()
         Me.lgbEncoder.SuspendLayout()
+        Me.tlpMain.SuspendLayout()
         Me.SuspendLayout()
         '
-        'bNext
+        'bnNext
         '
-        Me.bNext.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bNext.Cursor = System.Windows.Forms.Cursors.Default
-        Me.bNext.Location = New System.Drawing.Point(906, 36)
-        Me.bNext.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.bNext.Name = "bNext"
-        Me.bNext.Size = New System.Drawing.Size(70, 34)
-        Me.bNext.TabIndex = 39
-        Me.bNext.Text = "Next"
+        Me.bnNext.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.bnNext.AutoSize = True
+        Me.bnNext.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.bnNext.Cursor = System.Windows.Forms.Cursors.Default
+        Me.bnNext.Location = New System.Drawing.Point(624, 7)
+        Me.bnNext.Margin = New System.Windows.Forms.Padding(0, 0, 2, 0)
+        Me.bnNext.Name = "bnNext"
+        Me.bnNext.Size = New System.Drawing.Size(47, 25)
+        Me.bnNext.TabIndex = 39
+        Me.bnNext.Text = " Next "
         '
         'llEditAudio0
         '
-        Me.llEditAudio0.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.llEditAudio0.Location = New System.Drawing.Point(928, 23)
-        Me.llEditAudio0.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.llEditAudio0.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.llEditAudio0.AutoSize = True
+        Me.llEditAudio0.LinkColor = System.Drawing.Color.Empty
+        Me.llEditAudio0.Location = New System.Drawing.Point(644, 4)
+        Me.llEditAudio0.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.llEditAudio0.Name = "llEditAudio0"
-        Me.llEditAudio0.Size = New System.Drawing.Size(48, 30)
+        Me.llEditAudio0.Size = New System.Drawing.Size(27, 15)
         Me.llEditAudio0.TabIndex = 20
         Me.llEditAudio0.TabStop = True
         Me.llEditAudio0.Text = "Edit"
@@ -205,38 +197,58 @@ Class MainForm
         '
         'gbAssistant
         '
-        Me.gbAssistant.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.gbAssistant.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.gbAssistant.Controls.Add(Me.lTip)
-        Me.gbAssistant.Controls.Add(Me.bNext)
-        Me.gbAssistant.Location = New System.Drawing.Point(10, 547)
-        Me.gbAssistant.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.tlpMain.SetColumnSpan(Me.gbAssistant, 4)
+        Me.gbAssistant.Controls.Add(Me.tlpAssistant)
+        Me.gbAssistant.Location = New System.Drawing.Point(3, 294)
+        Me.gbAssistant.Margin = New System.Windows.Forms.Padding(3, 0, 3, 3)
         Me.gbAssistant.Name = "gbAssistant"
-        Me.gbAssistant.Padding = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.gbAssistant.Size = New System.Drawing.Size(980, 92)
+        Me.gbAssistant.Padding = New System.Windows.Forms.Padding(2, 0, 2, 2)
+        Me.gbAssistant.Size = New System.Drawing.Size(677, 57)
         Me.gbAssistant.TabIndex = 44
         Me.gbAssistant.TabStop = False
         Me.gbAssistant.Text = "Assistant"
         '
+        'tlpAssistant
+        '
+        Me.tlpAssistant.ColumnCount = 2
+        Me.tlpAssistant.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpAssistant.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpAssistant.Controls.Add(Me.lTip, 0, 0)
+        Me.tlpAssistant.Controls.Add(Me.bnNext, 1, 0)
+        Me.tlpAssistant.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpAssistant.Location = New System.Drawing.Point(2, 16)
+        Me.tlpAssistant.Margin = New System.Windows.Forms.Padding(0)
+        Me.tlpAssistant.Name = "tlpAssistant"
+        Me.tlpAssistant.RowCount = 1
+        Me.tlpAssistant.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpAssistant.Size = New System.Drawing.Size(673, 39)
+        Me.tlpAssistant.TabIndex = 62
+        '
         'lTip
         '
-        Me.lTip.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.lTip.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lTip.Cursor = System.Windows.Forms.Cursors.Hand
         Me.lTip.ForeColor = System.Drawing.Color.Blue
-        Me.lTip.Location = New System.Drawing.Point(3, 25)
+        Me.lTip.Location = New System.Drawing.Point(0, 0)
+        Me.lTip.Margin = New System.Windows.Forms.Padding(0)
         Me.lTip.Name = "lTip"
-        Me.lTip.Size = New System.Drawing.Size(900, 64)
+        Me.lTip.Size = New System.Drawing.Size(624, 39)
         Me.lTip.TabIndex = 40
         Me.lTip.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'llEditAudio1
         '
-        Me.llEditAudio1.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.llEditAudio1.Location = New System.Drawing.Point(928, 60)
-        Me.llEditAudio1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.llEditAudio1.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.llEditAudio1.AutoSize = True
+        Me.llEditAudio1.LinkColor = System.Drawing.Color.Empty
+        Me.llEditAudio1.Location = New System.Drawing.Point(644, 30)
+        Me.llEditAudio1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.llEditAudio1.Name = "llEditAudio1"
-        Me.llEditAudio1.Size = New System.Drawing.Size(48, 30)
+        Me.llEditAudio1.Size = New System.Drawing.Size(27, 15)
         Me.llEditAudio1.TabIndex = 21
         Me.llEditAudio1.TabStop = True
         Me.llEditAudio1.Text = "Edit"
@@ -244,710 +256,797 @@ Class MainForm
         '
         'gbAudio
         '
-        Me.gbAudio.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.gbAudio.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.gbAudio.Controls.Add(Me.llEditAudio1)
-        Me.gbAudio.Controls.Add(Me.llEditAudio0)
-        Me.gbAudio.Controls.Add(Me.llAudioProfile1)
-        Me.gbAudio.Controls.Add(Me.llAudioProfile0)
-        Me.gbAudio.Controls.Add(Me.tbAudioFile0)
-        Me.gbAudio.Controls.Add(Me.tbAudioFile1)
-        Me.gbAudio.Location = New System.Drawing.Point(10, 442)
-        Me.gbAudio.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.tlpMain.SetColumnSpan(Me.gbAudio, 4)
+        Me.gbAudio.Controls.Add(Me.tlpAudio)
+        Me.gbAudio.Location = New System.Drawing.Point(3, 224)
+        Me.gbAudio.Margin = New System.Windows.Forms.Padding(3, 0, 3, 0)
         Me.gbAudio.Name = "gbAudio"
-        Me.gbAudio.Padding = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.gbAudio.Size = New System.Drawing.Size(980, 100)
+        Me.gbAudio.Padding = New System.Windows.Forms.Padding(2, 0, 2, 2)
+        Me.gbAudio.Size = New System.Drawing.Size(677, 70)
         Me.gbAudio.TabIndex = 59
         Me.gbAudio.TabStop = False
         Me.gbAudio.Text = "Audio"
         '
+        'tlpAudio
+        '
+        Me.tlpAudio.ColumnCount = 3
+        Me.tlpAudio.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpAudio.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpAudio.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpAudio.Controls.Add(Me.llEditAudio1, 2, 1)
+        Me.tlpAudio.Controls.Add(Me.tbAudioFile0, 0, 0)
+        Me.tlpAudio.Controls.Add(Me.llEditAudio0, 2, 0)
+        Me.tlpAudio.Controls.Add(Me.tbAudioFile1, 0, 1)
+        Me.tlpAudio.Controls.Add(Me.llAudioProfile1, 1, 1)
+        Me.tlpAudio.Controls.Add(Me.llAudioProfile0, 1, 0)
+        Me.tlpAudio.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpAudio.Location = New System.Drawing.Point(2, 16)
+        Me.tlpAudio.Margin = New System.Windows.Forms.Padding(0)
+        Me.tlpAudio.Name = "tlpAudio"
+        Me.tlpAudio.RowCount = 2
+        Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 45.0!))
+        Me.tlpAudio.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 55.0!))
+        Me.tlpAudio.Size = New System.Drawing.Size(673, 52)
+        Me.tlpAudio.TabIndex = 62
+        '
+        'tbAudioFile0
+        '
+        Me.tbAudioFile0.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbAudioFile0.Location = New System.Drawing.Point(2, 0)
+        Me.tbAudioFile0.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.tbAudioFile0.Size = New System.Drawing.Size(622, 23)
+        '
+        'tbAudioFile1
+        '
+        Me.tbAudioFile1.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbAudioFile1.Location = New System.Drawing.Point(2, 26)
+        Me.tbAudioFile1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.tbAudioFile1.Size = New System.Drawing.Size(622, 23)
+        '
         'llAudioProfile1
         '
-        Me.llAudioProfile1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.llAudioProfile1.Location = New System.Drawing.Point(658, 60)
-        Me.llAudioProfile1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.llAudioProfile1.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.llAudioProfile1.AutoSize = True
+        Me.llAudioProfile1.LinkColor = System.Drawing.Color.Empty
+        Me.llAudioProfile1.Location = New System.Drawing.Point(628, 30)
+        Me.llAudioProfile1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.llAudioProfile1.Name = "llAudioProfile1"
-        Me.llAudioProfile1.Size = New System.Drawing.Size(269, 30)
+        Me.llAudioProfile1.Size = New System.Drawing.Size(12, 15)
         Me.llAudioProfile1.TabIndex = 26
+        Me.llAudioProfile1.Text = "-"
         Me.llAudioProfile1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'llAudioProfile0
         '
-        Me.llAudioProfile0.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.llAudioProfile0.Location = New System.Drawing.Point(658, 23)
-        Me.llAudioProfile0.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.llAudioProfile0.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.llAudioProfile0.AutoSize = True
+        Me.llAudioProfile0.LinkColor = System.Drawing.Color.Empty
+        Me.llAudioProfile0.Location = New System.Drawing.Point(628, 4)
+        Me.llAudioProfile0.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.llAudioProfile0.Name = "llAudioProfile0"
-        Me.llAudioProfile0.Size = New System.Drawing.Size(269, 30)
+        Me.llAudioProfile0.Size = New System.Drawing.Size(12, 15)
         Me.llAudioProfile0.TabIndex = 25
+        Me.llAudioProfile0.Text = "-"
         Me.llAudioProfile0.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'tbAudioFile0
-        '
-        Me.tbAudioFile0.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbAudioFile0.Location = New System.Drawing.Point(8, 24)
-        Me.tbAudioFile0.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.tbAudioFile0.Size = New System.Drawing.Size(644, 31)
-        '
-        'tbAudioFile1
-        '
-        Me.tbAudioFile1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbAudioFile1.Location = New System.Drawing.Point(8, 60)
-        Me.tbAudioFile1.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.tbAudioFile1.Size = New System.Drawing.Size(644, 31)
         '
         'MenuStrip
         '
+        Me.MenuStrip.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.MenuStrip.AutoSize = False
+        Me.tlpMain.SetColumnSpan(Me.MenuStrip, 4)
+        Me.MenuStrip.Dock = System.Windows.Forms.DockStyle.None
         Me.MenuStrip.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.MenuStrip.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip.Name = "MenuStrip"
-        Me.MenuStrip.Padding = New System.Windows.Forms.Padding(3, 3, 0, 3)
-        Me.MenuStrip.Size = New System.Drawing.Size(1004, 44)
+        Me.MenuStrip.Padding = New System.Windows.Forms.Padding(2, 2, 0, 2)
+        Me.MenuStrip.Size = New System.Drawing.Size(683, 27)
         Me.MenuStrip.TabIndex = 60
         Me.MenuStrip.Text = "MenuStrip"
         '
         'lgbTarget
         '
-        Me.lgbTarget.Controls.Add(Me.lCompCheck)
-        Me.lgbTarget.Controls.Add(Me.lAudioBitrate)
-        Me.lgbTarget.Controls.Add(Me.llFilesize)
-        Me.lgbTarget.Controls.Add(Me.lTargetLength)
-        Me.lgbTarget.Controls.Add(Me.tbSize)
-        Me.lgbTarget.Controls.Add(Me.lAudioBitrateText)
-        Me.lgbTarget.Controls.Add(Me.lQuality)
-        Me.lgbTarget.Controls.Add(Me.lQualityText)
-        Me.lgbTarget.Controls.Add(Me.lCompCheckText)
-        Me.lgbTarget.Controls.Add(Me.lBitrate)
-        Me.lgbTarget.Controls.Add(Me.tbBitrate)
-        Me.lgbTarget.Controls.Add(Me.lTargetLengthText)
-        Me.lgbTarget.Controls.Add(Me.tbTargetFile)
-        Me.lgbTarget.Location = New System.Drawing.Point(508, 47)
-        Me.lgbTarget.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.lgbTarget.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lgbTarget.Color = System.Drawing.Color.Empty
+        Me.tlpMain.SetColumnSpan(Me.lgbTarget, 2)
+        Me.lgbTarget.Controls.Add(Me.tlpTarget)
+        Me.lgbTarget.Location = New System.Drawing.Point(342, 27)
+        Me.lgbTarget.Margin = New System.Windows.Forms.Padding(2, 0, 3, 0)
         Me.lgbTarget.Name = "lgbTarget"
-        Me.lgbTarget.Padding = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.lgbTarget.Size = New System.Drawing.Size(483, 168)
+        Me.lgbTarget.Padding = New System.Windows.Forms.Padding(2, 0, 2, 2)
+        Me.lgbTarget.Size = New System.Drawing.Size(338, 119)
         Me.lgbTarget.TabIndex = 58
         Me.lgbTarget.TabStop = False
         Me.lgbTarget.Text = "Target"
         '
-        'lCompCheck
+        'tlpTarget
         '
-        Me.lCompCheck.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.lCompCheck.Location = New System.Drawing.Point(354, 129)
-        Me.lCompCheck.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lCompCheck.Name = "lCompCheck"
-        Me.lCompCheck.Size = New System.Drawing.Size(122, 30)
-        Me.lCompCheck.TabIndex = 46
-        Me.lCompCheck.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.tlpTarget.ColumnCount = 4
+        Me.tlpTarget.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.tlpTarget.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.tlpTarget.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.tlpTarget.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.tlpTarget.Controls.Add(Me.tbTargetFile, 0, 0)
+        Me.tlpTarget.Controls.Add(Me.lTarget2, 0, 3)
+        Me.tlpTarget.Controls.Add(Me.tbTargetSize, 1, 1)
+        Me.tlpTarget.Controls.Add(Me.lTarget1, 0, 2)
+        Me.tlpTarget.Controls.Add(Me.tbBitrate, 3, 1)
+        Me.tlpTarget.Controls.Add(Me.lBitrate, 2, 1)
+        Me.tlpTarget.Controls.Add(Me.blFilesize, 0, 1)
+        Me.tlpTarget.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpTarget.Location = New System.Drawing.Point(2, 16)
+        Me.tlpTarget.Margin = New System.Windows.Forms.Padding(0)
+        Me.tlpTarget.Name = "tlpTarget"
+        Me.tlpTarget.RowCount = 4
+        Me.tlpTarget.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.tlpTarget.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.tlpTarget.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.tlpTarget.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.tlpTarget.Size = New System.Drawing.Size(334, 101)
+        Me.tlpTarget.TabIndex = 62
         '
-        'lAudioBitrate
+        'tbTargetFile
         '
-        Me.lAudioBitrate.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.lAudioBitrate.Location = New System.Drawing.Point(330, 98)
-        Me.lAudioBitrate.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lAudioBitrate.Name = "lAudioBitrate"
-        Me.lAudioBitrate.Size = New System.Drawing.Size(146, 30)
-        Me.lAudioBitrate.TabIndex = 52
-        Me.lAudioBitrate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.tbTargetFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpTarget.SetColumnSpan(Me.tbTargetFile, 4)
+        Me.tbTargetFile.Location = New System.Drawing.Point(2, 1)
+        Me.tbTargetFile.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.tbTargetFile.Size = New System.Drawing.Size(330, 23)
         '
-        'llFilesize
+        'lTarget2
         '
-        Me.llFilesize.Location = New System.Drawing.Point(7, 67)
-        Me.llFilesize.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.llFilesize.Name = "llFilesize"
-        Me.llFilesize.Size = New System.Drawing.Size(78, 30)
-        Me.llFilesize.TabIndex = 59
-        Me.llFilesize.TabStop = True
-        Me.llFilesize.Text = "Size:"
-        Me.llFilesize.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.lTarget2.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpTarget.SetColumnSpan(Me.lTarget2, 4)
+        Me.lTarget2.ImeMode = System.Windows.Forms.ImeMode.NoControl
+        Me.lTarget2.Location = New System.Drawing.Point(2, 78)
+        Me.lTarget2.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lTarget2.Name = "lTarget2"
+        Me.lTarget2.Size = New System.Drawing.Size(330, 20)
+        Me.lTarget2.TabIndex = 47
+        Me.lTarget2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'lTargetLength
+        'tbTargetSize
         '
-        Me.lTargetLength.Location = New System.Drawing.Point(86, 98)
-        Me.lTargetLength.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lTargetLength.Name = "lTargetLength"
-        Me.lTargetLength.Size = New System.Drawing.Size(118, 30)
-        Me.lTargetLength.TabIndex = 56
-        Me.lTargetLength.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.tbTargetSize.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.tbTargetSize.Location = New System.Drawing.Point(83, 26)
+        Me.tbTargetSize.Margin = New System.Windows.Forms.Padding(0)
+        Me.tbTargetSize.Name = "tbTargetSize"
+        Me.tbTargetSize.Size = New System.Drawing.Size(48, 23)
+        Me.tbTargetSize.TabIndex = 55
+        Me.tbTargetSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
-        'tbSize
+        'lTarget1
         '
-        Me.tbSize.Location = New System.Drawing.Point(86, 66)
-        Me.tbSize.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.tbSize.Name = "tbSize"
-        Me.tbSize.Size = New System.Drawing.Size(80, 31)
-        Me.tbSize.TabIndex = 55
-        Me.tbSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        Me.lTarget1.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpTarget.SetColumnSpan(Me.lTarget1, 4)
+        Me.lTarget1.Location = New System.Drawing.Point(2, 52)
+        Me.lTarget1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lTarget1.Name = "lTarget1"
+        Me.lTarget1.Size = New System.Drawing.Size(330, 20)
+        Me.lTarget1.TabIndex = 39
+        Me.lTarget1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'lAudioBitrateText
+        'tbBitrate
         '
-        Me.lAudioBitrateText.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.lAudioBitrateText.Location = New System.Drawing.Point(205, 98)
-        Me.lAudioBitrateText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lAudioBitrateText.Name = "lAudioBitrateText"
-        Me.lAudioBitrateText.Size = New System.Drawing.Size(124, 30)
-        Me.lAudioBitrateText.TabIndex = 51
-        Me.lAudioBitrateText.Text = "Audio Bitrate:"
-        Me.lAudioBitrateText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lQuality
-        '
-        Me.lQuality.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.lQuality.Location = New System.Drawing.Point(86, 129)
-        Me.lQuality.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lQuality.Name = "lQuality"
-        Me.lQuality.Size = New System.Drawing.Size(118, 30)
-        Me.lQuality.TabIndex = 48
-        Me.lQuality.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lQualityText
-        '
-        Me.lQualityText.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.lQualityText.Location = New System.Drawing.Point(7, 129)
-        Me.lQualityText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lQualityText.Name = "lQualityText"
-        Me.lQualityText.Size = New System.Drawing.Size(78, 30)
-        Me.lQualityText.TabIndex = 47
-        Me.lQualityText.Text = "Quality:"
-        Me.lQualityText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lCompCheckText
-        '
-        Me.lCompCheckText.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.lCompCheckText.Location = New System.Drawing.Point(205, 129)
-        Me.lCompCheckText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lCompCheckText.Name = "lCompCheckText"
-        Me.lCompCheckText.Size = New System.Drawing.Size(148, 30)
-        Me.lCompCheckText.TabIndex = 45
-        Me.lCompCheckText.Text = "Compressibility:"
-        Me.lCompCheckText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.tbBitrate.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.tbBitrate.Location = New System.Drawing.Point(249, 26)
+        Me.tbBitrate.Margin = New System.Windows.Forms.Padding(0)
+        Me.tbBitrate.Name = "tbBitrate"
+        Me.tbBitrate.Size = New System.Drawing.Size(49, 23)
+        Me.tbBitrate.TabIndex = 41
+        Me.tbBitrate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'lBitrate
         '
-        Me.lBitrate.Location = New System.Drawing.Point(205, 67)
-        Me.lBitrate.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lBitrate.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lBitrate.Location = New System.Drawing.Point(166, 25)
+        Me.lBitrate.Margin = New System.Windows.Forms.Padding(0)
         Me.lBitrate.Name = "lBitrate"
-        Me.lBitrate.Size = New System.Drawing.Size(124, 30)
+        Me.lBitrate.Size = New System.Drawing.Size(83, 25)
         Me.lBitrate.TabIndex = 42
         Me.lBitrate.Text = "Video Bitrate:"
         Me.lBitrate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'tbBitrate
+        'blFilesize
         '
-        Me.tbBitrate.Location = New System.Drawing.Point(330, 66)
-        Me.tbBitrate.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.tbBitrate.Name = "tbBitrate"
-        Me.tbBitrate.Size = New System.Drawing.Size(80, 31)
-        Me.tbBitrate.TabIndex = 41
-        Me.tbBitrate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
-        '
-        'lTargetLengthText
-        '
-        Me.lTargetLengthText.Location = New System.Drawing.Point(7, 98)
-        Me.lTargetLengthText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lTargetLengthText.Name = "lTargetLengthText"
-        Me.lTargetLengthText.Size = New System.Drawing.Size(78, 30)
-        Me.lTargetLengthText.TabIndex = 39
-        Me.lTargetLengthText.Text = "Length:"
-        Me.lTargetLengthText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'tbTargetFile
-        '
-        Me.tbTargetFile.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.blFilesize.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbTargetFile.Location = New System.Drawing.Point(8, 26)
-        Me.tbTargetFile.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.tbTargetFile.Size = New System.Drawing.Size(467, 31)
+        Me.blFilesize.LinkColor = System.Drawing.Color.Empty
+        Me.blFilesize.Location = New System.Drawing.Point(2, 25)
+        Me.blFilesize.Margin = New System.Windows.Forms.Padding(2, 0, 0, 0)
+        Me.blFilesize.Name = "blFilesize"
+        Me.blFilesize.Size = New System.Drawing.Size(81, 25)
+        Me.blFilesize.TabIndex = 59
+        Me.blFilesize.TabStop = True
+        Me.blFilesize.Text = "Size:"
+        Me.blFilesize.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lgbSource
         '
-        Me.lgbSource.Controls.Add(Me.lCodec)
-        Me.lgbSource.Controls.Add(Me.lCodecProfile)
-        Me.lgbSource.Controls.Add(Me.Label1)
-        Me.lgbSource.Controls.Add(Me.Label2)
-        Me.lgbSource.Controls.Add(Me.Label3)
-        Me.lgbSource.Controls.Add(Me.lCrop)
-        Me.lgbSource.Controls.Add(Me.lSourceImageSize)
-        Me.lgbSource.Controls.Add(Me.lbSourceLength)
-        Me.lgbSource.Controls.Add(Me.lSourceFramerate)
-        Me.lgbSource.Controls.Add(Me.lSourceDar)
-        Me.lgbSource.Controls.Add(Me.lSourceDarText)
-        Me.lgbSource.Controls.Add(Me.lSourcePAR)
-        Me.lgbSource.Controls.Add(Me.llSourceParText)
-        Me.lgbSource.Controls.Add(Me.lCropText)
-        Me.lgbSource.Controls.Add(Me.lSourceImageSizeText)
-        Me.lgbSource.Controls.Add(Me.lbSourceLengthText)
-        Me.lgbSource.Controls.Add(Me.lSourceFramerateText)
-        Me.lgbSource.Controls.Add(Me.tbSourceFile)
-        Me.lgbSource.Location = New System.Drawing.Point(13, 47)
-        Me.lgbSource.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.lgbSource.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lgbSource.Color = System.Drawing.Color.Empty
+        Me.tlpMain.SetColumnSpan(Me.lgbSource, 2)
+        Me.lgbSource.Controls.Add(Me.tlpSource)
+        Me.lgbSource.Location = New System.Drawing.Point(3, 27)
+        Me.lgbSource.Margin = New System.Windows.Forms.Padding(3, 0, 2, 0)
         Me.lgbSource.Name = "lgbSource"
-        Me.lgbSource.Padding = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.lgbSource.Size = New System.Drawing.Size(487, 168)
+        Me.lgbSource.Padding = New System.Windows.Forms.Padding(2, 0, 2, 2)
+        Me.lgbSource.Size = New System.Drawing.Size(335, 119)
         Me.lgbSource.TabIndex = 57
         Me.lgbSource.TabStop = False
         Me.lgbSource.Text = "Source"
         '
-        'lCodec
+        'tlpSource
         '
-        Me.lCodec.Location = New System.Drawing.Point(373, 68)
-        Me.lCodec.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lCodec.Name = "lCodec"
-        Me.lCodec.Size = New System.Drawing.Size(105, 30)
-        Me.lCodec.TabIndex = 55
-        Me.lCodec.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.tlpSource.ColumnCount = 1
+        Me.tlpSource.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpSource.Controls.Add(Me.tlpSourceValues, 0, 3)
+        Me.tlpSource.Controls.Add(Me.tbSourceFile, 0, 0)
+        Me.tlpSource.Controls.Add(Me.lSource1, 0, 1)
+        Me.tlpSource.Controls.Add(Me.lSource2, 0, 2)
+        Me.tlpSource.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpSource.Location = New System.Drawing.Point(2, 16)
+        Me.tlpSource.Margin = New System.Windows.Forms.Padding(0)
+        Me.tlpSource.Name = "tlpSource"
+        Me.tlpSource.RowCount = 4
+        Me.tlpSource.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.tlpSource.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.tlpSource.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.tlpSource.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.tlpSource.Size = New System.Drawing.Size(331, 101)
+        Me.tlpSource.TabIndex = 62
         '
-        'lCodecProfile
+        'tlpSourceValues
         '
-        Me.lCodecProfile.Location = New System.Drawing.Point(373, 102)
-        Me.lCodecProfile.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lCodecProfile.Name = "lCodecProfile"
-        Me.lCodecProfile.Size = New System.Drawing.Size(111, 60)
-        Me.lCodecProfile.TabIndex = 57
+        Me.tlpSourceValues.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpSourceValues.ColumnCount = 7
+        Me.tlpSourceValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpSourceValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpSourceValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpSourceValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpSourceValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpSourceValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpSourceValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpSourceValues.Controls.Add(Me.blSourceDarText, 4, 0)
+        Me.tlpSourceValues.Controls.Add(Me.lSourcePAR, 3, 0)
+        Me.tlpSourceValues.Controls.Add(Me.blSourceParText, 2, 0)
+        Me.tlpSourceValues.Controls.Add(Me.lCrop, 1, 0)
+        Me.tlpSourceValues.Controls.Add(Me.lCropText, 0, 0)
+        Me.tlpSourceValues.Controls.Add(Me.lSourceDar, 5, 0)
+        Me.tlpSourceValues.Location = New System.Drawing.Point(0, 75)
+        Me.tlpSourceValues.Margin = New System.Windows.Forms.Padding(0)
+        Me.tlpSourceValues.Name = "tlpSourceValues"
+        Me.tlpSourceValues.RowCount = 1
+        Me.tlpSourceValues.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpSourceValues.Size = New System.Drawing.Size(331, 26)
+        Me.tlpSourceValues.TabIndex = 1
         '
-        'Label1
+        'blSourceDarText
         '
-        Me.Label1.Location = New System.Drawing.Point(307, 67)
-        Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(70, 30)
-        Me.Label1.TabIndex = 52
-        Me.Label1.Text = "Codec:"
-        Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'Label2
-        '
-        Me.Label2.Location = New System.Drawing.Point(307, 98)
-        Me.Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(70, 30)
-        Me.Label2.TabIndex = 54
-        Me.Label2.Text = "Profile:"
-        Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'Label3
-        '
-        Me.Label3.Location = New System.Drawing.Point(307, 129)
-        Me.Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(70, 30)
-        Me.Label3.TabIndex = 53
-        Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lCrop
-        '
-        Me.lCrop.Location = New System.Drawing.Point(72, 129)
-        Me.lCrop.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lCrop.Name = "lCrop"
-        Me.lCrop.Size = New System.Drawing.Size(100, 30)
-        Me.lCrop.TabIndex = 16
-        Me.lCrop.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lSourceImageSize
-        '
-        Me.lSourceImageSize.Location = New System.Drawing.Point(72, 98)
-        Me.lSourceImageSize.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lSourceImageSize.Name = "lSourceImageSize"
-        Me.lSourceImageSize.Size = New System.Drawing.Size(100, 30)
-        Me.lSourceImageSize.TabIndex = 35
-        Me.lSourceImageSize.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lbSourceLength
-        '
-        Me.lbSourceLength.Location = New System.Drawing.Point(72, 67)
-        Me.lbSourceLength.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lbSourceLength.Name = "lbSourceLength"
-        Me.lbSourceLength.Size = New System.Drawing.Size(100, 30)
-        Me.lbSourceLength.TabIndex = 42
-        Me.lbSourceLength.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lSourceFramerate
-        '
-        Me.lSourceFramerate.Location = New System.Drawing.Point(229, 67)
-        Me.lSourceFramerate.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lSourceFramerate.Name = "lSourceFramerate"
-        Me.lSourceFramerate.Size = New System.Drawing.Size(77, 30)
-        Me.lSourceFramerate.TabIndex = 40
-        Me.lSourceFramerate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lSourceDar
-        '
-        Me.lSourceDar.Location = New System.Drawing.Point(229, 98)
-        Me.lSourceDar.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lSourceDar.Name = "lSourceDar"
-        Me.lSourceDar.Size = New System.Drawing.Size(77, 30)
-        Me.lSourceDar.TabIndex = 50
-        Me.lSourceDar.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lSourceDarText
-        '
-        Me.lSourceDarText.Location = New System.Drawing.Point(173, 98)
-        Me.lSourceDarText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lSourceDarText.Name = "lSourceDarText"
-        Me.lSourceDarText.Size = New System.Drawing.Size(55, 30)
-        Me.lSourceDarText.TabIndex = 49
-        Me.lSourceDarText.TabStop = True
-        Me.lSourceDarText.Text = "DAR:"
-        Me.lSourceDarText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.blSourceDarText.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.blSourceDarText.AutoSize = True
+        Me.blSourceDarText.LinkColor = System.Drawing.Color.Empty
+        Me.blSourceDarText.Location = New System.Drawing.Point(152, 5)
+        Me.blSourceDarText.Margin = New System.Windows.Forms.Padding(1, 0, 1, 0)
+        Me.blSourceDarText.Name = "blSourceDarText"
+        Me.blSourceDarText.Size = New System.Drawing.Size(33, 15)
+        Me.blSourceDarText.TabIndex = 51
+        Me.blSourceDarText.Text = "DAR:"
+        Me.blSourceDarText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lSourcePAR
         '
-        Me.lSourcePAR.Location = New System.Drawing.Point(229, 129)
-        Me.lSourcePAR.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lSourcePAR.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.lSourcePAR.AutoSize = True
+        Me.lSourcePAR.Location = New System.Drawing.Point(136, 5)
         Me.lSourcePAR.Name = "lSourcePAR"
-        Me.lSourcePAR.Size = New System.Drawing.Size(77, 30)
+        Me.lSourcePAR.Size = New System.Drawing.Size(12, 15)
         Me.lSourcePAR.TabIndex = 47
+        Me.lSourcePAR.Text = "-"
         Me.lSourcePAR.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'llSourceParText
+        'blSourceParText
         '
-        Me.llSourceParText.Location = New System.Drawing.Point(173, 129)
-        Me.llSourceParText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.llSourceParText.Name = "llSourceParText"
-        Me.llSourceParText.Size = New System.Drawing.Size(55, 30)
-        Me.llSourceParText.TabIndex = 45
-        Me.llSourceParText.TabStop = True
-        Me.llSourceParText.Text = "PAR:"
-        Me.llSourceParText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.blSourceParText.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.blSourceParText.AutoSize = True
+        Me.blSourceParText.LinkColor = System.Drawing.Color.Empty
+        Me.blSourceParText.Location = New System.Drawing.Point(98, 5)
+        Me.blSourceParText.Name = "blSourceParText"
+        Me.blSourceParText.Size = New System.Drawing.Size(32, 15)
+        Me.blSourceParText.TabIndex = 45
+        Me.blSourceParText.TabStop = True
+        Me.blSourceParText.Text = "PAR:"
+        Me.blSourceParText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'lCrop
+        '
+        Me.lCrop.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.lCrop.AutoSize = True
+        Me.lCrop.Location = New System.Drawing.Point(41, 5)
+        Me.lCrop.Name = "lCrop"
+        Me.lCrop.Size = New System.Drawing.Size(51, 15)
+        Me.lCrop.TabIndex = 16
+        Me.lCrop.Text = "disabled"
+        Me.lCrop.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lCropText
         '
-        Me.lCropText.Location = New System.Drawing.Point(1, 129)
-        Me.lCropText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lCropText.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.lCropText.AutoSize = True
+        Me.lCropText.Location = New System.Drawing.Point(1, 5)
+        Me.lCropText.Margin = New System.Windows.Forms.Padding(1, 0, 1, 0)
         Me.lCropText.Name = "lCropText"
-        Me.lCropText.Size = New System.Drawing.Size(70, 30)
+        Me.lCropText.Size = New System.Drawing.Size(36, 15)
         Me.lCropText.TabIndex = 14
         Me.lCropText.TabStop = True
         Me.lCropText.Text = "Crop:"
         Me.lCropText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'lSourceImageSizeText
+        'lSourceDar
         '
-        Me.lSourceImageSizeText.Location = New System.Drawing.Point(1, 98)
-        Me.lSourceImageSizeText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lSourceImageSizeText.Name = "lSourceImageSizeText"
-        Me.lSourceImageSizeText.Size = New System.Drawing.Size(70, 30)
-        Me.lSourceImageSizeText.TabIndex = 33
-        Me.lSourceImageSizeText.Text = "Size:"
-        Me.lSourceImageSizeText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lbSourceLengthText
-        '
-        Me.lbSourceLengthText.Location = New System.Drawing.Point(1, 67)
-        Me.lbSourceLengthText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lbSourceLengthText.Name = "lbSourceLengthText"
-        Me.lbSourceLengthText.Size = New System.Drawing.Size(70, 30)
-        Me.lbSourceLengthText.TabIndex = 41
-        Me.lbSourceLengthText.Text = "Length:"
-        Me.lbSourceLengthText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lSourceFramerateText
-        '
-        Me.lSourceFramerateText.Location = New System.Drawing.Point(173, 67)
-        Me.lSourceFramerateText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lSourceFramerateText.Name = "lSourceFramerateText"
-        Me.lSourceFramerateText.Size = New System.Drawing.Size(55, 30)
-        Me.lSourceFramerateText.TabIndex = 39
-        Me.lSourceFramerateText.Text = "FPS:"
-        Me.lSourceFramerateText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.lSourceDar.Anchor = System.Windows.Forms.AnchorStyles.None
+        Me.lSourceDar.AutoSize = True
+        Me.lSourceDar.Location = New System.Drawing.Point(187, 5)
+        Me.lSourceDar.Margin = New System.Windows.Forms.Padding(1, 0, 1, 0)
+        Me.lSourceDar.Name = "lSourceDar"
+        Me.lSourceDar.Size = New System.Drawing.Size(12, 15)
+        Me.lSourceDar.TabIndex = 50
+        Me.lSourceDar.Text = "-"
+        Me.lSourceDar.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'tbSourceFile
         '
-        Me.tbSourceFile.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbSourceFile.Location = New System.Drawing.Point(8, 26)
-        Me.tbSourceFile.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.tbSourceFile.Size = New System.Drawing.Size(471, 31)
+        Me.tbSourceFile.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbSourceFile.Location = New System.Drawing.Point(2, 1)
+        Me.tbSourceFile.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.tbSourceFile.Size = New System.Drawing.Size(327, 23)
+        '
+        'lSource1
+        '
+        Me.lSource1.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lSource1.Location = New System.Drawing.Point(2, 28)
+        Me.lSource1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lSource1.Name = "lSource1"
+        Me.lSource1.Size = New System.Drawing.Size(327, 19)
+        Me.lSource1.TabIndex = 41
+        Me.lSource1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'lSource2
+        '
+        Me.lSource2.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lSource2.Location = New System.Drawing.Point(2, 53)
+        Me.lSource2.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lSource2.Name = "lSource2"
+        Me.lSource2.Size = New System.Drawing.Size(327, 19)
+        Me.lSource2.TabIndex = 33
+        Me.lSource2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lgbResize
         '
-        Me.lgbResize.Controls.Add(Me.lPAR)
-        Me.lgbResize.Controls.Add(Me.lAspectRatioError)
-        Me.lgbResize.Controls.Add(Me.lZoom)
-        Me.lgbResize.Controls.Add(Me.lPixel)
-        Me.lgbResize.Controls.Add(Me.lSarText)
-        Me.lgbResize.Controls.Add(Me.lAspectRatioErrorText)
-        Me.lgbResize.Controls.Add(Me.lParText)
-        Me.lgbResize.Controls.Add(Me.lPixelText)
-        Me.lgbResize.Controls.Add(Me.lZoomText)
-        Me.lgbResize.Controls.Add(Me.lDarText)
-        Me.lgbResize.Controls.Add(Me.lSAR)
-        Me.lgbResize.Controls.Add(Me.lDAR)
-        Me.lgbResize.Controls.Add(Me.tbResize)
-        Me.lgbResize.Controls.Add(Me.lTargetWidth)
-        Me.lgbResize.Controls.Add(Me.tbTargetWidth)
-        Me.lgbResize.Controls.Add(Me.tbTargetHeight)
-        Me.lgbResize.Controls.Add(Me.lTargetHeight)
-        Me.lgbResize.Location = New System.Drawing.Point(342, 220)
-        Me.lgbResize.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.lgbResize.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lgbResize.Color = System.Drawing.Color.Empty
+        Me.tlpMain.SetColumnSpan(Me.lgbResize, 2)
+        Me.lgbResize.Controls.Add(Me.tlpResize)
+        Me.lgbResize.Location = New System.Drawing.Point(229, 146)
+        Me.lgbResize.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lgbResize.Name = "lgbResize"
-        Me.lgbResize.Padding = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.lgbResize.Size = New System.Drawing.Size(320, 216)
+        Me.lgbResize.Padding = New System.Windows.Forms.Padding(2, 0, 2, 2)
+        Me.lgbResize.Size = New System.Drawing.Size(222, 78)
         Me.lgbResize.TabIndex = 55
         Me.lgbResize.TabStop = False
         Me.lgbResize.Text = "Resize"
         '
-        'lPAR
+        'tlpResize
         '
-        Me.lPAR.Location = New System.Drawing.Point(57, 175)
-        Me.lPAR.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lPAR.Size = New System.Drawing.Size(81, 30)
-        Me.lPAR.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.tlpResize.ColumnCount = 4
+        Me.tlpResize.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.tlpResize.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.tlpResize.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.tlpResize.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.0!))
+        Me.tlpResize.Controls.Add(Me.lTargetWidth, 0, 0)
+        Me.tlpResize.Controls.Add(Me.tlpResizeValues, 0, 2)
+        Me.tlpResize.Controls.Add(Me.tbResize, 0, 1)
+        Me.tlpResize.Controls.Add(Me.tbTargetWidth, 1, 0)
+        Me.tlpResize.Controls.Add(Me.tbTargetHeight, 3, 0)
+        Me.tlpResize.Controls.Add(Me.lTargetHeight, 2, 0)
+        Me.tlpResize.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpResize.Location = New System.Drawing.Point(2, 16)
+        Me.tlpResize.Margin = New System.Windows.Forms.Padding(1, 1, 1, 1)
+        Me.tlpResize.Name = "tlpResize"
+        Me.tlpResize.RowCount = 3
+        Me.tlpResize.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27.0!))
+        Me.tlpResize.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27.0!))
+        Me.tlpResize.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpResize.Size = New System.Drawing.Size(218, 60)
+        Me.tlpResize.TabIndex = 63
+        '
+        'lTargetWidth
+        '
+        Me.lTargetWidth.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.lTargetWidth.AutoSize = True
+        Me.lTargetWidth.Location = New System.Drawing.Point(1, 6)
+        Me.lTargetWidth.Margin = New System.Windows.Forms.Padding(1, 0, 1, 0)
+        Me.lTargetWidth.Name = "lTargetWidth"
+        Me.lTargetWidth.Size = New System.Drawing.Size(42, 15)
+        Me.lTargetWidth.TabIndex = 37
+        Me.lTargetWidth.Text = "Width:"
+        '
+        'tlpResizeValues
+        '
+        Me.tlpResizeValues.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpResizeValues.ColumnCount = 4
+        Me.tlpResize.SetColumnSpan(Me.tlpResizeValues, 4)
+        Me.tlpResizeValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpResizeValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpResizeValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpResizeValues.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpResizeValues.Controls.Add(Me.blTargetDarText, 0, 0)
+        Me.tlpResizeValues.Controls.Add(Me.lAspectRatioError, 3, 2)
+        Me.tlpResizeValues.Controls.Add(Me.lPAR, 1, 2)
+        Me.tlpResizeValues.Controls.Add(Me.lZoom, 3, 1)
+        Me.tlpResizeValues.Controls.Add(Me.lSarText, 0, 1)
+        Me.tlpResizeValues.Controls.Add(Me.lPixel, 3, 0)
+        Me.tlpResizeValues.Controls.Add(Me.blTargetParText, 0, 2)
+        Me.tlpResizeValues.Controls.Add(Me.lAspectRatioErrorText, 2, 2)
+        Me.tlpResizeValues.Controls.Add(Me.lDAR, 1, 0)
+        Me.tlpResizeValues.Controls.Add(Me.lZoomText, 2, 1)
+        Me.tlpResizeValues.Controls.Add(Me.lPixelText, 2, 0)
+        Me.tlpResizeValues.Controls.Add(Me.lSAR, 1, 1)
+        Me.tlpResizeValues.Location = New System.Drawing.Point(0, 54)
+        Me.tlpResizeValues.Margin = New System.Windows.Forms.Padding(0)
+        Me.tlpResizeValues.Name = "tlpResizeValues"
+        Me.tlpResizeValues.RowCount = 3
+        Me.tlpResizeValues.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
+        Me.tlpResizeValues.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
+        Me.tlpResizeValues.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333!))
+        Me.tlpResizeValues.Size = New System.Drawing.Size(218, 6)
+        Me.tlpResizeValues.TabIndex = 62
+        '
+        'blTargetDarText
+        '
+        Me.blTargetDarText.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.blTargetDarText.AutoSize = True
+        Me.blTargetDarText.ImeMode = System.Windows.Forms.ImeMode.NoControl
+        Me.blTargetDarText.LinkColor = System.Drawing.Color.Empty
+        Me.blTargetDarText.Location = New System.Drawing.Point(0, 0)
+        Me.blTargetDarText.Margin = New System.Windows.Forms.Padding(0)
+        Me.blTargetDarText.Name = "blTargetDarText"
+        Me.blTargetDarText.Size = New System.Drawing.Size(33, 2)
+        Me.blTargetDarText.TabIndex = 23
+        Me.blTargetDarText.Text = "DAR:"
+        Me.blTargetDarText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lAspectRatioError
         '
-        Me.lAspectRatioError.Location = New System.Drawing.Point(206, 175)
-        Me.lAspectRatioError.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lAspectRatioError.Size = New System.Drawing.Size(110, 30)
+        Me.lAspectRatioError.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.lAspectRatioError.AutoSize = True
+        Me.lAspectRatioError.Location = New System.Drawing.Point(87, 4)
+        Me.lAspectRatioError.Margin = New System.Windows.Forms.Padding(0)
+        Me.lAspectRatioError.Size = New System.Drawing.Size(12, 2)
+        Me.lAspectRatioError.Text = "-"
         Me.lAspectRatioError.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'lPAR
+        '
+        Me.lPAR.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.lPAR.AutoSize = True
+        Me.lPAR.Location = New System.Drawing.Point(33, 4)
+        Me.lPAR.Margin = New System.Windows.Forms.Padding(0)
+        Me.lPAR.Size = New System.Drawing.Size(12, 2)
+        Me.lPAR.Text = "-"
+        Me.lPAR.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lZoom
         '
-        Me.lZoom.Location = New System.Drawing.Point(206, 144)
-        Me.lZoom.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lZoom.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.lZoom.AutoSize = True
+        Me.lZoom.Location = New System.Drawing.Point(87, 2)
+        Me.lZoom.Margin = New System.Windows.Forms.Padding(0)
         Me.lZoom.Name = "lZoom"
-        Me.lZoom.Size = New System.Drawing.Size(110, 30)
+        Me.lZoom.Size = New System.Drawing.Size(12, 2)
         Me.lZoom.TabIndex = 44
+        Me.lZoom.Text = "-"
         Me.lZoom.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lPixel
-        '
-        Me.lPixel.Location = New System.Drawing.Point(206, 113)
-        Me.lPixel.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lPixel.Name = "lPixel"
-        Me.lPixel.Size = New System.Drawing.Size(110, 30)
-        Me.lPixel.TabIndex = 50
-        Me.lPixel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lSarText
         '
-        Me.lSarText.Location = New System.Drawing.Point(4, 144)
-        Me.lSarText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lSarText.Size = New System.Drawing.Size(52, 30)
+        Me.lSarText.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.lSarText.AutoSize = True
+        Me.lSarText.Location = New System.Drawing.Point(0, 2)
+        Me.lSarText.Margin = New System.Windows.Forms.Padding(0)
+        Me.lSarText.Size = New System.Drawing.Size(31, 2)
         Me.lSarText.Text = "SAR:"
         Me.lSarText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
+        'lPixel
+        '
+        Me.lPixel.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.lPixel.AutoSize = True
+        Me.lPixel.Location = New System.Drawing.Point(87, 0)
+        Me.lPixel.Margin = New System.Windows.Forms.Padding(0)
+        Me.lPixel.Name = "lPixel"
+        Me.lPixel.Size = New System.Drawing.Size(12, 2)
+        Me.lPixel.TabIndex = 50
+        Me.lPixel.Text = "-"
+        Me.lPixel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'blTargetParText
+        '
+        Me.blTargetParText.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.blTargetParText.AutoSize = True
+        Me.blTargetParText.LinkColor = System.Drawing.Color.Empty
+        Me.blTargetParText.Location = New System.Drawing.Point(0, 4)
+        Me.blTargetParText.Margin = New System.Windows.Forms.Padding(0)
+        Me.blTargetParText.Name = "blTargetParText"
+        Me.blTargetParText.Size = New System.Drawing.Size(32, 2)
+        Me.blTargetParText.TabIndex = 51
+        Me.blTargetParText.Text = "PAR:"
+        Me.blTargetParText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
         'lAspectRatioErrorText
         '
-        Me.lAspectRatioErrorText.Location = New System.Drawing.Point(139, 175)
-        Me.lAspectRatioErrorText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lAspectRatioErrorText.Size = New System.Drawing.Size(66, 30)
+        Me.lAspectRatioErrorText.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.lAspectRatioErrorText.AutoSize = True
+        Me.lAspectRatioErrorText.Location = New System.Drawing.Point(45, 4)
+        Me.lAspectRatioErrorText.Margin = New System.Windows.Forms.Padding(0)
+        Me.lAspectRatioErrorText.Size = New System.Drawing.Size(35, 2)
         Me.lAspectRatioErrorText.Text = "Error:"
         Me.lAspectRatioErrorText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'lParText
+        'lDAR
         '
-        Me.lParText.Location = New System.Drawing.Point(4, 175)
-        Me.lParText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lParText.Size = New System.Drawing.Size(52, 30)
-        Me.lParText.Text = "PAR:"
-        Me.lParText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lPixelText
-        '
-        Me.lPixelText.Location = New System.Drawing.Point(139, 113)
-        Me.lPixelText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lPixelText.Name = "lPixelText"
-        Me.lPixelText.Size = New System.Drawing.Size(66, 30)
-        Me.lPixelText.TabIndex = 49
-        Me.lPixelText.Text = "Pixel:"
-        Me.lPixelText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.lDAR.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.lDAR.AutoSize = True
+        Me.lDAR.ImeMode = System.Windows.Forms.ImeMode.NoControl
+        Me.lDAR.Location = New System.Drawing.Point(33, 0)
+        Me.lDAR.Margin = New System.Windows.Forms.Padding(0)
+        Me.lDAR.Name = "lDAR"
+        Me.lDAR.Size = New System.Drawing.Size(12, 2)
+        Me.lDAR.TabIndex = 24
+        Me.lDAR.Text = "-"
+        Me.lDAR.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lZoomText
         '
-        Me.lZoomText.Location = New System.Drawing.Point(139, 144)
-        Me.lZoomText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lZoomText.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.lZoomText.AutoSize = True
+        Me.lZoomText.Location = New System.Drawing.Point(45, 2)
+        Me.lZoomText.Margin = New System.Windows.Forms.Padding(0)
         Me.lZoomText.Name = "lZoomText"
-        Me.lZoomText.Size = New System.Drawing.Size(66, 30)
+        Me.lZoomText.Size = New System.Drawing.Size(42, 2)
         Me.lZoomText.TabIndex = 42
         Me.lZoomText.Text = "Zoom:"
         Me.lZoomText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'lDarText
+        'lPixelText
         '
-        Me.lDarText.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.lDarText.Location = New System.Drawing.Point(4, 113)
-        Me.lDarText.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lDarText.Name = "lDarText"
-        Me.lDarText.Size = New System.Drawing.Size(52, 30)
-        Me.lDarText.TabIndex = 23
-        Me.lDarText.Text = "DAR:"
-        Me.lDarText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.lPixelText.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.lPixelText.AutoSize = True
+        Me.lPixelText.Location = New System.Drawing.Point(45, 0)
+        Me.lPixelText.Margin = New System.Windows.Forms.Padding(0)
+        Me.lPixelText.Name = "lPixelText"
+        Me.lPixelText.Size = New System.Drawing.Size(34, 2)
+        Me.lPixelText.TabIndex = 49
+        Me.lPixelText.Text = "Pixel:"
+        Me.lPixelText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lSAR
         '
-        Me.lSAR.Location = New System.Drawing.Point(57, 144)
-        Me.lSAR.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lSAR.Size = New System.Drawing.Size(81, 30)
+        Me.lSAR.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.lSAR.AutoSize = True
+        Me.lSAR.Location = New System.Drawing.Point(33, 2)
+        Me.lSAR.Margin = New System.Windows.Forms.Padding(0)
+        Me.lSAR.Size = New System.Drawing.Size(12, 2)
+        Me.lSAR.Text = "-"
         Me.lSAR.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'lDAR
-        '
-        Me.lDAR.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.lDAR.Location = New System.Drawing.Point(57, 113)
-        Me.lDAR.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lDAR.Name = "lDAR"
-        Me.lDAR.Size = New System.Drawing.Size(81, 30)
-        Me.lDAR.TabIndex = 24
-        Me.lDAR.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'tbResize
         '
+        Me.tbResize.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tbResize.AutoSize = False
         Me.tbResize.BackColor = System.Drawing.SystemColors.Control
-        Me.tbResize.Location = New System.Drawing.Point(8, 70)
-        Me.tbResize.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.tlpResize.SetColumnSpan(Me.tbResize, 4)
+        Me.tbResize.Location = New System.Drawing.Point(0, 27)
+        Me.tbResize.Margin = New System.Windows.Forms.Padding(0)
         Me.tbResize.Name = "tbResize"
-        Me.tbResize.Size = New System.Drawing.Size(304, 34)
+        Me.tbResize.Size = New System.Drawing.Size(218, 27)
         Me.tbResize.TabIndex = 46
-        '
-        'lTargetWidth
-        '
-        Me.lTargetWidth.AutoSize = True
-        Me.lTargetWidth.Location = New System.Drawing.Point(12, 36)
-        Me.lTargetWidth.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lTargetWidth.Name = "lTargetWidth"
-        Me.lTargetWidth.Size = New System.Drawing.Size(64, 25)
-        Me.lTargetWidth.TabIndex = 37
-        Me.lTargetWidth.Text = "Width:"
         '
         'tbTargetWidth
         '
-        Me.tbTargetWidth.Location = New System.Drawing.Point(82, 33)
-        Me.tbTargetWidth.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.tbTargetWidth.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.tbTargetWidth.Location = New System.Drawing.Point(55, 2)
+        Me.tbTargetWidth.Margin = New System.Windows.Forms.Padding(1, 1, 1, 1)
         Me.tbTargetWidth.Name = "tbTargetWidth"
-        Me.tbTargetWidth.Size = New System.Drawing.Size(70, 31)
+        Me.tbTargetWidth.Size = New System.Drawing.Size(51, 23)
         Me.tbTargetWidth.TabIndex = 39
         Me.tbTargetWidth.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'tbTargetHeight
         '
-        Me.tbTargetHeight.Location = New System.Drawing.Point(234, 33)
-        Me.tbTargetHeight.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.tbTargetHeight.Anchor = System.Windows.Forms.AnchorStyles.Left
+        Me.tbTargetHeight.Location = New System.Drawing.Point(163, 2)
+        Me.tbTargetHeight.Margin = New System.Windows.Forms.Padding(1, 1, 1, 1)
         Me.tbTargetHeight.Name = "tbTargetHeight"
-        Me.tbTargetHeight.Size = New System.Drawing.Size(70, 31)
+        Me.tbTargetHeight.Size = New System.Drawing.Size(51, 23)
         Me.tbTargetHeight.TabIndex = 40
         Me.tbTargetHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'lTargetHeight
         '
+        Me.lTargetHeight.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.lTargetHeight.AutoSize = True
-        Me.lTargetHeight.Location = New System.Drawing.Point(159, 36)
-        Me.lTargetHeight.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lTargetHeight.Location = New System.Drawing.Point(109, 6)
+        Me.lTargetHeight.Margin = New System.Windows.Forms.Padding(1, 0, 1, 0)
         Me.lTargetHeight.Name = "lTargetHeight"
-        Me.lTargetHeight.Size = New System.Drawing.Size(69, 25)
+        Me.lTargetHeight.Size = New System.Drawing.Size(46, 15)
         Me.lTargetHeight.TabIndex = 38
         Me.lTargetHeight.Text = "Height:"
         '
         'lgbFilters
         '
-        Me.lgbFilters.Controls.Add(Me.AviSynthListView)
-        Me.lgbFilters.Location = New System.Drawing.Point(13, 220)
-        Me.lgbFilters.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.lgbFilters.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lgbFilters.Color = System.Drawing.Color.Empty
+        Me.lgbFilters.Controls.Add(Me.FiltersListView)
+        Me.lgbFilters.Location = New System.Drawing.Point(3, 146)
+        Me.lgbFilters.Margin = New System.Windows.Forms.Padding(3, 0, 2, 0)
         Me.lgbFilters.Name = "lgbFilters"
-        Me.lgbFilters.Padding = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.lgbFilters.Size = New System.Drawing.Size(320, 216)
+        Me.lgbFilters.Padding = New System.Windows.Forms.Padding(3, 1, 3, 3)
+        Me.lgbFilters.Size = New System.Drawing.Size(222, 78)
         Me.lgbFilters.TabIndex = 53
         Me.lgbFilters.TabStop = False
         Me.lgbFilters.Text = "Filters"
         '
-        'AviSynthListView
+        'FiltersListView
         '
-        Me.AviSynthListView.AllowDrop = True
-        Me.AviSynthListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.AviSynthListView.CheckBoxes = True
-        Me.AviSynthListView.AutoCheckMode = AutoCheckMode.None
-        Me.AviSynthListView.FullRowSelect = True
-        Me.AviSynthListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
-        Me.AviSynthListView.HideSelection = False
-        Me.AviSynthListView.Location = New System.Drawing.Point(8, 26)
-        Me.AviSynthListView.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.AviSynthListView.MultiSelect = False
-        Me.AviSynthListView.Name = "AviSynthListView"
-        Me.AviSynthListView.Size = New System.Drawing.Size(304, 180)
-        Me.AviSynthListView.TabIndex = 0
-        Me.AviSynthListView.UseCompatibleStateImageBehavior = False
-        Me.AviSynthListView.View = System.Windows.Forms.View.Details
+        Me.FiltersListView.AllowDrop = True
+        Me.FiltersListView.AutoCheckMode = StaxRip.UI.AutoCheckMode.None
+        Me.FiltersListView.CheckBoxes = True
+        Me.FiltersListView.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.FiltersListView.FullRowSelect = True
+        Me.FiltersListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None
+        Me.FiltersListView.HideSelection = False
+        Me.FiltersListView.IsLoading = False
+        Me.FiltersListView.Location = New System.Drawing.Point(3, 17)
+        Me.FiltersListView.Margin = New System.Windows.Forms.Padding(1, 1, 1, 1)
+        Me.FiltersListView.MultiSelect = False
+        Me.FiltersListView.Name = "FiltersListView"
+        Me.FiltersListView.Size = New System.Drawing.Size(216, 58)
+        Me.FiltersListView.TabIndex = 0
+        Me.FiltersListView.UseCompatibleStateImageBehavior = False
+        Me.FiltersListView.View = System.Windows.Forms.View.Details
         '
         'lgbEncoder
         '
+        Me.lgbEncoder.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.lgbEncoder.Color = System.Drawing.Color.Empty
         Me.lgbEncoder.Controls.Add(Me.llMuxer)
-        Me.lgbEncoder.Controls.Add(Me.pEncoder)
-        Me.lgbEncoder.Location = New System.Drawing.Point(671, 220)
-        Me.lgbEncoder.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.lgbEncoder.Controls.Add(Me.pnEncoder)
+        Me.lgbEncoder.Location = New System.Drawing.Point(455, 146)
+        Me.lgbEncoder.Margin = New System.Windows.Forms.Padding(2, 0, 3, 0)
         Me.lgbEncoder.Name = "lgbEncoder"
-        Me.lgbEncoder.Padding = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.lgbEncoder.Size = New System.Drawing.Size(320, 216)
+        Me.lgbEncoder.Padding = New System.Windows.Forms.Padding(3, 1, 3, 3)
+        Me.lgbEncoder.Size = New System.Drawing.Size(225, 78)
         Me.lgbEncoder.TabIndex = 51
         Me.lgbEncoder.TabStop = False
         Me.lgbEncoder.Text = "Encoder"
         '
         'llMuxer
         '
-        Me.llMuxer.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.llMuxer.AutoSize = True
-        Me.llMuxer.Location = New System.Drawing.Point(259, 0)
-        Me.llMuxer.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.llMuxer.LinkColor = System.Drawing.Color.Empty
+        Me.llMuxer.Location = New System.Drawing.Point(172, 0)
+        Me.llMuxer.Margin = New System.Windows.Forms.Padding(1, 0, 1, 0)
         Me.llMuxer.Name = "llMuxer"
-        Me.llMuxer.Size = New System.Drawing.Size(46, 25)
+        Me.llMuxer.Size = New System.Drawing.Size(40, 15)
         Me.llMuxer.TabIndex = 1
         Me.llMuxer.TabStop = True
-        Me.llMuxer.Text = "Mux"
+        Me.llMuxer.Text = "Muxer"
         '
-        'pEncoder
+        'pnEncoder
         '
-        Me.pEncoder.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.pEncoder.Location = New System.Drawing.Point(8, 27)
-        Me.pEncoder.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.pEncoder.Name = "pEncoder"
-        Me.pEncoder.Size = New System.Drawing.Size(305, 179)
-        Me.pEncoder.TabIndex = 0
+        Me.pnEncoder.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.pnEncoder.Location = New System.Drawing.Point(3, 17)
+        Me.pnEncoder.Margin = New System.Windows.Forms.Padding(1, 1, 1, 1)
+        Me.pnEncoder.Name = "pnEncoder"
+        Me.pnEncoder.Size = New System.Drawing.Size(219, 58)
+        Me.pnEncoder.TabIndex = 0
+        '
+        'tlpMain
+        '
+        Me.tlpMain.ColumnCount = 4
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33!))
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.67!))
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.67!))
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33!))
+        Me.tlpMain.Controls.Add(Me.lgbTarget, 2, 1)
+        Me.tlpMain.Controls.Add(Me.gbAssistant, 0, 4)
+        Me.tlpMain.Controls.Add(Me.gbAudio, 0, 3)
+        Me.tlpMain.Controls.Add(Me.lgbSource, 0, 1)
+        Me.tlpMain.Controls.Add(Me.lgbResize, 1, 2)
+        Me.tlpMain.Controls.Add(Me.MenuStrip, 0, 0)
+        Me.tlpMain.Controls.Add(Me.lgbFilters, 0, 2)
+        Me.tlpMain.Controls.Add(Me.lgbEncoder, 3, 2)
+        Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpMain.Location = New System.Drawing.Point(0, 0)
+        Me.tlpMain.Margin = New System.Windows.Forms.Padding(0)
+        Me.tlpMain.Name = "tlpMain"
+        Me.tlpMain.RowCount = 5
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 119.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 70.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60.0!))
+        Me.tlpMain.Size = New System.Drawing.Size(683, 354)
+        Me.tlpMain.TabIndex = 61
         '
         'MainForm
         '
         Me.AllowDrop = True
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
-        Me.ClientSize = New System.Drawing.Size(1004, 654)
-        Me.Controls.Add(Me.gbAudio)
-        Me.Controls.Add(Me.lgbTarget)
-        Me.Controls.Add(Me.lgbSource)
-        Me.Controls.Add(Me.lgbResize)
-        Me.Controls.Add(Me.lgbFilters)
-        Me.Controls.Add(Me.lgbEncoder)
-        Me.Controls.Add(Me.gbAssistant)
-        Me.Controls.Add(Me.MenuStrip)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+        Me.ClientSize = New System.Drawing.Size(683, 354)
+        Me.Controls.Add(Me.tlpMain)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.HelpButton = True
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.KeyPreview = True
-        Me.Location = New System.Drawing.Point(0, 0)
         Me.MainMenuStrip = Me.MenuStrip
-        Me.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.MaximizeBox = False
         Me.Name = "MainForm"
         Me.Text = "StaxRip"
         Me.gbAssistant.ResumeLayout(False)
+        Me.tlpAssistant.ResumeLayout(False)
+        Me.tlpAssistant.PerformLayout()
         Me.gbAudio.ResumeLayout(False)
-        Me.gbAudio.PerformLayout()
+        Me.tlpAudio.ResumeLayout(False)
+        Me.tlpAudio.PerformLayout()
         Me.lgbTarget.ResumeLayout(False)
         Me.lgbTarget.PerformLayout()
+        Me.tlpTarget.ResumeLayout(False)
+        Me.tlpTarget.PerformLayout()
         Me.lgbSource.ResumeLayout(False)
         Me.lgbSource.PerformLayout()
+        Me.tlpSource.ResumeLayout(False)
+        Me.tlpSource.PerformLayout()
+        Me.tlpSourceValues.ResumeLayout(False)
+        Me.tlpSourceValues.PerformLayout()
         Me.lgbResize.ResumeLayout(False)
         Me.lgbResize.PerformLayout()
+        Me.tlpResize.ResumeLayout(False)
+        Me.tlpResize.PerformLayout()
+        Me.tlpResizeValues.ResumeLayout(False)
+        Me.tlpResizeValues.PerformLayout()
         CType(Me.tbResize, System.ComponentModel.ISupportInitialize).EndInit()
         Me.lgbFilters.ResumeLayout(False)
         Me.lgbFilters.PerformLayout()
         Me.lgbEncoder.ResumeLayout(False)
         Me.lgbEncoder.PerformLayout()
+        Me.tlpMain.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -959,26 +1058,24 @@ Class MainForm
     Public WithEvents CustomSizeMenu As CustomMenu
     Public CurrentAssistantTipKey As String
     Public AssistantPassed As Boolean
+    Public CommandManager As New CommandManager
 
-    Private AudioMenu0 As ContextMenuStrip
-    Private AudioMenu1 As ContextMenuStrip
-    Private TargetAspectRatioMenu As ContextMenuStrip
-    Private SizeContextMenuStrip As ContextMenuStrip
-    Private EncoderMenu As ContextMenuStrip
-    Private ContainerMenu As ContextMenuStrip
-    Private SourceAspectRatioMenu As ContextMenuStrip
-    Private TargetFileMenu As ContextMenuStrip
-    Private SourceFileMenu As ContextMenuStrip
-    Private Audio0FileMenu As ContextMenuStrip
-    Private Audio1FileMenu As ContextMenuStrip
-    Private ResetAssistantFont As Boolean
-
+    Private AudioMenu0 As ContextMenuStripEx
+    Private AudioMenu1 As ContextMenuStripEx
+    Private TargetAspectRatioMenu As ContextMenuStripEx
+    Private SizeContextMenuStrip As ContextMenuStripEx
+    Private EncoderMenu As ContextMenuStripEx
+    Private ContainerMenu As ContextMenuStripEx
+    Private SourceAspectRatioMenu As ContextMenuStripEx
+    Private TargetFileMenu As ContextMenuStripEx
+    Private SourceFileMenu As ContextMenuStripEx
+    Private Audio0FileMenu As ContextMenuStripEx
+    Private Audio1FileMenu As ContextMenuStripEx
     Private BlockAviSynthItemCheck As Boolean
     Private CanChangeSize As Boolean = True
     Private CanChangeBitrate As Boolean = True
     Private CanIgnoreTip As Boolean = True
     Private IsLoading As Boolean = True
-    Private CommandManager As New CommandManager
     Private BlockBitrate, BlockSize As Boolean
     Private IsManualCheckForUpdates As Boolean
     Private SkipAssistant As Boolean
@@ -987,127 +1084,146 @@ Class MainForm
     Sub New()
         MyBase.New()
 
-        Try
-            g.MainForm = Me
+        AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
+        g.MainForm = Me
+        LoadSettings()
+        MenuItemEx.UseTooltips = s.EnableTooltips
 
-            AddHandler AppDomain.CurrentDomain.UnhandledException, AddressOf g.OnUnhandledException
-            AddHandler Application.ThreadException, AddressOf g.OnUnhandledException
+        InitializeComponent()
 
-            Paths.CheckIfSettingsDirIsWriteable()
+        ScaleClientSize(41, 26.5)
 
-            s = DirectCast(SafeSerialization.Deserialize(New ApplicationSettings, Paths.SettingsFile, New LegacySerializationBinder), ApplicationSettings)
+        If components Is Nothing Then components = New System.ComponentModel.Container
 
-            MenuItemEx.UseTooltips = s.EnableTooltips
+        SetTip()
 
-            InitializeComponent()
+        AudioMenu0 = New ContextMenuStripEx(components)
+        AudioMenu1 = New ContextMenuStripEx(components)
+        TargetAspectRatioMenu = New ContextMenuStripEx(components)
+        SizeContextMenuStrip = New ContextMenuStripEx(components)
+        EncoderMenu = New ContextMenuStripEx(components)
+        ContainerMenu = New ContextMenuStripEx(components)
+        SourceAspectRatioMenu = New ContextMenuStripEx(components)
+        TargetFileMenu = New ContextMenuStripEx(components)
+        SourceFileMenu = New ContextMenuStripEx(components)
+        Audio0FileMenu = New ContextMenuStripEx(components)
+        Audio1FileMenu = New ContextMenuStripEx(components)
 
-            If components Is Nothing Then
-                components = New System.ComponentModel.Container
-            End If
+        tbTargetFile.ContextMenuStrip = TargetFileMenu
+        tbSourceFile.ContextMenuStrip = SourceFileMenu
+        tbAudioFile0.ContextMenuStrip = Audio0FileMenu
+        tbAudioFile1.ContextMenuStrip = Audio1FileMenu
 
-            SetTip()
+        Dim rc = "right-click"
+        tbAudioFile0.SendMessageCue(rc, False)
+        tbAudioFile1.SendMessageCue(rc, False)
+        tbSourceFile.SendMessageCue(rc, False)
+        tbTargetFile.SendMessageCue(rc, False)
 
-            TargetAspectRatioMenu = New ContextMenuStrip(components)
-            SizeContextMenuStrip = New ContextMenuStrip(components)
-            EncoderMenu = New ContextMenuStrip(components)
-            ContainerMenu = New ContextMenuStrip(components)
-            SourceAspectRatioMenu = New ContextMenuStrip(components)
-            TargetFileMenu = New ContextMenuStrip(components)
-            SourceFileMenu = New ContextMenuStrip(components)
-            Audio0FileMenu = New ContextMenuStrip(components)
-            Audio1FileMenu = New ContextMenuStrip(components)
+        llEditAudio0.AddClickAction(AddressOf AudioEdit0ToolStripMenuItemClick)
+        llEditAudio1.AddClickAction(AddressOf AudioEdit1ToolStripMenuItemClick)
 
-            tbTargetFile.ContextMenuStrip = TargetFileMenu
-            tbSourceFile.ContextMenuStrip = SourceFileMenu
-            tbAudioFile0.ContextMenuStrip = Audio0FileMenu
-            tbAudioFile1.ContextMenuStrip = Audio1FileMenu
+        Icon = My.Resources.MainIcon
 
-            AudioMenu0 = New ContextMenuStrip
-            AudioMenu1 = New ContextMenuStrip
+        MenuStrip.SuspendLayout()
+        MenuStrip.Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
-            Dim rc = "right-click"
-            tbAudioFile0.SendMessageCue(rc, False)
-            tbAudioFile1.SendMessageCue(rc, False)
-            tbSourceFile.SendMessageCue(rc, False)
-            tbTargetFile.SendMessageCue(rc, False)
+        CommandManager.AddCommandsFromObject(Me)
+        CommandManager.AddCommandsFromObject(g.DefaultCommands)
 
-            llEditAudio0.AddClickAction(AddressOf AudioEdit0ToolStripMenuItemClick)
-            llEditAudio1.AddClickAction(AddressOf AudioEdit1ToolStripMenuItemClick)
-
-            Icon = My.Resources.MainIcon
-
-            AviSynthListView.ProfileFunc = AddressOf GetTargetAviSynthDocument
-
-            MenuStrip.SuspendLayout()
-
-            CommandManager.AddCommandsFromObject(Me)
-            CommandManager.AddCommandsFromObject(g.DefaultCommands)
-
-            CustomMainMenu = New CustomMenu(AddressOf GetDefaultMainMenu,
+        CustomMainMenu = New CustomMenu(AddressOf GetDefaultMenuMain,
                 s.CustomMenuMainForm, CommandManager, MenuStrip)
 
-            CustomMainMenu.AddKeyDownHandler(Me)
-            CustomMainMenu.BuildMenu()
+        OpenProject(g.StartupTemplatePath)
+        CustomMainMenu.AddKeyDownHandler(Me)
+        CustomMainMenu.BuildMenu()
+        UpdateAudioMenu()
+        MenuStrip.ResumeLayout()
+        SizeContextMenuStrip.SuspendLayout()
 
-            LoadMainMenuDynamic()
-            UpdateAudioMenu()
-            MenuStrip.ResumeLayout()
-            OpenProject(Paths.StartupTemplatePath)
-            SizeContextMenuStrip.SuspendLayout()
-
-            CustomSizeMenu = New CustomMenu(AddressOf GetDefaultMenuSize,
+        CustomSizeMenu = New CustomMenu(AddressOf GetDefaultMenuSize,
                 s.CustomMenuSize, CommandManager, SizeContextMenuStrip)
 
-            CustomSizeMenu.AddKeyDownHandler(Me)
-            CustomSizeMenu.BuildMenu()
+        CustomSizeMenu.AddKeyDownHandler(Me)
+        CustomSizeMenu.BuildMenu()
+        SizeContextMenuStrip.ResumeLayout()
+        g.SetRenderer(MenuStrip)
+        SetMenuStyle()
+    End Sub
 
-            SizeContextMenuStrip.ResumeLayout()
-
-            g.SetRenderer(MenuStrip)
-            SetMenuStyle()
+    Private Sub LoadSettings()
+        Try
+            s = SafeSerialization.Deserialize(New ApplicationSettings, g.SettingsFile)
         Catch ex As Exception
-            VB6.MsgBox(ex.ToString, Microsoft.VisualBasic.MsgBoxStyle.Critical)
+            Using td As New TaskDialog(Of String)
+                td.MainInstruction = "The settings failed to load!"
+                td.Content = ex.Message
+                td.MainIcon = TaskDialogIcon.Error
+                td.AddButton("Retry", "Retry")
+                td.AddButton("Reset", "Reset")
+                td.AddButton("Exit", "Exit")
+
+                Select Case td.Show
+                    Case "Retry"
+                        LoadSettings()
+                    Case "Reset"
+                        If MsgQuestion("Are you sure you want to reset your settings? Your current settings will be lost!") = DialogResult.OK Then
+                            s = New ApplicationSettings
+                            s.Init()
+                        Else
+                            LoadSettings()
+                        End If
+                    Case Else
+                        Process.GetCurrentProcess.Kill()
+                End Select
+            End Using
         End Try
     End Sub
 
     Sub SetMenuStyle()
         If ToolStripRendererEx.IsAutoRenderMode Then
-            Dim c = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0)
+            Dim col = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0)
 
-            llAudioProfile0.LinkColor = c
-            llAudioProfile1.LinkColor = c
-            llEditAudio0.LinkColor = c
-            llEditAudio1.LinkColor = c
-            llFilesize.LinkColor = c
-            llMuxer.LinkColor = c
-            llSourceParText.LinkColor = c
+            llAudioProfile0.LinkColor = col
+            llAudioProfile1.LinkColor = col
+            llEditAudio0.LinkColor = col
+            llEditAudio1.LinkColor = col
+            blFilesize.LinkColor = col
+            llMuxer.LinkColor = col
+            blSourceParText.LinkColor = col
+            blSourceDarText.LinkColor = col
+            blTargetParText.LinkColor = col
+            blTargetDarText.LinkColor = col
 
-            lgbEncoder.ll.LinkColor = c
-            lgbFilters.ll.LinkColor = c
-            lgbResize.ll.LinkColor = c
-            lgbSource.ll.LinkColor = c
-            lgbTarget.ll.LinkColor = c
+            lgbEncoder.Label.LinkColor = col
+            lgbFilters.Label.LinkColor = col
+            lgbResize.Label.LinkColor = col
+            lgbSource.Label.LinkColor = col
+            lgbTarget.Label.LinkColor = col
         Else
             llAudioProfile0.LinkColor = Color.Blue
             llAudioProfile1.LinkColor = Color.Blue
             llEditAudio0.LinkColor = Color.Blue
             llEditAudio1.LinkColor = Color.Blue
-            llFilesize.LinkColor = Color.Blue
+            blFilesize.LinkColor = Color.Blue
             llMuxer.LinkColor = Color.Blue
-            llSourceParText.LinkColor = Color.Blue
+            blSourceParText.LinkColor = Color.Blue
+            blSourceDarText.LinkColor = Color.Blue
+            blTargetParText.LinkColor = Color.Blue
+            blTargetDarText.LinkColor = Color.Blue
 
-            lgbEncoder.ll.LinkColor = Color.Blue
-            lgbFilters.ll.LinkColor = Color.Blue
-            lgbResize.ll.LinkColor = Color.Blue
-            lgbSource.ll.LinkColor = Color.Blue
-            lgbTarget.ll.LinkColor = Color.Blue
+            lgbEncoder.Label.LinkColor = Color.Blue
+            lgbFilters.Label.LinkColor = Color.Blue
+            lgbResize.Label.LinkColor = Color.Blue
+            lgbSource.Label.LinkColor = Color.Blue
+            lgbTarget.Label.LinkColor = Color.Blue
         End If
     End Sub
 
     Function GetIfoFile() As String
-        Dim ret = Filepath.GetDir(p.SourceFile)
-        If ret.EndsWith(" temp files\") Then ret = DirPath.GetParent(ret)
-        ret = ret + Filepath.GetName(p.SourceFile).DeleteRight(5) + "0.ifo"
+        Dim ret = FilePath.GetDir(p.SourceFile)
+        If ret.EndsWith("_temp\") Then ret = DirPath.GetParent(ret)
+        ret = ret + FilePath.GetName(p.SourceFile).DeleteRight(5) + "0.ifo"
         If File.Exists(ret) Then Return ret
     End Function
 
@@ -1128,19 +1244,16 @@ Class MainForm
                         For x = 0 To mi.AudioStreams.Count - 1
                             If mi.GetAudio(x, "ID/String").Contains(" (0x" & dgID & ")") Then
                                 Dim stream = mi.AudioStreams(x)
-                                Dim base = Filepath.GetBase(i)
+                                Dim base = FilePath.GetBase(i)
                                 base = regex.Replace(base, " ID" & x & " ")
 
                                 If base.Contains("2_0ch") Then base = base.Replace("2_0ch", "2ch")
                                 If base.Contains("3_2ch") Then base = base.Replace("3_2ch", "6ch")
                                 If base.Contains(" DELAY") Then base = base.Replace(" DELAY", "")
                                 If base.Contains(" 0ms") Then base = base.Replace(" 0ms", "")
-
-                                If stream.Language.TwoLetterCode <> "iv" Then
-                                    base += " " + stream.Language.Name
-                                End If
+                                If stream.Language.TwoLetterCode <> "iv" Then base += " " + stream.Language.Name
                                 If stream.Title <> "" Then base += " " + stream.Title
-                                FileHelp.Move(i, Filepath.GetDir(i) + base + Filepath.GetExtFull(i))
+                                FileHelp.Move(i, i.Dir + base + i.ExtFull)
                             End If
                         Next
                     End Using
@@ -1151,7 +1264,8 @@ Class MainForm
 
     Private Sub DetectAudioFiles(track As Integer,
                                  lang As Boolean,
-                                 same As Boolean)
+                                 same As Boolean,
+                                 hq As Boolean)
 
         Dim tb, tbOther As TextBox
         Dim profile As AudioProfile
@@ -1171,31 +1285,23 @@ Class MainForm
         End If
 
         Dim files = g.GetFilesInTempDirAndParent
-        files.Sort()
+        files.Sort(New StringLogicalComparer)
 
         For Each iExt In FileTypes.Audio
-            If iExt = "avs" Then
-                Continue For
-            End If
+            If iExt = "avs" Then Continue For
 
             For Each iPath In files
-                If tbOther.Text = iPath Then
-                    Continue For
-                End If
+                If track = 1 AndAlso iPath.Base = p.Audio0.File.Base Then Continue For
+                If track = 0 AndAlso iPath.Base = p.Audio1.File.Base Then Continue For
 
-                If Not Filepath.GetExt(iPath) = iExt Then
-                    Continue For
-                End If
+                If tbOther.Text = iPath Then Continue For
+                If Not FilePath.GetExt(iPath) = iExt Then Continue For
+                If iPath.Contains("_cut_") Then Continue For
+                If iPath.Contains("_out") Then Continue For
+                If Not g.IsSourceSame(iPath) Then Continue For
+                If hq AndAlso Not iPath.Ext.EqualsAny("dtsma", "thd", "eac3", "thd+ac3", "dtshr") Then Continue For
 
-                If iPath.Contains("_cut_") Then
-                    Continue For
-                End If
-
-                If Not g.IsSourceSame(iPath) Then
-                    Continue For
-                End If
-
-                If same AndAlso tbOther.Text <> "" AndAlso Filepath.GetExtFull(tbOther.Text) <> Filepath.GetExtFull(iPath) Then
+                If same AndAlso tbOther.Text <> "" AndAlso tbOther.Text.ExtFull <> iPath.ExtFull Then
                     Continue For
                 End If
 
@@ -1209,7 +1315,7 @@ Class MainForm
                     If Not iPath.Contains(lng.Name) Then Continue For
                 End If
 
-                If Filepath.GetExtFull(iPath) = ".mp4" AndAlso Filepath.IsSameBase(p.SourceFile, iPath) Then
+                If iPath.Ext = "mp4" AndAlso FilePath.IsSameBase(p.SourceFile, iPath) Then
                     Continue For
                 End If
 
@@ -1222,95 +1328,47 @@ Class MainForm
     End Sub
 
     Function IsSaveCanceled() As Boolean
-        'ObjectHelp.GetCompareString(g.SavedProject).WriteFile(CommonDirs.UserDesktop + "test1.txt")
-        'ObjectHelp.GetCompareString(p).WriteFile(CommonDirs.UserDesktop + "test2.txt")
+        'ObjectHelp.GetCompareString(g.SavedProject).WriteFile(Folder.Desktop + "\test1.txt", Encoding.ASCII)
+        'ObjectHelp.GetCompareString(p).WriteFile(Folder.Desktop + "\test2.txt", Encoding.ASCII)
 
         If ObjectHelp.GetCompareString(g.SavedProject) <> ObjectHelp.GetCompareString(p) Then
-            If Environment.OSVersion.Version.Major >= 6 Then
-                Using td As New TaskDialog(Of DialogResult)
-                    td.MainInstruction = "Save changed project?"
-                    td.AddButton(DialogResult.Yes, "Save")
-                    td.AddButton(DialogResult.No, "Don't Save")
-                    td.AddButton(DialogResult.Cancel, "Cancel")
-                    td.Show()
-                    Refresh()
-
-                    If td.SelectedValue = DialogResult.Yes Then
-                        If g.ProjectPath Is Nothing Then
-                            If Not ShowSaveDialog() Then
-                                Return True
-                            End If
-                        Else
-                            SaveProjectByPath(g.ProjectPath)
-                        End If
-                    ElseIf td.SelectedValue = DialogResult.Cancel Then
-                        Return True
-                    End If
-                End Using
-            Else
-                Dim result = MsgQuestion("Save changed project?", MessageBoxButtons.YesNoCancel)
+            Using td As New TaskDialog(Of DialogResult)
+                td.MainInstruction = "Save changed project?"
+                td.AddButton("Save", DialogResult.Yes)
+                td.AddButton("Don't Save", DialogResult.No)
+                td.AddButton("Cancel", DialogResult.Cancel)
+                td.Show()
                 Refresh()
 
-                Select Case result
-                    Case DialogResult.Yes
-                        If g.ProjectPath Is Nothing Then
-                            If Not ShowSaveDialog() Then
-                                Return True
-                            End If
-                        Else
-                            SaveProjectByPath(g.ProjectPath)
+                If td.SelectedValue = DialogResult.Yes Then
+                    If g.ProjectPath Is Nothing Then
+                        If Not OpenSaveDialog() Then
+                            Return True
                         End If
-                    Case DialogResult.Cancel
-                        Return True
-                End Select
-            End If
+                    Else
+                        SaveProjectPath(g.ProjectPath)
+                    End If
+                ElseIf td.SelectedValue = DialogResult.Cancel Then
+                    Return True
+                End If
+            End Using
         End If
     End Function
 
-    Sub UpdateRecentProjectsMenuItems()
-        UpdateRecentProjectsMenuItems(Nothing)
-    End Sub
-
-    Async Sub UpdateRecentProjectsMenuItems(path As String)
-        Await Task.Run(Sub()
-                           Dim list As New List(Of String)
-
-                           If path <> "" AndAlso Not path.Contains(Paths.TemplateDir) AndAlso
-                               Not path.Contains("crash.srip") Then
-
-                               list.Add(path)
-                           End If
-
-                           For Each i In s.RecentProjects
-                               If i <> path AndAlso File.Exists(i) Then
-                                   list.Add(i)
-                               End If
-                           Next
-
-                           While list.Count > 9
-                               list.RemoveAt(list.Count - 1)
-                           End While
-
-                           SyncLock s.RecentProjects
-                               s.RecentProjects = list
-                           End SyncLock
-                       End Sub)
+    Sub UpdateRecentProjectsMenu()
+        If Disposing OrElse IsDisposed Then Exit Sub
 
         For Each i In CustomMainMenu.MenuItems
-            If i.CustomMenuItem.MethodName = "DynamicMenuItem" AndAlso
+            If i.CustomMenuItem?.MethodName = "DynamicMenuItem" AndAlso
                 i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.RecentProjects) Then
 
-                i.DropDownItems.Clear()
+                i.DropDownItems.ClearAndDisplose
 
                 SyncLock s.RecentProjects
                     For Each i2 In s.RecentProjects
-                        If File.Exists(i2) AndAlso Not Filepath.GetBase(i2) = "recover" Then
+                        If File.Exists(i2) AndAlso Not i2.Base = "recover" Then
                             Dim name = i2
-
-                            If i2.Length > 70 Then
-                                name = "..." + name.Remove(0, name.Length - 70)
-                            End If
-
+                            If i2.Length > 70 Then name = "..." + name.Remove(0, name.Length - 70)
                             i.DropDownItems.Add(New ActionMenuItem(name, Sub() LoadProject(i2)))
                         End If
                     Next
@@ -1321,103 +1379,150 @@ Class MainForm
         Next
     End Sub
 
+    <DebuggerNonUserCode>
+    Sub UpdateDynamicMenuAsync()
+        Task.Run(Sub()
+                     Thread.Sleep(500)
+
+                     Try
+                         Invoke(Sub() UpdateDynamicMenu())
+                     Catch
+                     End Try
+                 End Sub)
+    End Sub
+
     Sub UpdateDynamicMenu()
+        PopulateProfileMenu(DynamicMenuItemID.EncoderProfiles)
+        PopulateProfileMenu(DynamicMenuItemID.MuxerProfiles)
+        PopulateProfileMenu(DynamicMenuItemID.Audio1Profiles)
+        PopulateProfileMenu(DynamicMenuItemID.Audio2Profiles)
+        PopulateProfileMenu(DynamicMenuItemID.FilterSetupProfiles)
+
         For Each i In CustomMainMenu.MenuItems
             If i.CustomMenuItem.MethodName = "DynamicMenuItem" Then
-                If i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.LaunchApplications) Then
-                    i.DropDownItems.Clear()
-
-                    Dim sd As New SortedDictionary(Of String, Action)
-
-                    For Each i2 In Packs.Packages
-                        If Not i2.LaunchAction Is Nothing AndAlso Not i2.IsStatusCritical Then
-                            sd(i2.LaunchTitle) = i2.LaunchAction
-                        End If
-                    Next
-
-                    sd("mkvinfo GUI") = Sub() g.ShellExecute(Packs.Mkvmerge.GetDir + "mkvinfo.exe", "-g")
-
-                    For Each i2 In sd
-                        i.DropDownItems.Add(New ActionMenuItem(i2.Key, i2.Value))
-                    Next
-                End If
-
                 If i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.HelpApplications) Then
-                    i.DropDownItems.Clear()
+                    i.DropDownItems.ClearAndDisplose
 
-                    For Each i2 In Packs.Packages
-                        Dim helpPath = i2.GetHelpPath
+                    For Each iPackage In Package.Items.Values
+                        Dim helpPath = iPackage.GetHelpPath
 
                         If helpPath <> "" Then
-                            Dim plugin = TryCast(i2, PluginPackage)
+                            Dim plugin = TryCast(iPackage, PluginPackage)
 
                             If plugin Is Nothing Then
-                                ActionMenuItem.Add(i.DropDownItems, "Apps | " + i2.Name, Sub() g.ShellExecute(helpPath))
+                                ActionMenuItem.Add(i.DropDownItems, iPackage.Name.Substring(0, 1).Upper + " | " + iPackage.Name, Sub() g.StartProcess(helpPath))
                             Else
-                                If plugin.AviSynthFilterNames?.Length > 0 Then
-                                    ActionMenuItem.Add(i.DropDownItems, "Plugins | AviSynth | " + i2.Name, Sub() g.ShellExecute(helpPath))
-                                End If
-
-                                If plugin.VapourSynthFilterNames?.Length > 0 Then
-                                    ActionMenuItem.Add(i.DropDownItems, "Plugins | VapourSynth | " + i2.Name, Sub() g.ShellExecute(helpPath))
-                                End If
+                                If plugin.AvsFilterNames?.Length > 0 Then ActionMenuItem.Add(i.DropDownItems, iPackage.Name.Substring(0, 1).Upper + " | " + iPackage.Name + " (AviSynth)", Sub() g.StartProcess(iPackage.GetHelpPath(ScriptEngine.AviSynth)))
+                                If plugin.VSFilterNames?.Length > 0 Then ActionMenuItem.Add(i.DropDownItems, iPackage.Name.Substring(0, 1).Upper + " | " + iPackage.Name + " (VapourSynth)", Sub() g.StartProcess(iPackage.GetHelpPath(ScriptEngine.VapourSynth)))
                             End If
                         End If
                     Next
                 End If
             End If
         Next
+
+        Application.DoEvents()
     End Sub
 
-    Sub UpdateTemplateProjectsMenuItems()
+    Async Sub UpdateScriptsMenuAsync()
+        Dim files As String()
+        Dim events As String()
+
+        Await Task.Run(Sub()
+                           Thread.Sleep(500)
+
+                           If Directory.Exists(Folder.Apps + "Scripts") Then
+                               For Each script In Directory.GetFiles(Folder.Apps + "Scripts")
+                                   If Not s.Storage.GetBool(script.FileName) AndAlso
+                                       Not File.Exists(Folder.Script + script.FileName) Then
+
+                                       FileHelp.Copy(script, Folder.Script + script.FileName)
+                                       s.Storage.SetBool(script.FileName, True)
+                                   End If
+                               Next
+                           End If
+
+                           events = System.Enum.GetNames(GetType(ApplicationEvent))
+                           files = Directory.GetFiles(Folder.Script)
+                       End Sub)
+
+        If IsDisposed OrElse Native.GetForegroundWindow() <> Handle Then Exit Sub
+
+        For Each menuItem In CustomMainMenu.MenuItems
+            If menuItem.CustomMenuItem.MethodName = "DynamicMenuItem" Then
+                If menuItem.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.Scripts) Then
+                    menuItem.DropDownItems.ClearAndDisplose
+
+                    For Each path In files
+                        If Not events.Contains(path.FileName.Left(".")) AndAlso Not path.FileName.StartsWith("_") Then
+                            ActionMenuItem.Add(menuItem.DropDownItems,
+                                               path.FileName.Base,
+                                               Sub() g.DefaultCommands.ExecuteScriptFile(path))
+                        End If
+                    Next
+
+                    menuItem.DropDownItems.Add(New ToolStripSeparator)
+                    ActionMenuItem.Add(menuItem.DropDownItems, "Open Scripts Folder", Sub() g.StartProcess(Folder.Script))
+                End If
+            End If
+        Next
+    End Sub
+
+    Async Sub UpdateTemplatesMenuAsync()
+        Dim files As String()
+
+        Await Task.Run(Sub()
+                           Thread.Sleep(500)
+
+                           For Each iFile In Directory.GetFiles(Folder.Template, "*.srip.backup")
+                               FileHelp.Move(iFile, iFile.Dir + "Backup\" + iFile.Base)
+                           Next
+
+                           files = Directory.GetFiles(Folder.Template, "*.srip", SearchOption.AllDirectories)
+                       End Sub)
+
+        If IsDisposed Then Exit Sub
+
         For Each i In CustomMainMenu.MenuItems
             If i.CustomMenuItem.MethodName = "DynamicMenuItem" AndAlso
                 i.CustomMenuItem.Parameters(0).Equals(DynamicMenuItemID.TemplateProjects) Then
 
-                i.DropDownItems.Clear()
+                i.DropDownItems.ClearAndDisplose
+                Dim items As New List(Of ActionMenuItem)
 
-                For Each i2 In Directory.GetFiles(Paths.TemplateDir, "*.srip.backup")
-                    FileHelp.Move(i2, Filepath.GetDir(i2) + "Backup\" + Filepath.GetBase(i2))
-                Next
-
-                For Each i2 In Directory.GetFiles(Paths.TemplateDir, "*.srip", SearchOption.AllDirectories)
-                    Dim base = Filepath.GetBase(i2)
-
-                    If i2 = Paths.StartupTemplatePath Then
-                        base += " (Startup)"
-                    End If
-
-                    If i2.Contains("Backup\") Then
-                        base = "Backup | " + base
-                    End If
-
+                For Each i2 In files
+                    Dim base = i2.Base
+                    If i2 = g.StartupTemplatePath Then base += " (Startup)"
+                    If i2.Contains("Backup\") Then base = "Backup | " + base
                     ActionMenuItem.Add(i.DropDownItems, base, AddressOf LoadProject, i2, Nothing)
                 Next
 
                 i.DropDownItems.Add("-")
-                ActionMenuItem.Add(i.DropDownItems, "Explore", Sub() g.ShellExecute(Paths.TemplateDir), "Opens the directory containing the templates.")
+                ActionMenuItem.Add(i.DropDownItems, "Explore", Sub() g.StartProcess(Folder.Template), "Opens the directory containing the templates.")
                 ActionMenuItem.Add(i.DropDownItems, "Restore", AddressOf ResetTemplates, "Restores the default templates.")
 
                 Exit For
             End If
         Next
+
+        Application.DoEvents()
     End Sub
 
     Sub ResetTemplates()
         If MsgQuestion("Restore the default templates?") = DialogResult.OK Then
             Try
-                DirectoryHelp.Delete(Paths.TemplateDir)
-                Paths.TemplateDir.ToString()
-                UpdateTemplateProjectsMenuItems()
+                DirectoryHelp.Delete(Folder.Template)
+                Folder.Template.ToString()
+                UpdateTemplatesMenuAsync()
             Catch ex As Exception
                 g.ShowException(ex)
             End Try
         End If
     End Sub
 
-    <Command("Perform | Load Template", "Loads a template.", Switch:="template|t")>
+    <Command("Loads a template.")>
     Sub LoadTemplate(name As String)
-        LoadProject(Paths.TemplateDir + name + ".srip")
+        LoadProject(Folder.Template + name + ".srip")
     End Sub
 
     Sub LoadProject(path As String)
@@ -1425,19 +1530,20 @@ Class MainForm
 
         If Not File.Exists(path) Then
             MsgWarn("Project file not found.")
-            UpdateTemplateProjectsMenuItems()
-            UpdateRecentProjectsMenuItems()
+            s.UpdateRecentProjects(path)
+            UpdateRecentProjectsMenu()
+            UpdateTemplatesMenuAsync()
         Else
             OpenProject(path)
         End If
     End Sub
 
-    Function ShowSaveDialog() As Boolean
-        Using d As New SWF.SaveFileDialog
+    Function OpenSaveDialog() As Boolean
+        Using d As New SaveFileDialog
             d.SetInitDir(p.TempDir)
 
             If p.SourceFile <> "" Then
-                d.FileName = p.Name
+                d.FileName = p.TargetFile.Base
             Else
                 d.FileName = "Untitled"
             End If
@@ -1449,34 +1555,63 @@ Class MainForm
                     d.FileName += ".srip"
                 End If
 
-                SaveProjectByPath(d.FileName)
+                SaveProjectPath(d.FileName)
                 Return True
             End If
         End Using
     End Function
 
-    Function OpenProject(path As String) As Boolean
+    Sub SetBindings(proj As Project, add As Boolean)
+        SetTextBoxBinding(tbTargetFile, proj, NameOf(Project.TargetFile), add)
+
+        If add Then
+            AddHandler proj.PropertyChanged, AddressOf ProjectPropertyChanged
+        Else
+            RemoveHandler proj.PropertyChanged, AddressOf ProjectPropertyChanged
+        End If
+    End Sub
+
+    Sub ProjectPropertyChanged(sender As Object, e As PropertyChangedEventArgs)
+        Assistant()
+    End Sub
+
+    Sub SetTextBoxBinding(tb As TextBox, obj As Object, prop As String, add As Boolean)
+        If add Then
+            tb.DataBindings.Add(New Binding(NameOf(TextBox.Text), obj, prop, False, DataSourceUpdateMode.OnPropertyChanged))
+        Else
+            tb.DataBindings.Clear()
+        End If
+    End Sub
+
+    Function OpenProject(Optional path As String = Nothing) As Boolean
         Return OpenProject(path, True)
     End Function
 
     Function OpenProject(path As String, saveCurrent As Boolean) As Boolean
-        If Not IsLoading AndAlso saveCurrent AndAlso IsSaveCanceled() Then
-            Return False
-        End If
+        If Not IsLoading AndAlso saveCurrent AndAlso IsSaveCanceled() Then Return False
+        SetBindings(p, False)
+        If path = "" OrElse Not File.Exists(path) Then path = g.StartupTemplatePath
 
-        If Not File.Exists(path) Then path = Paths.StartupTemplatePath
+        Try
+            p = SafeSerialization.Deserialize(New Project, path)
+        Catch ex As Exception
+            g.ShowException(ex, "The project file failed to load, it will be reset to defaults." + BR2 + path)
+            p = New Project
+            p.Init()
+        End Try
 
-        Dim safeInstance = New Project
-        safeInstance.Init()
+        Log = p.Log
 
-        p = DirectCast(SafeSerialization.Deserialize(safeInstance, path, New LegacySerializationBinder), Project)
+        If File.Exists(Folder.Temp + "staxrip.log") Then FileHelp.Delete(Folder.Temp + "staxrip.log")
 
-        Text = Application.ProductName + " x64 - " + Filepath.GetBase(path)
+        SetBindings(p, True)
+
+        Text = Application.ProductName + " - " + path.Base
         SkipAssistant = True
 
-        If path.StartsWith(Paths.TemplateDir) Then
+        If path.StartsWith(Folder.Template) Then
             g.ProjectPath = Nothing
-            p.TemplateName = Filepath.GetBase(path)
+            p.TemplateName = path.Base
         Else
             g.ProjectPath = path
         End If
@@ -1485,13 +1620,11 @@ Class MainForm
 
         Dim width = p.TargetWidth
         Dim height = p.TargetHeight
-        Dim size = p.Size
+        Dim size = p.TargetSize
         Dim bitrate = p.VideoBitrate
 
-        SetTargetLength(p.TargetSeconds)
-
-        AviSynthListView.Load()
-        AviSynthListView.Items(0).Selected = True
+        FiltersListView.Load()
+        FiltersListView.Items(0).Selected = True
         p.VideoEncoder.OnStateChange()
 
         Dim targetPath = p.TargetFile
@@ -1506,7 +1639,7 @@ Class MainForm
         tbSourceFile.Text = p.SourceFile
         BlockSourceTextBoxTextChanged = False
 
-        s.LastSourceDir = Filepath.GetDir(p.SourceFile)
+        If p.SourceFile <> "" Then s.LastSourceDir = p.SourceFile.Dir
 
         tbAudioFile0.Text = audio0
         tbAudioFile1.Text = audio1
@@ -1517,21 +1650,29 @@ Class MainForm
         p.Audio0.Delay = delay0
         p.Audio1.Delay = delay1
 
-        tbSize.Text = size.ToString()
+        If p.BitrateIsFixed Then
+            tbBitrate.Text = ""
+            tbBitrate.Text = bitrate.ToString
+        Else
+            tbTargetSize.Text = ""
+            tbTargetSize.Text = size.ToString()
+        End If
+
         SetSlider()
 
         tbTargetWidth.Text = width.ToString
         tbTargetHeight.Text = height.ToString
-        tbTargetFile.Text = targetPath
 
         SetSavedProject()
 
         SkipAssistant = False
 
         Assistant()
-        UpdateRecentProjectsMenuItems(path)
-        g.RaiseApplicationEvent(ApplicationEvent.ProjectLoaded)
-        g.RaiseApplicationEvent(ApplicationEvent.ProjectOrSourceLoaded)
+        s.UpdateRecentProjects(path)
+        UpdateRecentProjectsMenu()
+        g.RaiseAppEvent(ApplicationEvent.ProjectLoaded)
+        g.RaiseAppEvent(ApplicationEvent.ProjectOrSourceLoaded)
+        FiltersListView.RebuildMenu()
 
         Return True
     End Function
@@ -1545,106 +1686,80 @@ Class MainForm
         g.SavedProject = StaxRip.ObjectHelp.GetCopy(Of Project)(p)
     End Sub
 
-    Sub FormMain_DragEnter(sender As Object, e As DragEventArgs) Handles MyBase.DragEnter
-        Dim a = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+    Function GetPathFromIndexFile(sourcePath As String) As String
+        For Each i In File.ReadAllLines(sourcePath)
+            If i.Contains(":\") OrElse i.StartsWith("\\") Then
+                If Regex.IsMatch(i, "^.+ \d+$") Then i = i.LeftLast(" ")
 
-        If OK(a) Then
-            e.Effect = DragDropEffects.Copy
-        End If
-    End Sub
-
-    Sub FormMain_DragDrop(sender As Object, e As DragEventArgs) Handles MyBase.DragDrop
-        Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
-
-        If OK(files) Then
-            Activate()
-            BeginInvoke(Sub() OpenAnyFile(files.ToList, False))
-        End If
-    End Sub
-
-    Sub OpenSingleFile(files As IEnumerable(Of String))
-        Dim filter As VideoFilter
-
-        If files.Count = 1 Then
-            Dim td As New TaskDialog(Of String)
-            td.MainInstruction = "Choose a preferred source filter"
-            td.Content = "A description of the available source filters can be found in the [http://github.com/stax76/staxrip/wiki/Source-Filters wiki]."
-            td.AddCommandLink("Automatic", "Automatic")
-
-            If Not p.VideoScript.IsFilterActive("Source", "Automatic") Then
-                td.AddCommandLink(p.VideoScript.GetFilter("Source").Name, "current")
+                If File.Exists(i) AndAlso FileTypes.Video.Contains(i.Ext) Then
+                    Return i
+                End If
             End If
+        Next
+    End Function
 
-            If FileTypes.DGDecNVInput.Contains(files(0).Ext) Then
-                If Packs.DGDecodeNV.GetPath <> "" Then td.AddCommandLink("DGSource using AviSynth+", "DGSource")
-                If Packs.DGDecodeIM.GetPath <> "" Then td.AddCommandLink("DGSourceIM using AviSynth+", "DGSourceIM")
-            End If
+    Function ShowSourceFilterSelectionDialog(inputFile As String) As VideoFilter
+        Dim filters As New List(Of VideoFilter)
 
-            td.AddCommandLink("FFVideoSource using AviSynth+", "FFVideoSource")
-            td.AddCommandLink("LWLibavVideoSource using AviSynth+", "LWLibavVideoSource")
+        If inputFile.Ext = "dgi" OrElse FileTypes.DGDecNVInput.Contains(inputFile.Ext) Then AddSourceFilters({"DGSource"}, filters)
+        If inputFile.Ext = "dgim" OrElse FileTypes.DGDecNVInput.Contains(inputFile.Ext) Then AddSourceFilters({"DGSourceIM"}, filters)
+        If inputFile.Ext.EqualsAny("mp4", "m4v", "mov") Then AddSourceFilters({"LSMASHVideoSource", "LibavSMASHSource"}, filters)
+        If FileTypes.Video.Contains(inputFile.Ext) AndAlso Not FileTypes.VideoText.Contains(inputFile.Ext) Then AddSourceFilters({"FFVideoSource", "LWLibavVideoSource", "ffms2", "LWLibavSource"}, filters)
+        If g.IsCOMObjectRegistered(GUIDS.LAVSplitter) AndAlso g.IsCOMObjectRegistered(GUIDS.LAVVideoDecoder) Then AddSourceFilters({"DSS2"}, filters)
+        If {"avi", "avs", "vdr"}.Contains(inputFile.Ext) Then AddSourceFilters({"AVISource"}, filters)
+        If inputFile.Ext = "d2v" Then AddSourceFilters({"d2vsource"}, filters)
 
-            If {"mp4", "m4v", "mov"}.Contains(files(0).Ext) Then
-                td.AddCommandLink("LSMASHVideoSource using AviSynth+", "LSMASHVideoSource")
-            End If
-
-            If g.IsCOMObjectRegistered(GUIDS.LAVSplitter) AndAlso
-                g.IsCOMObjectRegistered(GUIDS.LAVVideoDecoder) Then
-
-                td.AddCommandLink("DSS2 using AviSynth+", "DSS2")
-            End If
-
-            If files(0).Ext = "avi" Then td.AddCommandLink("AVISource using AviSynth+", "AVISource")
-
-            If {"mp4", "m4v", "mov"}.Contains(files(0).Ext) Then
-                td.AddCommandLink("LibavSMASHSource using VapourSynth", "vsLibavSMASHSource")
-            End If
-
-            td.AddCommandLink("ffms2 using VapourSynth", "vsffms2")
-            td.AddCommandLink("LWLibavSource using VapourSynth", "vsLWLibavSource")
-
-            Select Case td.Show
-                Case "Automatic"
-                    filter = New VideoFilter("Source", "Automatic", "", True)
-                Case "current"
-                    filter = Nothing
-                Case "DGSource"
-                    filter = New VideoFilter("Source", "DGSource", "DGSource(""%source_file%"")")
-                Case "DGSourceIM"
-                    filter = New VideoFilter("Source", "DGSourceIM", "DGSourceIM(""%source_file%"")")
-                Case "FFVideoSource"
-                    filter = New VideoFilter("Source", "FFVideoSource", "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")")
-                Case "LWLibavVideoSource"
-                    filter = New VideoFilter("Source", "LWLibavVideoSource", "LWLibavVideoSource(""%source_file%"")")
-                Case "LSMASHVideoSource"
-                    filter = New VideoFilter("Source", "LSMASHVideoSource", "LSMASHVideoSource(""%source_file%"")")
-                Case "DSS2"
-                    filter = New VideoFilter("Source", "DSS2", "DSS2(""%source_file%"")")
-                Case "AVISource"
-                    filter = New VideoFilter("Source", "AVISource", "AviSource(""%source_file%"", audio = false)")
-                Case "vsffms2"
-                    filter = New VideoFilter("Source", "ffms2", "clip = core.ffms2.Source(source = r'%source_file%', cachefile = r'%temp_file%.ffindex')")
-                Case "vsLibavSMASHSource"
-                    filter = New VideoFilter("Source", "LibavSMASHSource", "clip = core.lsmas.LibavSMASHSource(source = r'%source_file%')")
-                Case "vsLWLibavSource"
-                    filter = New VideoFilter("Source", "LWLibavSource", "clip = core.lsmas.LWLibavSource(source = r'%source_file%')")
-            End Select
+        If p.Script.Engine = ScriptEngine.AviSynth Then
+            filters = filters.Where(Function(filter) Not filter.Script.Replace(" ", "").Contains("clip=core.")).ToList
+            filters.Insert(0, New VideoFilter("Source", "Automatic", "#avs"))
+        Else
+            filters = filters.Where(Function(filter) filter.Script.Replace(" ", "").Contains("clip=core.")).ToList
+            filters.Insert(0, New VideoFilter("Source", "Automatic", "#vs"))
         End If
 
-        OpenVideoSourceFiles(files, filter)
+        Dim td As New TaskDialog(Of VideoFilter)
+
+        If p.Script.Engine = ScriptEngine.AviSynth Then
+            td.MainInstruction = "Select a AviSynth source filter."
+        Else
+            td.MainInstruction = "Select a VapourSynth source filter."
+        End If
+
+        For Each filter In filters
+            td.AddCommandLink(filter.Name, filter)
+        Next
+
+        Dim ret = td.Show
+        If ret Is Nothing Then Throw New AbortException
+        ret.Script = Macro.ExpandGUI(ret.Script, True).Value
+        Return ret
+    End Function
+
+    Sub AddSourceFilters(filterNames As String(), filters As List(Of VideoFilter))
+        Dim avsProfiles = s.AviSynthProfiles.Where(Function(cat) cat.Name = "Source").First.Filters
+        Dim vsProfiles = s.VapourSynthProfiles.Where(Function(cat) cat.Name = "Source").First.Filters
+        Dim allFilters = avsProfiles.Concat(vsProfiles)
+
+        For Each filter In allFilters
+            For Each filterName In filterNames
+                If filter.Script.ToLower.Contains(filterName.ToLower + "(") OrElse
+                    filter.Script.ToLower.Contains(filterName.ToLower + ".") Then
+
+                    If filters.Where(Function(val) val.Name = filter.Name).Count = 0 Then
+                        filters.Add(filter.GetCopy)
+                    End If
+                End If
+            Next
+        Next
     End Sub
 
-    Sub OpenAnyFile(files As IEnumerable(Of String), Optional silent As Boolean = True)
-        If Filepath.GetExtFull(files(0)) = ".srip" Then
+    Sub OpenAnyFile(files As IEnumerable(Of String))
+        If files(0).Ext = "srip" Then
             OpenProject(files(0))
-        ElseIf FileTypes.Video.Contains(Filepath.GetExt(files(0)).ToLower) Then
+        ElseIf FileTypes.Video.Contains(files(0).Ext.Lower) Then
             files.Sort()
-
-            If silent Then
-                OpenVideoSourceFiles(files)
-            Else
-                OpenSingleFile(files)
-            End If
-        ElseIf FileTypes.Audio.Contains(Filepath.GetExt(files(0)).ToLower) Then
+            OpenVideoSourceFiles(files)
+        ElseIf FileTypes.Audio.Contains(files(0).Ext.Lower) Then
             tbAudioFile0.Text = files(0)
         Else
             files.Sort()
@@ -1656,38 +1771,28 @@ Class MainForm
         OpenVideoSourceFiles({fp})
     End Sub
 
-    Sub OpenVideoSourceFiles(files As IEnumerable(Of String),
-                             Optional preferredSourceFilter As VideoFilter = Nothing)
-
-        OpenVideoSourceFiles(files, True, preferredSourceFilter)
+    Sub OpenVideoSourceFiles(files As IEnumerable(Of String))
+        OpenVideoSourceFiles(files, False)
     End Sub
 
-    Sub OpenVideoSourceFiles(files As IEnumerable(Of String),
-                             autoMode As Boolean,
-                             Optional preferredSourceFilter As VideoFilter = Nothing)
-
+    Sub OpenVideoSourceFiles(files As IEnumerable(Of String), isEncoding As Boolean)
         Dim recoverPath = g.ProjectPath
-        Dim recoverProjectPath = CommonDirs.Temp + Guid.NewGuid.ToString + ".bin"
+        Dim recoverProjectPath = Folder.Temp + Guid.NewGuid.ToString + ".bin"
         Dim recoverText = Text
 
         SafeSerialization.Serialize(p, recoverProjectPath)
+
         AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(recoverProjectPath)
 
         Try
             If g.ShowVideoSourceWarnings(files) Then Throw New AbortException
 
-            If Not p.BatchMode AndAlso files(0).Ext = "vob" Then
-                MsgWarn("Please note that opening VOB has many disadvantages. The easiest and most reliable method is ripping DVDs with MakeMKV and open MKV with StaxRip.")
-            End If
-
             For Each i In files
-                Dim name = Filepath.GetName(i)
+                Dim name = FilePath.GetName(i)
 
                 If name.ToUpper Like "VTS_0#_0.VOB" Then
-                    If Msg("Are you sure you want to open the file " + name + "," + CrLf +
-                           "the first VOB file usually contains a menu!", Nothing,
-                           MessageBoxIcon.Question, MessageBoxButtons.YesNo,
-                           DialogResult.No) <> DialogResult.Yes Then
+                    If MsgQuestion("Are you sure you want to open the file " + name + "," + BR +
+                           "the first VOB file usually contains a menu!") = DialogResult.Cancel Then
 
                         Throw New AbortException
                     End If
@@ -1699,75 +1804,108 @@ Class MainForm
                 End If
             Next
 
-            If Not Paths.VerifyRequirements() Then Throw New AbortException
-
-            If p.SourceFile <> "" AndAlso autoMode Then
-                Dim templates = Directory.GetFiles(Paths.TemplateDir, "*.srip")
+            If p.SourceFile <> "" AndAlso Not isEncoding Then
+                Dim templates = Directory.GetFiles(Folder.Template, "*.srip")
 
                 If templates.Length = 1 Then
-                    If Not OpenProject(templates(0), True) Then
-                        Throw New AbortException
-                    End If
+                    If Not OpenProject(templates(0), True) Then Throw New AbortException
                 Else
-                    If Not LoadTemplateWithSelectionDialog() Then
-                        Throw New AbortException
+                    If s.ShowTemplateSelection Then
+                        If Not LoadTemplateWithSelectionDialog() Then Throw New AbortException
+                    Else
+                        If Not OpenProject() Then Throw New AbortException
                     End If
                 End If
-            End If
-
-            If p.SourceFile <> "" AndAlso autoMode AndAlso
-                Not LoadTemplateWithSelectionDialog() Then
-
-                Throw New AbortException
             End If
 
             p.SourceFiles = files.ToList
             p.SourceFile = files(0)
 
-            g.SetTempDir()
+            FiltersListView.IsLoading = True
+
+            Dim preferredSourceFilter As VideoFilter
+
+            If p.SourceFiles.Count = 1 AndAlso
+                p.Script.Filters(0).Name = "Manual" AndAlso
+                Not p.NoDialogs AndAlso Not p.BatchMode AndAlso
+                Not p.SourceFile.Ext.EqualsAny("avs", "vpy") Then
+
+                preferredSourceFilter = ShowSourceFilterSelectionDialog(files(0))
+            End If
+
+            If Not preferredSourceFilter Is Nothing Then
+                Dim isVapourSynth = preferredSourceFilter.Script.Replace(" ", "").Contains("clip=core.") OrElse
+                    preferredSourceFilter.Script = "#vs"
+
+                If isVapourSynth Then
+                    If Not Package.Python.VerifyOK(True) OrElse
+                        Not Package.VapourSynth.VerifyOK(True) OrElse
+                        Not Package.vspipe.VerifyOK(True) Then
+
+                        Throw New AbortException
+                    End If
+
+                    If p.Script.Engine = ScriptEngine.AviSynth Then
+                        p.Script = VideoScript.GetDefaults()(1)
+                    End If
+                Else
+                    If Not Package.AviSynth.VerifyOK(True) Then Throw New AbortException
+
+                    If p.Script.Engine = ScriptEngine.VapourSynth Then
+                        p.Script = VideoScript.GetDefaults()(0)
+                    End If
+                End If
+
+                p.Script.SetFilter(preferredSourceFilter.Category,
+                                   preferredSourceFilter.Name,
+                                   preferredSourceFilter.Script)
+            End If
+
+            If Not g.VerifyRequirements() Then Throw New AbortException
 
             p.LastOriginalSourceFile = p.SourceFile
             p.FirstOriginalSourceFile = p.SourceFile
 
-            If FileTypes.VideoIndex.Contains(Filepath.GetExt(p.SourceFile)) Then
-                For Each i In File.ReadAllLines(p.SourceFile)
-                    If i.Contains(":\") Then
-                        If Regex.IsMatch(i, "^.+ \d+$") Then
-                            i = i.LeftLast(" ")
+            If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then
+                Dim path = GetPathFromIndexFile(p.SourceFile)
+
+                If path <> "" Then
+                    p.LastOriginalSourceFile = path
+                    p.FirstOriginalSourceFile = path
+                End If
+            ElseIf p.SourceFile.Ext.EqualsAny({"avs", "vpy"}) Then
+                Dim code = File.ReadAllText(p.SourceFile)
+                Dim matches = Regex.Matches(code, "('|"")(.+?)\1", RegexOptions.IgnoreCase)
+
+                For Each match As Match In matches
+                    If match.Success Then
+                        Dim path = match.Groups(2).Value
+
+                        If Not path.Contains("\") AndAlso File.Exists(p.SourceFile.Dir + path) Then
+                            p.TempDir = p.SourceFile.Dir
+                            path = p.SourceFile.Dir + path
                         End If
 
-                        If File.Exists(i) AndAlso FileTypes.Video.Contains(Filepath.GetExt(i)) Then
-                            p.LastOriginalSourceFile = i
-                            p.FirstOriginalSourceFile = i
-                            Exit For
+                        If File.Exists(path) AndAlso FileTypes.Video.Contains(path.Ext) Then
+                            If FileTypes.VideoIndex.Contains(path.Ext) Then
+                                path = GetPathFromIndexFile(path)
+
+                                If path <> "" Then
+                                    p.LastOriginalSourceFile = path
+                                    p.FirstOriginalSourceFile = path
+                                    Exit For
+                                End If
+                            Else
+                                p.LastOriginalSourceFile = path
+                                p.FirstOriginalSourceFile = path
+                                Exit For
+                            End If
                         End If
                     End If
                 Next
-            ElseIf p.SourceFile.Ext = "avs" Then
-                Dim code = File.ReadAllText(p.SourceFile)
-                Dim match = Regex.Match(code, "source\(""(.+?)""", RegexOptions.IgnoreCase)
-
-                If match.Success Then
-                    Dim fp = match.Groups(1).Value
-
-                    If File.Exists(fp) AndAlso FileTypes.Video.Contains(Filepath.GetExt(fp)) Then
-                        p.LastOriginalSourceFile = fp
-                        p.FirstOriginalSourceFile = fp
-                    End If
-                End If
-            ElseIf p.SourceFile.Ext = "vpy" Then
-                Dim code = File.ReadAllText(p.SourceFile)
-                Dim match = Regex.Match(code, "source\(source='(.+)'", RegexOptions.IgnoreCase)
-
-                If match.Success Then
-                    Dim fp = match.Groups(1).Value
-
-                    If File.Exists(fp) AndAlso FileTypes.Video.Contains(Filepath.GetExt(fp)) Then
-                        p.LastOriginalSourceFile = fp
-                        p.FirstOriginalSourceFile = fp
-                    End If
-                End If
             End If
+
+            g.SetTempDir()
 
             Dim sourcePAR = MediaInfo.GetVideo(p.LastOriginalSourceFile, "PixelAspectRatio")
 
@@ -1778,8 +1916,23 @@ Class MainForm
 
             p.Codec = MediaInfo.GetVideoCodec(p.LastOriginalSourceFile)
             p.CodecProfile = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Format_Profile")
+            p.BitDepth = MediaInfo.GetVideo(p.LastOriginalSourceFile, "BitDepth").ToInt
+            p.ColorSpace = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ColorSpace")
+            p.ChromaSubsampling = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ChromaSubsampling")
+            p.SourceSize = New FileInfo(p.LastOriginalSourceFile).Length
+            p.SourceBitrate = CInt(MediaInfo.GetVideo(p.LastOriginalSourceFile, "BitRate").ToInt / 1000)
+            p.ScanType = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanType")
+            p.ScanOrder = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ScanOrder")
 
-            If autoMode AndAlso p.BatchMode Then
+            p.VideoEncoder.SetMetaData(p.LastOriginalSourceFile)
+
+            Dim mkvMuxer = TryCast(p.VideoEncoder.Muxer, MkvMuxer)
+
+            If Not mkvMuxer Is Nothing AndAlso mkvMuxer.Title = "" Then
+                mkvMuxer.Title = MediaInfo.GetGeneral(p.LastOriginalSourceFile, "Movie")
+            End If
+
+            If Not isEncoding AndAlso p.BatchMode Then
                 Assistant()
                 Exit Sub
             End If
@@ -1789,7 +1942,7 @@ Class MainForm
             Dim targetDir As String = Nothing
 
             If p.DefaultTargetFolder <> "" Then
-                targetDir = DirPath.AppendSeparator(Macro.Solve(p.DefaultTargetFolder)).Replace("\\", "\")
+                targetDir = Macro.Expand(p.DefaultTargetFolder).FixDir
 
                 If Not Directory.Exists(targetDir) Then
                     Try
@@ -1799,186 +1952,190 @@ Class MainForm
                 End If
             End If
 
-            If Not Directory.Exists(targetDir) Then
-                targetDir = Filepath.GetDir(p.SourceFile)
-            End If
+            If Not Directory.Exists(targetDir) Then targetDir = p.SourceFile.Dir
+            Dim targetName = Macro.Expand(p.DefaultTargetName)
 
-            Dim targetName = Macro.Solve(p.DefaultTargetName)
-
-            If Not Filepath.IsValidFileSystemName(targetName) Then
-                targetName = Filepath.GetBase(p.SourceFile)
-            End If
-
-            tbTargetFile.Text = targetDir + targetName + p.VideoEncoder.Muxer.GetExtension
+            If Not FilePath.IsValidFileSystemName(targetName) Then targetName = p.SourceFile.Base
+            tbTargetFile.Text = targetDir + targetName + p.VideoEncoder.Muxer.OutputExtFull
 
             If p.SourceFile = p.TargetFile OrElse
-                (FileTypes.VideoIndex.Contains(Filepath.GetExtFull(p.SourceFile)) AndAlso
+                (FileTypes.VideoIndex.Contains(p.SourceFile.Ext) AndAlso
                 File.ReadAllText(p.SourceFile).Contains(p.TargetFile)) Then
 
-                tbTargetFile.Text = Filepath.GetDirAndBase(p.TargetFile) + "_new" + Filepath.GetExtFull(p.TargetFile)
+                tbTargetFile.Text = p.TargetFile.DirAndBase + "_new" + p.TargetFile.ExtFull
             End If
 
-            Log.WriteHeader("Source file MediaInfo")
+            Log.WriteHeader("MediaInfo Source File")
 
             For Each i In p.SourceFiles
                 Log.WriteLine(i)
             Next
 
-            Log.WriteLine(CrLf + MediaInfo.GetSummary(p.SourceFile))
+            Log.WriteLine(BR + MediaInfo.GetSummary(p.SourceFile))
 
             For Each i In DriveInfo.GetDrives()
                 If i.DriveType = DriveType.CDRom AndAlso
                     p.TempDir.ToUpper.StartsWith(i.RootDirectory.ToString.ToUpper) Then
 
-                    MsgWarn("Opening files from a CD/DVD drive requires to set a temp files directory in the option.")
+                    MsgWarn("Opening files from a optical drive requires to set a temp files folder in the options.")
                     Throw New AbortException
                 End If
             Next
 
-            If Not preferredSourceFilter Is Nothing Then
-                Dim isVapourSynth = preferredSourceFilter.Script.Contains("clip = core.")
-
-                If isVapourSynth Then
-                    If Not Packs.Python.VerifyOK(True) OrElse Not Packs.VapourSynth.VerifyOK(True) Then
-                        Throw New AbortException
-                    End If
-
-                    If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
-                        p.VideoScript = VideoScript.GetDefaults()(1)
-                    End If
-                ElseIf p.VideoScript.Engine = ScriptingEngine.VapourSynth AndAlso
-                    preferredSourceFilter.Script <> "" Then
-
-                    p.VideoScript = VideoScript.GetDefaults()(0)
-                End If
-
-                p.VideoScript.SetFilter(preferredSourceFilter.Category,
-                                   preferredSourceFilter.Name,
-                                   preferredSourceFilter.Script)
-            End If
-
             Demux()
 
-            If Filepath.GetExt(p.SourceFile) = "dgi" AndAlso Not Packs.DGDecodeNV.VerifyOK(True) Then
-                Throw New AbortException
-            End If
-
             If p.LastOriginalSourceFile <> p.SourceFile AndAlso
-                Not FileTypes.VideoText.Contains(Filepath.GetExt(p.SourceFile)) Then
+                Not FileTypes.VideoText.Contains(FilePath.GetExt(p.SourceFile)) Then
 
                 p.LastOriginalSourceFile = p.SourceFile
             End If
 
-            s.LastSourceDir = Filepath.GetDir(p.SourceFile)
+            s.LastSourceDir = p.SourceFile.Dir
 
-            Dim sourceFilter = p.VideoScript.GetFilter("Source")
+            If p.SourceFile.Ext = "avs" AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
+                p.Script.Filters.Clear()
+                p.Script.Filters.Add(New VideoFilter("Source", "AviSynth Import", File.ReadAllText(p.SourceFile)))
+            ElseIf p.SourceFile.Ext = "vpy" Then
+                p.Script.Engine = ScriptEngine.VapourSynth
+                p.Script.Filters.Clear()
+                p.Script.Filters.Add(New VideoFilter("Source", "VapourSynth Import", File.ReadAllText(p.SourceFile)))
+            End If
 
-            If Not sourceFilter.Script.Contains("(") Then
-                If p.SourceFile.Ext = "avs" Then
-                    p.VideoScript.Engine = ScriptingEngine.AviSynth
-                    p.VideoScript.Filters.Clear()
-                    p.VideoScript.Filters.Add(New VideoFilter("Source", "AviSynth Import", File.ReadAllText(p.SourceFile), True))
-                ElseIf p.SourceFile.Ext = "vpy" Then
-                    p.VideoScript.Engine = ScriptingEngine.VapourSynth
-                    p.VideoScript.Filters.Clear()
-                    p.VideoScript.Filters.Add(New VideoFilter("Source", "VapourSynth Import", File.ReadAllText(p.SourceFile), True))
+            ModifyFilters()
+            FiltersListView.IsLoading = False
+            FiltersListView.Load()
+
+            If Not Package.DGDecodeNV.VerifyOK() OrElse Not Package.DGDecodeIM.VerifyOK() Then
+                Throw New AbortException
+            End If
+
+            RenameDVDTracks()
+
+            If FileTypes.VideoAudio.Contains(FilePath.GetExt(p.LastOriginalSourceFile)) Then
+                p.Audio0.Streams = MediaInfo.GetAudioStreams(p.LastOriginalSourceFile)
+                p.Audio1.Streams = p.Audio0.Streams
+            End If
+
+            If p.SourceFile.Ext = "d2v" Then
+                Dim content = File.ReadAllText(p.SourceFile)
+
+                If content.Contains("Aspect_Ratio=16:9") Then
+                    p.SourceAnamorphic = True
                 Else
-                    For Each i In s.FilterPreferences
-                        Dim name = i.Name.SplitNoEmptyAndWhiteSpace({",", " "})
+                    Dim ifoFile = GetIfoFile()
 
-                        If name.Contains(Filepath.GetExt(p.SourceFile)) Then
-                            Dim filters = s.AviSynthProfiles.Where(
-                                Function(v) v.Name = "Source").First.Filters.Where(
-                                Function(v) v.Name = i.Value)
-
-                            If filters.Count > 0 Then
-                                p.VideoScript.SetFilter("Source", filters(0).Name, filters(0).Script)
-                                Exit For
-                            End If
-                        End If
-                    Next
-
-                    If Not sourceFilter.Script.Contains("(") Then
-                        Dim def = s.FilterPreferences.Where(Function(v) v.Name = "default")
-
-                        If def.Count > 0 Then
-                            Dim filters = s.AviSynthProfiles.Where(
-                                Function(v) v.Name = "Source").First.Filters.Where(
-                                Function(v) v.Name = def(0).Value)
-
-                            If filters.Count > 0 Then
-                                p.VideoScript.SetFilter("Source", filters(0).Name, filters(0).Script)
-                            End If
-                        End If
+                    If ifoFile <> "" Then
+                        Dim dar2 = MediaInfo.GetVideo(ifoFile, "DisplayAspectRatio")
+                        If dar2 = "1.778" Then p.SourceAnamorphic = True
                     End If
+                End If
 
-                    If Not sourceFilter.Script.Contains("(") Then
-                        Dim filter = FilterCategory.GetAviSynthDefaults.Where(Function(v) v.Name = "Source").First.Filters.Where(Function(v) v.Name = "FFVideoSource").First
-                        p.VideoScript.SetFilter(filter.Category, filter.Name, filter.Script)
-                        Indexing()
-                    End If
+                If content.Contains("Frame_Rate=29970") Then
+                    Dim m = Regex.Match(content, "FINISHED +(\d+).+FILM")
 
-                    If Not sourceFilter.Script.Contains("Crop(") Then
-                        Dim sourceWidth = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Width").ToInt
-                        Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
+                    If m.Success Then
+                        Dim film = m.Groups(1).Value.ToInt
 
-                        If sourceWidth Mod 4 <> 0 OrElse sourceHeight Mod 4 <> 0 Then
-                            p.VideoScript.GetFilter("Source").Script += CrLf + "Crop(0, 0, -" & sourceWidth Mod 4 & ", -" & sourceHeight Mod 4 & ")"
-                        End If
-                    End If
-
-                    If Not sourceFilter.Script.Contains("ConvertToYV12") Then
-                        Dim ChromaSubsampling = MediaInfo.GetVideo(p.LastOriginalSourceFile, "ChromaSubsampling")
-
-                        If ChromaSubsampling <> "4:2:0" Then
-                            Dim format = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Format")
-                            Dim matrix As String
-
-                            If format = "RGB" Then
-                                Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
-
-                                If sourceHeight > 576 Then
-                                    matrix = "matrix=""Rec709"""
-                                Else
-                                    matrix = "matrix=""Rec601"""
-                                End If
-                            End If
-
-                            p.VideoScript.GetFilter("Source").Script += CrLf + "ConvertToYV12(" + matrix + ")"
+                        If film >= 95 Then
+                            content = content.Replace("Field_Operation=0" + BR + "Frame_Rate=29970 (30000/1001)", "Field_Operation=1" + BR + "Frame_Rate=23976 (24000/1001)")
+                            content.WriteANSIFile(p.SourceFile)
                         End If
                     End If
                 End If
             End If
 
-            AviSynthListView.Load()
-            RenameDVDTracks()
+            Dim errorMsg = ""
 
-            If FileTypes.AudioVideo.Contains(Filepath.GetExt(p.LastOriginalSourceFile)) Then
-                p.Audio0.Streams = MediaInfo.GetAudioStreams(p.LastOriginalSourceFile)
-                p.Audio1.Streams = p.Audio0.Streams
+            Try
+                p.SourceScript.Synchronize()
+                errorMsg = p.SourceScript.GetErrorMessage
+            Catch ex As Exception
+                errorMsg = ex.Message
+            End Try
+
+            If errorMsg <> "" Then
+                If p.SourceFile.Ext = "avs" OrElse p.SourceFile.Ext = "vpy" Then
+                    MsgError("Failed to load script.", errorMsg)
+                    Throw New AbortException
+                Else
+                    Log.WriteHeader("Error opening source")
+                    Log.WriteLine(errorMsg + BR2)
+                    Log.WriteLine(p.SourceScript.GetFullScript)
+                    Log.Save()
+
+                    g.ShowDirectShowWarning()
+
+                    Using td As New TaskDialog(Of DialogResult)
+                        td.MainInstruction = "Failed to open source, try another source filter?"
+                        td.Content = errorMsg
+                        td.CommonButtons = TaskDialogButtons.OkCancel
+
+                        If td.Show = DialogResult.OK Then
+                            Dim f = ShowSourceFilterSelectionDialog(p.SourceFile)
+                            Dim isVapourSynth = f.Script?.Contains("clip = core.")
+
+                            If isVapourSynth Then
+                                If p.Script.Engine = ScriptEngine.AviSynth Then
+                                    p.Script = VideoScript.GetDefaults()(1)
+                                End If
+                            Else
+                                If p.Script.Engine = ScriptEngine.VapourSynth Then
+                                    p.Script = VideoScript.GetDefaults()(0)
+                                End If
+                            End If
+
+                            If f.Script?.Contains("(") Then p.Script.SetFilter(0, f)
+                        Else
+                            p.Script.Synchronize()
+                            Throw New AbortException
+                        End If
+                    End Using
+
+                    errorMsg = ""
+
+                    Try
+                        p.SourceScript.Synchronize()
+                        errorMsg = p.SourceScript.GetErrorMessage
+                    Catch ex As Exception
+                        errorMsg = ex.Message
+                    End Try
+
+                    If errorMsg <> "" Then
+                        MsgError("Failed to open source", errorMsg)
+                        p.Script.Synchronize()
+                        Throw New AbortException
+                    End If
+                End If
             End If
 
-            DetectAudioFiles(0, True, True)
-            DetectAudioFiles(1, True, True)
+            UpdateSourceParameters()
+            SetSlider()
 
-            DetectAudioFiles(0, False, True)
-            DetectAudioFiles(1, False, True)
+            DetectAudioFiles(0, True, True, True)
+            DetectAudioFiles(1, True, True, True)
+            DetectAudioFiles(0, True, False, True)
+            DetectAudioFiles(1, True, False, True)
 
-            DetectAudioFiles(0, False, False)
-            DetectAudioFiles(1, False, False)
+            DetectAudioFiles(0, True, True, False)
+            DetectAudioFiles(1, True, True, False)
+            DetectAudioFiles(0, True, False, False)
+            DetectAudioFiles(1, True, False, False)
 
-            If p.UseAvsAsAudioSource Then
-                tbAudioFile0.Text = p.VideoScript.Path
+            DetectAudioFiles(0, False, True, False)
+            DetectAudioFiles(1, False, True, False)
+
+            DetectAudioFiles(0, False, False, False)
+            DetectAudioFiles(1, False, False, False)
+
+            If p.UseScriptAsAudioSource Then
+                tbAudioFile0.Text = p.Script.Path
             Else
                 If p.Audio0.File = "" AndAlso p.Audio1.File = "" Then
                     If Not TypeOf p.Audio0 Is NullAudioProfile AndAlso
-                        Not FileTypes.VideoText.Contains(Filepath.GetExt(p.LastOriginalSourceFile)) Then
+                        Not FileTypes.VideoText.Contains(FilePath.GetExt(p.LastOriginalSourceFile)) Then
 
                         tbAudioFile0.Text = p.LastOriginalSourceFile
-
-                        If p.Audio0.Streams.Count = 0 Then
-                            tbAudioFile0.Text = ""
-                        End If
+                        If p.Audio0.Streams.Count = 0 Then tbAudioFile0.Text = ""
 
                         If Not TypeOf p.Audio1 Is NullAudioProfile AndAlso
                             p.Audio0.Streams.Count > 1 Then
@@ -1992,9 +2149,9 @@ Class MainForm
                                     If p.Audio0.Stream.StreamOrder = p.Audio1.Stream.StreamOrder Then
                                         For Each i2 In p.Audio1.Streams
                                             If i2.StreamOrder <> p.Audio1.Stream.StreamOrder Then
-                                                tbAudioFile1.Text = i2.Name + " (" + Filepath.GetExt(p.Audio1.File) + ")"
+                                                tbAudioFile1.Text = i2.Name + " (" + FilePath.GetExt(p.Audio1.File) + ")"
                                                 p.Audio1.Stream = i2
-                                                UpdateAudio(p.Audio1)
+                                                UpdateSizeOrBitrate()
                                                 Exit For
                                             End If
                                         Next
@@ -2006,211 +2163,192 @@ Class MainForm
                 End If
             End If
 
-            If Filepath.GetExtFull(p.SourceFile) = ".d2v" Then
-                Dim content = File.ReadAllText(p.SourceFile)
-
-                If content.Contains("Aspect_Ratio=16:9") Then
-                    p.SourceAnamorphic = True
-                Else
-                    Dim ifoFile = GetIfoFile()
-
-                    If ifoFile <> "" Then
-                        Dim dar2 = MediaInfo.GetVideo(ifoFile, "DisplayAspectRatio")
-
-                        If dar2 = "1.778" Then
-                            p.SourceAnamorphic = True
-                        End If
-                    End If
-                End If
-
-                If content.Contains("Frame_Rate=29970") Then
-                    Dim m = Regex.Match(content, "FINISHED +(\d+).+FILM")
-
-                    If m.Success Then
-                        Dim film = CInt(m.Groups(1).Value)
-
-                        If film >= p.AutoForceFilmThreshold Then
-                            content = content.Replace("Field_Operation=0" + CrLf + "Frame_Rate=29970 (30000/1001)", "Field_Operation=1" + CrLf + "Frame_Rate=23976 (24000/1001)")
-                            content.WriteFile(p.SourceFile)
-                        End If
-                    End If
-                End If
-            End If
-
-            Dim errorMsg = ""
-
-            Try
-                p.SourceAviSynthDocument.Synchronize()
-                errorMsg = p.SourceAviSynthDocument.GetErrorMessage
-            Catch ex As Exception
-                errorMsg = ex.Message
-            End Try
-
-            If errorMsg <> "" Then
-                Log.WriteHeader("Error opening source")
-                Log.WriteLine(errorMsg + CrLf2)
-                Log.WriteLine(Macro.Solve(p.SourceAviSynthDocument.GetScript))
-                Log.Save()
-
-                ProcessForm.CloseProcessForm()
-
-                g.ShowDirectShowWarning()
-
-                Using td As New TaskDialog(Of DialogResult)
-                    td.Timeout = 60
-                    td.MainInstruction = "Failed to open source, try another method?"
-                    td.Content = errorMsg
-                    td.CommonButtons = TaskDialogButtons.OkCancel
-
-                    If td.Show = DialogResult.OK Then
-                        TryAnotherFilter()
-                    Else
-                        p.VideoScript.Synchronize()
-                        Throw New AbortException
-                    End If
-                End Using
-
-                errorMsg = ""
-
-                Try
-                    p.SourceAviSynthDocument.Synchronize()
-                    errorMsg = p.SourceAviSynthDocument.GetErrorMessage
-                Catch ex As Exception
-                    errorMsg = ex.Message
-                End Try
-
-                If errorMsg <> "" Then
-                    MsgError("Failed to open source", errorMsg)
-                    p.VideoScript.Synchronize()
-                    Throw New AbortException
-                End If
-            End If
-
-            If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
-                Dim miFPS = MediaInfo.GetFrameRate(p.FirstOriginalSourceFile)
-                Dim avsFPS = p.SourceAviSynthDocument.GetFramerate
-
-                If (CInt(miFPS) * 2) = CInt(avsFPS) Then
-                    Dim src = p.VideoScript.GetFilter("Source")
-                    src.Script = src.Script + CrLf + "SelectEven().AssumeFPS(" & miFPS.ToString(CultureInfo.InvariantCulture) + ")"
-                    p.SourceAviSynthDocument.Synchronize()
-                ElseIf miFPS <> avsFPS
-                    Dim src = p.VideoScript.GetFilter("Source")
-                    src.Script = src.Script + CrLf + "# AssumeFPS(" + miFPS.ToString(CultureInfo.InvariantCulture) + ")"
-                    p.SourceAviSynthDocument.Synchronize()
-                End If
-            End If
-
-            UpdateSourceParameters()
-            SetSlider()
-
             BlockSourceTextBoxTextChanged = True
             tbSourceFile.Text = p.SourceFile
             BlockSourceTextBoxTextChanged = False
 
             s.LastPosition = 0
 
-            SetTargetLength(p.SourceSeconds)
-            lbSourceLength.Text = lTargetLength.Text
-
+            UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
             DemuxVobSubSubtitles()
             ConvertBluRaySubtitles()
             ExtractForcedVobSubSubtitles()
             p.VideoEncoder.Muxer.Init()
 
-            Dim crop = p.VideoScript.IsFilterActive("Crop")
+            If p.HarcodedSubtitle Then g.AddHardcodedSubtitle()
 
-            If crop Then
-                g.AutoCrop()
+            Dim isCropActive = p.Script.IsFilterActive("Crop")
+
+            If isCropActive AndAlso (p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) = 0 Then
+                g.RunAutoCrop()
                 DisableCropFilter()
-                AviSynthListView.Load()
             End If
 
             AutoResize()
 
-            If crop Then
+            If isCropActive Then
                 g.OvercropWidth()
-
-                If p.AutoSmartCrop Then
-                    g.SmartCrop()
-                End If
+                If p.AutoSmartCrop Then g.SmartCrop()
             End If
 
-            If p.AutoCompCheck AndAlso p.VideoEncoder.IsCompCheckEnabled Then
-                p.VideoEncoder.RunCompCheck()
-            End If
-
+            If p.AutoCompCheck AndAlso p.VideoEncoder.IsCompCheckEnabled Then p.VideoEncoder.RunCompCheck()
             Assistant()
-
-            If Not p.BatchMode Then ProcessForm.CloseProcessForm()
-
-            g.RaiseApplicationEvent(ApplicationEvent.AfterSourceLoaded)
-            g.RaiseApplicationEvent(ApplicationEvent.ProjectOrSourceLoaded)
+            g.RaiseAppEvent(ApplicationEvent.AfterSourceLoaded)
+            g.RaiseAppEvent(ApplicationEvent.ProjectOrSourceLoaded)
             Log.Save()
         Catch ex As AbortException
             Log.Save()
-            ProcessForm.CloseProcessForm()
             SetSavedProject()
             OpenProject(recoverProjectPath)
             Text = recoverText
             g.ProjectPath = recoverPath
-            If Not autoMode Then Throw New AbortException
+            If isEncoding Then Throw New AbortException
         Catch ex As Exception
             g.OnException(ex)
+            OpenProject("", False)
+        Finally
+            If Not isEncoding Then
+                g.WriteDebugLog("ProcController.Finished OpenVideoSourceFiles")
+                ProcController.Finished()
+            Else
+                g.WriteDebugLog("ProcController.Finished isEncoding")
+            End If
         End Try
     End Sub
 
-    Sub TryAnotherFilter(Optional recursive As Boolean = True)
-        If p.VideoScript.GetFilter("Source").Script.ToLower.Contains("directshowsource") Then
-            Dim src = "FFVideoSource(""%source_file%"", cachefile = ""%temp_file%.ffindex"")" + CrLf +
-                          "Crop(0, 0, -Width % 4, -Height % 4)" + CrLf + "ConvertToYV12()"
+    Private Sub ModifyFilters()
+        If p.SourceFile = "" Then Exit Sub
+        Dim sourceFilter = p.Script.GetFilter("Source")
 
-            p.VideoScript.SetFilter("Source", "FFVideoSource", src)
-            Indexing()
-        Else
-            Dim fpsParam = ""
-            Dim fps = MediaInfo.GetFrameRate(p.SourceFile)
+        If Not sourceFilter.Script.Contains("(") OrElse
+                p.Script.Filters(0).Name = "Automatic" OrElse
+                p.Script.Filters(0).Name = "Manual" Then
 
-            If fps <> 0.0! Then
-                fpsParam = ", convertfps=true, fps=" + fps.ToString(CultureInfo.InvariantCulture)
-            ElseIf MediaInfo.GetVideo(p.SourceFile, "Format") = "Screen Video" Then
-                fpsParam = ", convertfps=true, fps=10"
-            End If
+            For Each iPref In {s.AviSynthFilterPreferences, s.VapourSynthFilterPreferences}
+                If (iPref Is s.AviSynthFilterPreferences AndAlso
+                        p.Script.Engine = ScriptEngine.AviSynth) OrElse
+                        (iPref Is s.VapourSynthFilterPreferences AndAlso
+                        p.Script.Engine = ScriptEngine.VapourSynth) Then
 
-            Dim script = "DirectShowSource(""%source_file%"", audio=false" + fpsParam + ")" + CrLf + "ConvertToYV12()"
-            p.VideoScript.SetFilter("Source", "DirectShow", script)
+                    Dim scriptingProfiles = If(p.Script.Engine = ScriptEngine.AviSynth,
+                            s.AviSynthProfiles, s.VapourSynthProfiles)
+
+                    For Each i In iPref
+                        Dim name = i.Name.SplitNoEmptyAndWhiteSpace({",", " "})
+
+                        If name.Contains(FilePath.GetExt(p.SourceFile)) Then
+                            Dim filters = scriptingProfiles.Where(
+                                    Function(v) v.Name = "Source").First.Filters.Where(
+                                    Function(v) v.Name = i.Value)
+
+                            If filters.Count > 0 Then
+                                p.Script.SetFilter("Source", filters(0).Name, filters(0).Script)
+                                Exit For
+                            End If
+                        End If
+                    Next
+
+                    If Not sourceFilter.Script.Contains("(") Then
+                        Dim def = iPref.Where(Function(v) v.Name = "default")
+
+                        If def.Count > 0 Then
+                            Dim filters = scriptingProfiles.Where(
+                                    Function(v) v.Name = "Source").First.Filters.Where(
+                                    Function(v) v.Name = def(0).Value)
+
+                            If filters.Count > 0 Then p.Script.SetFilter("Source", filters(0).Name, filters(0).Script)
+                        End If
+                    End If
+                End If
+            Next
         End If
 
-        AviSynthListView.Load()
+        Dim editAVS = p.Script.Engine = ScriptEngine.AviSynth AndAlso p.SourceFile.Ext <> "avs"
+        Dim editVS = p.Script.Engine = ScriptEngine.VapourSynth AndAlso p.SourceFile.Ext <> "vpy"
 
-        Dim errorMsg = ""
+        If editAVS Then
+            If Not sourceFilter.Script.Contains("(") Then
+                Dim filter = FilterCategory.GetAviSynthDefaults.Where(Function(v) v.Name = "Source").First.Filters.Where(Function(v) v.Name = "FFVideoSource").First
+                p.Script.SetFilter(filter.Category, filter.Name, filter.Script)
+                Indexing()
+            End If
+        ElseIf editVS Then
+            If Not sourceFilter.Script.Contains("(") Then
+                Dim filter = FilterCategory.GetVapourSynthDefaults.Where(Function(v) v.Name = "Source").First.Filters.Where(Function(v) v.Name = "ffms2").First
+                p.Script.SetFilter(filter.Category, filter.Name, filter.Script)
+                Indexing()
+            End If
+        End If
 
-        Try
-            p.SourceAviSynthDocument.Synchronize()
-            errorMsg = p.SourceAviSynthDocument.GetErrorMessage
-        Catch ex As Exception
-            errorMsg = ex.Message
-        End Try
+        For Each iFilter In p.Script.Filters
+            If iFilter.Script.Contains("$") Then iFilter.Script = Macro.ExpandGUI(iFilter.Script, True).Value
+        Next
 
-        If errorMsg <> "" Then
-            g.ShowDirectShowWarning()
+        If editAVS Then
+            Dim miFPS = MediaInfo.GetFrameRate(p.FirstOriginalSourceFile)
+            Dim avsFPS = p.SourceScript.GetFramerate
 
-            If recursive Then
-                TryAnotherFilter(False)
-            Else
-                MsgError(errorMsg)
-                Throw New AbortException
+            If (CInt(miFPS) * 2) = CInt(avsFPS) Then
+                Dim src = p.Script.GetFilter("Source")
+                src.Script = src.Script + BR + "SelectEven().AssumeFPS(" & miFPS.ToInvariantString + ")"
+                p.SourceScript.Synchronize()
+            End If
+        End If
+
+        'chroma
+        If editVS Then
+            If p.ChromaSubsampling <> "4:2:0" Then
+                Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
+                Dim matrix As String
+
+                If sourceHeight = 0 OrElse sourceHeight > 576 Then
+                    matrix = "709"
+                Else
+                    matrix = "470bg"
+                End If
+
+                p.Script.GetFilter("Source").Script += BR + "clip = clip.resize.Bicubic(matrix_s = '" + matrix + "', format = vs.YUV420P8)"
+            End If
+        ElseIf editAVS Then
+            If Not sourceFilter.Script.Contains("ConvertToYV12") Then
+                If p.ChromaSubsampling <> "4:2:0" Then
+                    Dim format = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Format")
+                    Dim matrix As String
+
+                    If format = "RGB" OrElse p.SourceFile.Ext = "vdr" Then
+                        Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
+
+                        If sourceHeight > 576 Then
+                            matrix = "matrix = ""Rec709"""
+                        Else
+                            matrix = "matrix = ""Rec601"""
+                        End If
+                    End If
+
+                    p.Script.GetFilter("Source").Script += BR + "ConvertToYV12(" + matrix + ")"
+                End If
+            End If
+        End If
+
+        If Not sourceFilter.Script.Contains("Crop(") Then
+            Dim sourceWidth = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Width").ToInt
+            Dim sourceHeight = MediaInfo.GetVideo(p.LastOriginalSourceFile, "Height").ToInt
+
+            If sourceWidth Mod 4 <> 0 OrElse sourceHeight Mod 4 <> 0 Then
+                p.CropRight = sourceWidth Mod 4
+                p.CropBottom = sourceHeight Mod 4
+                p.Script.ActivateFilter("Crop")
             End If
         End If
     End Sub
 
     Sub AutoResize()
-        If p.VideoScript.IsFilterActive("Resize") Then
+        If p.Script.IsFilterActive("Resize") Then
             If p.AutoResizeImage <> 0 Then
                 SetTargetImageSizeByPixel(p.AutoResizeImage)
             Else
                 If p.AdjustHeight Then
-                    Dim h = Calc.FixMod16(CInt(p.TargetWidth / Calc.GetTargetDAR()))
+                    Dim h = Calc.FixMod(CInt(p.TargetWidth / Calc.GetTargetDAR()), p.ForcedOutputMod)
                     tbTargetHeight.Text = h.ToString()
                 End If
             End If
@@ -2225,13 +2363,12 @@ Class MainForm
         If Not p.ConvertSup2Sub Then Exit Sub
 
         For Each i In g.GetFilesInTempDirAndParent
-            If Filepath.GetExtFull(i) = ".sup" AndAlso g.IsSourceSameOrSimilar(i) AndAlso
-                Not File.Exists(Filepath.GetDirAndBase(i) + ".idx") Then
-
+            If i.Ext = "sup" AndAlso g.IsSourceSameOrSimilar(i) AndAlso Not File.Exists(i.DirAndBase + ".idx") Then
                 Using proc As New Proc
-                    proc.Init("Convert sup to sub: " + Filepath.GetName(i), "#>", "#<", "Decoding frame")
-                    proc.File = Packs.BDSup2SubPP.GetPath
-                    proc.Arguments = "-o """ + Filepath.GetDirAndBase(i) + ".idx"" """ + i + """"
+                    proc.Header = "Convert sup to sub"
+                    proc.SkipStrings = {"#>", "#<", "Decoding frame"}
+                    proc.File = Package.BDSup2SubPP.Path
+                    proc.Arguments = "-o """ + i.DirAndBase + ".idx"" """ + i + """"
                     proc.AllowedExitCodes = {}
                     proc.Start()
                 End Using
@@ -2241,22 +2378,24 @@ Class MainForm
 
     Sub ExtractForcedVobSubSubtitles()
         For Each i In g.GetFilesInTempDirAndParent
-            If Filepath.GetExtFull(i) = ".idx" AndAlso g.IsSourceSameOrSimilar(i) AndAlso
-                Not File.Exists(Filepath.GetDirAndBase(i) + "_Forced.idx") Then
+            If i.ExtFull = ".idx" AndAlso g.IsSourceSameOrSimilar(i) AndAlso
+                    Not i.Contains("_forced") AndAlso
+                    Not File.Exists(i.DirAndBase + "_forced.idx") Then
 
                 Dim idxContent = File.ReadAllText(i, Encoding.Default)
 
                 If idxContent.Contains(VB6.ChrW(&HA) + VB6.ChrW(&H0) + VB6.ChrW(&HD) + VB6.ChrW(&HA)) Then
                     idxContent = idxContent.FixBreak
-                    idxContent = idxContent.Replace(CrLf + VB6.ChrW(&H0) + CrLf, CrLf + "langidx: 0" + CrLf)
+                    idxContent = idxContent.Replace(BR + VB6.ChrW(&H0) + BR, BR + "langidx: 0" + BR)
                     File.WriteAllText(i, idxContent, Encoding.Default)
                 End If
 
                 Using proc As New Proc
-                    proc.Init("Extract forced subtitles if existing", "# ")
-                    proc.WriteLine(Filepath.GetName(i) + CrLf2)
-                    proc.File = Packs.BDSup2SubPP.GetPath
-                    proc.Arguments = "--forced-only -o """ + Filepath.GetDirAndBase(i) + "_Forced.idx"" """ + i + """"
+                    proc.Header = "Extract forced subtitles if existing"
+                    proc.SkipString = "# "
+                    proc.WriteLog(FilePath.GetName(i) + BR2)
+                    proc.File = Package.BDSup2SubPP.Path
+                    proc.Arguments = "--forced-only -o " + (i.DirAndBase + "_forced.idx").Escape + " " + i.Escape
                     proc.AllowedExitCodes = {}
                     proc.Start()
                 End Using
@@ -2265,10 +2404,10 @@ Class MainForm
     End Sub
 
     Sub DemuxVobSubSubtitles()
-        If Not {"vob", "m2v"}.Contains(Filepath.GetExt(p.LastOriginalSourceFile)) Then Exit Sub
+        If Not {"vob", "m2v"}.Contains(FilePath.GetExt(p.LastOriginalSourceFile)) Then Exit Sub
         Dim ifoPath = GetIfoFile()
         If ifoPath = "" Then Exit Sub
-        If File.Exists(p.TempDir + Filepath.GetBase(p.SourceFile) + ".idx") Then Exit Sub
+        If File.Exists(p.TempDir + p.SourceFile.Base + ".idx") Then Exit Sub
         Dim subtitleCount = MediaInfo.GetSubtitleCount(ifoPath)
 
         If subtitleCount > 0 Then
@@ -2290,22 +2429,22 @@ Class MainForm
 
                     If Math.Abs(p.SourceSeconds - ((hour * 60 ^ 2) + (min * 60) + sec)) < 30 Then
                         Dim args =
-                            ifoPath + CrLf +
-                            p.TempDir + Filepath.GetBase(p.SourceFile) + CrLf &
-                            (i + 1) & CrLf +
-                            "1" + CrLf +
-                            "ALL" + CrLf +
+                            ifoPath + BR +
+                            p.TempDir + p.SourceFile.Base + BR &
+                            (i + 1) & BR +
+                            "1" + BR +
+                            "ALL" + BR +
                             "CLOSE"
 
-                        Dim fileContent = p.TempDir + Filepath.GetBase(p.TargetFile) + "_vsrip.txt"
-                        args.WriteFile(fileContent)
+                        Dim fileContent = p.TempDir + p.TargetFile.Base + "_vsrip.txt"
+                        args.WriteANSIFile(fileContent)
 
                         Using proc As New Proc
-                            proc.Init("Demux subtitles using VSRip")
-                            proc.WriteLine(args + CrLf2)
-                            proc.File = Packs.VSRip.GetPath
+                            proc.Header = "Demux subtitles using VSRip"
+                            proc.WriteLog(args + BR2)
+                            proc.File = Package.VSRip.Path
                             proc.Arguments = """" + fileContent + """"
-                            proc.Directory = Packs.VSRip.GetDir
+                            proc.WorkingDirectory = Package.VSRip.GetDir
                             proc.AllowedExitCodes = {0, 1, 2}
                             proc.Start()
                         End Using
@@ -2317,68 +2456,18 @@ Class MainForm
         End If
     End Sub
 
-    Sub Encode()
-        Try
-            g.IsProcessing = True
-            g.RaiseApplicationEvent(ApplicationEvent.BeforeEncoding)
-            Dim startTime = DateTime.Now
-
-            If p.BatchMode Then
-                If g.ProjectPath Is Nothing Then
-                    g.ProjectPath = p.TempDir + Filepath.GetBase(p.SourceFiles(0)) + ".srip"
-                End If
-
-                SaveProjectByPath(g.ProjectPath)
-                OpenVideoSourceFiles(p.SourceFiles, False)
-                p.BatchMode = False
-                SaveProjectByPath(g.ProjectPath)
-            End If
-
-            ProcessForm.ShowForm()
-
-            Log.WriteHeader("AviSynth Filters")
-            Log.WriteLine(Macro.Solve(p.VideoScript.GetScript))
-            Log.WriteHeader("AviSynth Properties")
-
-            Dim props = "source frame count: " & p.SourceAviSynthDocument.GetFrames & CrLf +
-                "source frame rate: " & p.SourceAviSynthDocument.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + CrLf +
-                "source duration: " + TimeSpan.FromSeconds(p.SourceAviSynthDocument.GetFrames / p.SourceAviSynthDocument.GetFramerate).ToString + CrLf +
-                "target frame count: " & p.VideoScript.GetFrames & CrLf +
-                "target frame rate: " & p.VideoScript.GetFramerate.ToString("f6", CultureInfo.InvariantCulture) + CrLf +
-                "target duration: " + TimeSpan.FromSeconds(p.VideoScript.GetFrames / p.VideoScript.GetFramerate).ToString
-
-            Log.WriteLine(props.FormatColumn(":"))
-
-            Audio.Process(p.Audio0)
-            p.Audio0.Encode()
-
-            Audio.Process(p.Audio1)
-            p.Audio1.Encode()
-
-            p.VideoEncoder.Encode()
-            Log.Save()
-            p.VideoEncoder.Muxer.Mux()
-
-            If p.SaveThumbnails Then Thumbnails.SaveThumbnails(p.TargetFile)
-
-            Log.WriteHeader("Job Complete")
-            Log.WriteStats(startTime)
-
-            g.RaiseApplicationEvent(ApplicationEvent.JobEncoded)
-        Finally
-            g.IsProcessing = False
-        End Try
-    End Sub
-
     Function ProcessTip(message As String) As Boolean
-        CurrentAssistantTipKey = message.MD5Hash
+        If message.Contains(BR2) Then message = message.Replace(BR2, BR)
+        If message.Contains(VB6.vbLf + VB6.vbLf) Then message = message.FixBreak.Replace(BR2, BR)
+
+        CurrentAssistantTipKey = message.SHA512Hash
 
         If Not p.SkippedAssistantTips.Contains(CurrentAssistantTipKey) Then
             If message <> "" Then
                 If message.Length > 130 Then
-                    lTip.Font = New Font(lTip.Font.FontFamily, 8)
+                    lTip.Font = New Font(lTip.Font.FontFamily, 7 * s.UIScaleFactor)
                 Else
-                    lTip.Font = New Font(lTip.Font.FontFamily, 9)
+                    lTip.Font = New Font(lTip.Font.FontFamily, 9 * s.UIScaleFactor)
                 End If
             End If
 
@@ -2395,22 +2484,14 @@ Class MainForm
         End Get
         Set(Value As Action)
             AssistantMethodValue = Value
-
-            If Value Is Nothing Then
-                lTip.Cursor = Cursors.Default
-            Else
-                lTip.Cursor = Cursors.Hand
-            End If
         End Set
     End Property
 
     Function Assistant() As Boolean
-        If SkipAssistant Then
-            Return False
-        End If
+        If SkipAssistant Then Return False
 
-        Dim isCropped = p.VideoScript.IsFilterActive("Crop")
-        Dim isResized = p.VideoScript.IsFilterActive("Resize")
+        Dim isCropped = p.Script.IsFilterActive("Crop")
+        Dim isResized = p.Script.IsFilterActive("Resize")
 
         tbTargetWidth.ReadOnly = Not isResized
         tbTargetHeight.ReadOnly = Not isResized
@@ -2418,25 +2499,19 @@ Class MainForm
         g.Highlight(False, lSAR)
         g.Highlight(False, llAudioProfile0)
         g.Highlight(False, llAudioProfile1)
-        g.Highlight(False, lCompCheck)
         g.Highlight(False, lAspectRatioError)
-        g.Highlight(False, lQuality)
         g.Highlight(False, lZoom)
         g.Highlight(False, tbAudioFile0)
         g.Highlight(False, tbAudioFile1)
         g.Highlight(False, tbBitrate)
-        g.Highlight(False, tbSize)
+        g.Highlight(False, tbTargetSize)
         g.Highlight(False, tbSourceFile)
         g.Highlight(False, tbTargetHeight)
         g.Highlight(False, tbTargetFile)
         g.Highlight(False, tbTargetWidth)
         g.Highlight(False, llMuxer)
-        g.Highlight(False, lgbEncoder.ll)
-
-        If ResetAssistantFont Then
-            lTip.Font = New Font(Font.FontFamily, 9)
-            ResetAssistantFont = False
-        End If
+        g.Highlight(False, lgbEncoder.Label)
+        g.Highlight(False, lTarget2)
 
         Dim cropw = p.SourceWidth
         Dim croph = p.SourceHeight
@@ -2449,23 +2524,12 @@ Class MainForm
         Dim isValidAnamorphicSize = (p.TargetWidth = 1440 AndAlso p.TargetHeight = 1080) OrElse
             (p.TargetWidth = 960 AndAlso p.TargetHeight = 720)
 
-        If isResized Then
-            If isValidAnamorphicSize Then
-                lAspectRatioError.Text = "n/a"
-            Else
-                lAspectRatioError.Text = Calc.GetAspectRatioError.ToString("f2") + "%"
-            End If
-        Else
-            lAspectRatioError.Text = "n/a"
-
-            If p.TargetWidth <> cropw Then
-                tbTargetWidth.Text = cropw.ToString
-            End If
-
-            If p.TargetHeight <> croph Then
-                tbTargetHeight.Text = croph.ToString
-            End If
+        If Not isResized Then
+            If p.TargetWidth <> cropw Then tbTargetWidth.Text = cropw.ToString
+            If p.TargetHeight <> croph Then tbTargetHeight.Text = croph.ToString
         End If
+
+        lAspectRatioError.Text = Calc.GetAspectRatioError.ToString("f2") + "%"
 
         If isCropped Then
             lCrop.Text = cropw.ToString() + "/" + croph.ToString()
@@ -2480,19 +2544,10 @@ Class MainForm
         lPixel.Text = CInt(p.TargetWidth * p.TargetHeight).ToString
 
         Dim trackBarValue = CInt((p.TargetWidth - 320) / p.ForcedOutputMod)
-
-        If trackBarValue < tbResize.Minimum Then
-            trackBarValue = tbResize.Minimum
-        End If
-
-        If trackBarValue > tbResize.Maximum Then
-            trackBarValue = tbResize.Maximum
-        End If
+        If trackBarValue < tbResize.Minimum Then trackBarValue = tbResize.Minimum
+        If trackBarValue > tbResize.Maximum Then trackBarValue = tbResize.Maximum
 
         tbResize.Value = trackBarValue
-        lCompCheck.Text = p.Compressibility.ToString("f2")
-        lQuality.Text = CInt(Calc.GetPercent).ToString() + " %"
-        lAudioBitrate.Text = CInt(Calc.GetAudioBitrate).ToString
 
         Dim par = Calc.GetTargetPAR
 
@@ -2502,23 +2557,40 @@ Class MainForm
             lPAR.Text = "n/a"
         End If
 
-        lDAR.Text = Calc.GetTargetDAR.ToString.Shorten(5)
-
-        lSAR.Text = (p.TargetWidth / p.TargetHeight).ToString.Shorten(5) +
-            " " + Calc.GetMod(p.TargetWidth, p.TargetHeight)
-
-        lSourceDar.Text = Calc.GetSourceDAR.ToString.Shorten(5)
-
+        lDAR.Text = Calc.GetTargetDAR.ToString.Shorten(8)
+        lSAR.Text = (p.TargetWidth / p.TargetHeight).ToString.Shorten(8)
+        lSourceDar.Text = Calc.GetSourceDAR.ToString.Shorten(8)
         par = Calc.GetSimpleSourcePAR
-
         lSourcePAR.Text = par.X & ":" & par.Y
 
-        lbSourceLength.Text = GetLengthString(p.SourceSeconds)
-        lSourceImageSize.Text = p.SourceWidth.ToString + "/" + p.SourceHeight.ToString
-        lSourceFramerate.Text = p.SourceFrameRate.ToString("f3")
+        If p.SourceSeconds > 0 Then
+            lSource1.Text = lSource1.GetMaxTextSpace(
+                g.GetTimeString(p.SourceSeconds),
+                If(p.SourceSize / 1024 ^ 2 < 1024, CInt(p.SourceSize / 1024 ^ 2).ToString + "MB",
+                (p.SourceSize / 1024 ^ 3).ToString("f1") + "GB"),
+                If(p.SourceBitrate > 0, (p.SourceBitrate / 1000).ToString("f1") + "Mb/s", ""),
+                p.SourceFrameRate.ToString.Shorten(9) + "fps",
+                p.Codec, p.CodecProfile)
 
-        lCodec.Text = p.Codec
-        lCodecProfile.Text = p.CodecProfile
+            lSource2.Text = lSource1.GetMaxTextSpace(
+                p.SourceWidth.ToString + "x" + p.SourceHeight.ToString, p.ColorSpace,
+                p.ChromaSubsampling, If(p.BitDepth <> 0, p.BitDepth & "Bits", ""),
+                p.ScanType, If(p.ScanType = "Interlaced", p.ScanOrder, ""))
+
+            lTarget1.Text = lSource1.GetMaxTextSpace(g.GetTimeString(p.TargetSeconds),
+                p.TargetFrameRate.ToString.Shorten(9) + "fps", "Audio Bitrate: " & CInt(Calc.GetAudioBitrate))
+
+            If p.VideoEncoder.IsCompCheckEnabled Then
+                lTarget2.Text = lSource1.GetMaxTextSpace(
+                    "Quality: " & CInt(Calc.GetPercent).ToString() + " %",
+                    "Compressibility: " + p.Compressibility.ToString("f2"))
+            End If
+        Else
+            lTarget1.Text = ""
+            lSource1.Text = ""
+            lTarget2.Text = ""
+            lSource2.Text = ""
+        End If
 
         lTip.Text = ""
         gbAssistant.Text = ""
@@ -2526,18 +2598,59 @@ Class MainForm
         CanIgnoreTip = True
         AssistantPassed = False
 
+        If p.VideoEncoder.Muxer.CoverFile <> "" AndAlso TypeOf p.VideoEncoder.Muxer Is MkvMuxer Then
+            If Not p.VideoEncoder.Muxer.CoverFile.Base.EqualsAny("cover", "small_cover", "cover_land", "small_cover_land") OrElse Not p.VideoEncoder.Muxer.CoverFile.Ext.EqualsAny("jpg", "png") Then
+                If ProcessTip("The cover file name bust be cover, small_cover, cover_land or small_cover_land, the file type must be jpg or png.") Then
+                    gbAssistant.Text = "Invalid cover file name"
+                    CanIgnoreTip = False
+                    Return False
+                End If
+            End If
+        End If
+
+        If p.Script.Engine = ScriptEngine.VapourSynth AndAlso TypeOf p.VideoEncoder Is ffmpegEnc Then
+            If ProcessTip("ffmpeg video encoding with VapourSynth input isn't supported.") Then
+                gbAssistant.Text = "Incompatible settings"
+                CanIgnoreTip = False
+                Return False
+            End If
+        End If
+
+        If p.Script.Engine = ScriptEngine.VapourSynth AndAlso TypeOf p.VideoEncoder Is Rav1e Then
+            If ProcessTip("Using ffmpeg along side of rav1e is not supported by ffmpeg currently.") Then
+                gbAssistant.Text = "Incompatible settings"
+                CanIgnoreTip = False
+                Return False
+            End If
+        End If
+
+        If TypeOf p.VideoEncoder Is BasicVideoEncoder Then
+            Dim enc = DirectCast(p.VideoEncoder, BasicVideoEncoder)
+            Dim param = enc.CommandLineParams.GetOptionParam("--vpp-resize")
+
+            If Not param Is Nothing AndAlso param.Value > 0 AndAlso
+                Not p.Script.IsFilterActive("Resize", "Hardware Encoder") Then
+
+                If ProcessTip("In order to use an resize filter of the hardware encoder select 'Hardware Encoder' as resize filter from the filters menu.") Then
+                    gbAssistant.Text = "Invalid filter setting"
+                    CanIgnoreTip = False
+                    Return False
+                End If
+            End If
+        End If
+
         If Not p.BatchMode Then
-            If Filepath.GetExtFull(p.TargetFile) = ".mp4" AndAlso p.TargetFile.Contains("#") Then
+            If p.TargetFile.Ext = "mp4" AndAlso p.TargetFile.Contains("#") Then
                 If ProcessTip("Character # can't be processed by MP4Box, please rename target file.") Then
-                    gbAssistant.Text = "Invalid target file name"
+                    gbAssistant.Text = "Invalid target filename"
                     CanIgnoreTip = False
                     Return False
                 End If
             End If
 
-            If p.VideoScript.Filters.Count = 0 OrElse
-                Not p.VideoScript.Filters(0).Active OrElse
-                p.VideoScript.Filters(0).Category <> "Source" Then
+            If p.Script.Filters.Count = 0 OrElse
+                Not p.Script.Filters(0).Active OrElse
+                p.Script.Filters(0).Category <> "Source" Then
 
                 If ProcessTip("The first filter must have the category Source.") Then
                     gbAssistant.Text = "Invalid filter setup"
@@ -2548,7 +2661,7 @@ Class MainForm
 
             If p.SourceSeconds = 0 Then
                 If ProcessTip("Click here to open a source file.") Then
-                    AssistantMethod = AddressOf OpenSourceFiles
+                    AssistantMethod = AddressOf ShowOpenSourceDialog
                     gbAssistant.Text = "Assistant"
                     CanIgnoreTip = False
                     Return False
@@ -2564,20 +2677,23 @@ Class MainForm
                 End If
             End If
 
-            If p.Audio0.File = p.TargetFile OrElse p.Audio1.File = p.TargetFile Then
-                If ProcessTip("The audio source and target filepath is identical.") Then
-                    g.Highlight(True, tbTargetFile)
-                    gbAssistant.Text = "Invalid Targetpath"
-                    CanIgnoreTip = False
-                    Return False
+            Dim audioTracks = p.GetAudioTracks
+
+            For Each i In audioTracks
+                If i.File = p.TargetFile Then
+                    If ProcessTip("The audio source and target filepath is identical.") Then
+                        g.Highlight(True, tbTargetFile)
+                        gbAssistant.Text = "Invalid Targetpath"
+                        CanIgnoreTip = False
+                        Return False
+                    End If
                 End If
-            End If
+            Next
 
             If p.RemindToCrop AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso
-                p.VideoScript.IsFilterActive("Crop") AndAlso
                 ProcessTip("Click here to open the crop dialog. When done continue with Next.") Then
 
-                AssistantMethod = AddressOf OpenCropDialog
+                AssistantMethod = AddressOf ShowCropDialog
                 gbAssistant.Text = "Crop"
                 Return False
             End If
@@ -2604,56 +2720,39 @@ Class MainForm
                 End If
             End If
 
-            If Not p.VideoEncoder.Muxer.IsSupported(p.VideoEncoder.OutputFileType) Then
-                If ProcessTip("The encoder outputs '" + p.VideoEncoder.OutputFileType + "' but the container '" + p.VideoEncoder.Muxer.Name + "' supports only " + p.VideoEncoder.Muxer.SupportedInputTypes.Join(", ") + ".") Then
+            If Not p.VideoEncoder.Muxer.IsSupported(p.VideoEncoder.OutputExt) Then
+                If ProcessTip("The encoder outputs '" + p.VideoEncoder.OutputExt + "' but the container '" + p.VideoEncoder.Muxer.Name + "' supports only " + p.VideoEncoder.Muxer.SupportedInputTypes.Join(", ") + ".") Then
                     gbAssistant.Text = "Encoder conflicts with container"
                     g.Highlight(True, llMuxer)
-                    g.Highlight(True, lgbEncoder.ll)
+                    g.Highlight(True, lgbEncoder.Label)
                     CanIgnoreTip = False
                     Return False
                 End If
             End If
 
-            If Math.Abs(p.Audio0.Delay) > 2000 Then
-                Dim tip As String
-
-                If GetIfoFile() <> "" Then
-                    tip = "The audio delay is unusual high indicating a sync problem. The best method to prevent such problems is ripping with MakeMKV. Alternativly DGIndex or DGIndexNV can be used manually to trim the studio intro at the beginning of the DVD."
-                Else
-                    tip = "The audio delay is unusual high indicating a sync problem. Tools that can prevent such problems are ProjectX, dsmux or gdsmux."
+            For Each i In audioTracks
+                If Math.Abs(i.Delay) > 2000 Then
+                    If ProcessTip("The audio delay is unusual high indicating a sync problem, MakeMKV and ProjectX can prevent this problem.") Then
+                        g.Highlight(True, tbAudioFile0)
+                        gbAssistant.Text = "Unusual high audio delay"
+                        Return False
+                    End If
                 End If
+            Next
 
-                If ProcessTip(tip) Then
-                    lTip.Font = New Font(Font.FontFamily, 8)
-                    ResetAssistantFont = True
-                    g.Highlight(True, tbAudioFile0)
-                    gbAssistant.Text = "Unusual high audio delay"
-                    Return False
+            For Each i In audioTracks
+                If i.File <> "" AndAlso Not p.VideoEncoder.Muxer.IsSupported(i.OutputFileType) AndAlso Not i.OutputFileType = "ignore" Then
+                    If ProcessTip("The audio format is '" + i.OutputFileType + "' but the container '" + p.VideoEncoder.Muxer.Name + "' supports only " + p.VideoEncoder.Muxer.SupportedInputTypes.Join(", ") + ". Select another audio profile or another container.") Then
+                        g.Highlight(True, llMuxer)
+                        gbAssistant.Text = "Audio format conflicts with container"
+                        CanIgnoreTip = False
+                        Return False
+                    End If
                 End If
-            End If
+            Next
 
-            If p.Audio0.File <> "" AndAlso Not p.VideoEncoder.Muxer.IsSupported(p.Audio0.OutputFileType) AndAlso Not p.Audio0.OutputFileType = "ignore" Then
-                If ProcessTip("The audio format is '" + p.Audio0.OutputFileType + "' but the container '" + p.VideoEncoder.Muxer.Name + "' supports only " + p.VideoEncoder.Muxer.SupportedInputTypes.Join(", ") + ". Choose another audio profile or another container.") Then
-                    g.Highlight(True, llAudioProfile0)
-                    g.Highlight(True, llMuxer)
-                    gbAssistant.Text = "Audio format conflicts with container"
-                    CanIgnoreTip = False
-                    Return False
-                End If
-            End If
-
-            If p.Audio1.File <> "" AndAlso Not p.VideoEncoder.Muxer.IsSupported(p.Audio1.OutputFileType) AndAlso Not p.Audio1.OutputFileType = "ignore" Then
-                If ProcessTip("The audio format is '" + p.Audio1.OutputFileType + "' but the container '" + p.VideoEncoder.Muxer.Name + "' supports only " + p.VideoEncoder.Muxer.SupportedInputTypes.Join(", ") + ". Choose another audio profile or another container.") Then
-                    g.Highlight(True, llAudioProfile1)
-                    g.Highlight(True, llMuxer)
-                    gbAssistant.Text = "Audio format conflicts with container"
-                    CanIgnoreTip = False
-                    Return False
-                End If
-            End If
-
-            If p.VideoEncoder.Muxer.GetExtension <> Filepath.GetExtFull(p.TargetFile) Then
-                If ProcessTip("The container requires " + p.VideoEncoder.Muxer.GetExtension.Trim("."c).ToUpper + " as target file type.") Then
+            If p.VideoEncoder.Muxer.OutputExtFull <> p.TargetFile.ExtFull Then
+                If ProcessTip("The container requires " + p.VideoEncoder.Muxer.OutputExt.ToUpper + " as target file type.") Then
                     g.Highlight(True, tbTargetFile)
                     gbAssistant.Text = "Invalid File Type"
                     CanIgnoreTip = False
@@ -2669,32 +2768,13 @@ Class MainForm
                 End If
             End If
 
-            If p.TargetWidth > cropw Then
-                If ProcessTip("The target width is larger then the source width, usually it's better to disable the resize filter.") Then
-                    g.Highlight(True, lZoom)
-                    g.Highlight(True, tbTargetWidth)
-                    gbAssistant.Text = "Bad Image Size"
-                    Return False
-                End If
-            End If
-
-            If p.TargetHeight > croph Then
-                If ProcessTip("The target height is larger then the source height, usually it's better to disable the resize filter.") Then
-                    g.Highlight(True, lZoom)
-                    g.Highlight(True, tbTargetHeight)
-                    gbAssistant.Text = "Bad Image Size"
-                    Return False
-                End If
-            End If
-
             Dim ae = Calc.GetAspectRatioError()
 
-            If Not isValidAnamorphicSize AndAlso
-                (ae > p.MaxAspectRatioError OrElse
-                ae < -p.MaxAspectRatioError) _
-                AndAlso p.VideoScript.IsFilterActive("Resize") Then
+            If Not isValidAnamorphicSize AndAlso (ae > p.MaxAspectRatioError OrElse
+                ae < -p.MaxAspectRatioError) AndAlso p.Script.IsFilterActive("Resize") AndAlso
+                p.RemindArError Then
 
-                If ProcessTip("Use the resize slider to correct the aspect ratio error.") Then
+                If ProcessTip("Use the resize slider to correct the aspect ratio error or click next to encode anamorphic.") Then
                     g.Highlight(True, lAspectRatioError)
                     gbAssistant.Text = "Aspect Ratio Error"
                     Return False
@@ -2710,29 +2790,21 @@ Class MainForm
                 If p.RemindToCut AndAlso Not TypeOf p.VideoEncoder Is NullEncoder AndAlso
                     ProcessTip("Click here to open the preview for cutting if necessary. When done continue with Next.") Then
 
-                    AssistantMethod = AddressOf OpenPreview
+                    AssistantMethod = AddressOf ShowPreview
                     gbAssistant.Text = "Cutting"
                     Return False
                 End If
             Else
-                If p.CutFrameRate <> p.VideoScript.GetFramerate Then
+                If p.CutFrameRate <> p.Script.GetFramerate Then
                     If ProcessTip("The frame rate was changed after cutting was performed, please ensure that this change is happening after the Cutting filter section in the AviSynth script.") Then
                         gbAssistant.Text = "Illegal frame rate change"
                         Return False
                     End If
                 End If
 
-                If Not p.VideoScript.IsFilterActive("Cutting") AndAlso Form.ActiveForm Is Me Then
+                If Not p.Script.IsFilterActive("Cutting") AndAlso Form.ActiveForm Is Me Then
                     If ProcessTip("The cutting filter settings don't match with the cutting settings used in the preview.") Then
                         gbAssistant.Text = "Invalid Cutting Settings"
-                        CanIgnoreTip = False
-                        Return False
-                    End If
-                End If
-
-                If p.VideoEncoder.Muxer.Subtitles.Where(Function(subtitle) subtitle.Enabled).Count > 0 Then
-                    If ProcessTip("Subtitle cutting is not supported, please remove the subtitles from the container options.") Then
-                        gbAssistant.Text = "Subtitle cutting unsupported"
                         CanIgnoreTip = False
                         Return False
                     End If
@@ -2742,26 +2814,24 @@ Class MainForm
             If p.RemindToDoCompCheck AndAlso p.VideoEncoder.IsCompCheckEnabled AndAlso p.Compressibility = 0 Then
                 If ProcessTip("Click here to start the compressibility check. The compressibility check helps to finds the ideal bitrate or image size.") Then
                     AssistantMethod = AddressOf p.VideoEncoder.RunCompCheck
-                    g.Highlight(True, lCompCheck)
+                    g.Highlight(True, lTarget2)
                     gbAssistant.Text = "Compressibility Check"
                     Return False
                 End If
             End If
 
             If File.Exists(p.TargetFile) Then
-                If FileTypes.VideoText.Contains(Filepath.GetExt(p.SourceFile)) AndAlso
+                If FileTypes.VideoText.Contains(FilePath.GetExt(p.SourceFile)) AndAlso
                     File.ReadAllText(p.SourceFile).Contains(p.TargetFile) Then
 
-                    If ProcessTip("Source and target name are identical, please choose another target name.") Then
+                    If ProcessTip("Source and target name are identical, please select another target name.") Then
                         CanIgnoreTip = False
                         tbTargetFile.BackColor = Color.Yellow
                         gbAssistant.Text = "Target File"
                         Return False
                     End If
                 Else
-                    AssistantMethod = Sub() g.OpenDirAndSelectFile(p.TargetFile, Handle)
-
-                    If ProcessTip("The target file already exist, usually this means it was encoded successfully." + CrLf + "Click here to to open the containing directory.") Then
+                    If ProcessTip("The target file already exist." + BR + p.TargetFile) Then
                         tbTargetFile.BackColor = Color.Yellow
                         gbAssistant.Text = "Target File"
                         Return False
@@ -2769,7 +2839,7 @@ Class MainForm
                 End If
             End If
 
-            If p.VideoScript.IsFilterActive("Resize") Then
+            If p.Script.IsFilterActive("Resize") Then
                 If p.TargetWidth Mod p.ForcedOutputMod <> 0 Then
                     If ProcessTip("Move the resize slider to adjust the target width to be divisible by " & p.ForcedOutputMod & " or customize Options > Image > Output Mod.") Then
                         CanIgnoreTip = Not p.AutoCorrectCropValues
@@ -2820,12 +2890,12 @@ Class MainForm
                     value > (p.VideoEncoder.AutoCompCheckValue + 20) Then
 
                     If ProcessTip("The aimed quality value is more than 20% off, change the image or file size to get something between 50% and 70% quality.") Then
-                        g.Highlight(True, tbSize)
+                        g.Highlight(True, tbTargetSize)
                         g.Highlight(True, tbBitrate)
                         g.Highlight(True, tbTargetWidth)
                         g.Highlight(True, tbTargetHeight)
-                        g.Highlight(True, lQuality)
-                        lQuality.BackColor = Color.Red
+                        g.Highlight(True, lTarget2)
+                        lTarget2.BackColor = Color.Red
                         gbAssistant.Text = "Quality"
                         Return False
                     End If
@@ -2834,7 +2904,7 @@ Class MainForm
 
             If TypeOf p.VideoEncoder.Muxer Is MP4Muxer Then
                 For Each i In p.VideoEncoder.Muxer.Subtitles
-                    If Not IsOneOf(Filepath.GetExtFull(i.Path), ".idx", ".srt") Then
+                    If Not {"idx", "srt"}.Contains(i.Path.Ext) Then
                         If ProcessTip("MP4 supports only SRT and IDX subtitles.") Then
                             CanIgnoreTip = False
                             gbAssistant.Text = "Invalid subtitle format"
@@ -2845,18 +2915,18 @@ Class MainForm
             End If
 
             If Not (MouseButtons = MouseButtons.Left AndAlso ActiveControl Is tbResize) Then
-                If Not p.VideoScript.GetErrorMessage Is Nothing AndAlso Not Paths.VerifyRequirements Then
-                    If ProcessTip(p.VideoScript.GetErrorMessage) Then
+                If Not p.Script.GetErrorMessage Is Nothing AndAlso Not g.VerifyRequirements Then
+                    If ProcessTip(p.Script.GetErrorMessage) Then
                         CanIgnoreTip = False
-                        gbAssistant.Text = "AviSynth Error"
+                        gbAssistant.Text = "Script Error"
                         Return False
                     End If
                 End If
 
-                If Not p.VideoScript.GetErrorMessage Is Nothing Then
-                    If ProcessTip(p.VideoScript.GetErrorMessage) Then
+                If Not p.Script.GetErrorMessage Is Nothing Then
+                    If ProcessTip(p.Script.GetErrorMessage) Then
                         CanIgnoreTip = False
-                        gbAssistant.Text = "AviSynth Error"
+                        gbAssistant.Text = "Script Error"
                         Return False
                     End If
                 End If
@@ -2864,7 +2934,7 @@ Class MainForm
         Else
             If p.SourceFiles.Count = 0 Then
                 If ProcessTip("Click here to open a source file.") Then
-                    AssistantMethod = AddressOf OpenSourceFiles
+                    AssistantMethod = AddressOf ShowOpenSourceDialog
                     gbAssistant.Text = "Assistant"
                     CanIgnoreTip = False
                     Return False
@@ -2873,94 +2943,52 @@ Class MainForm
         End If
 
         gbAssistant.Text = "Add Job"
-
-        If lTip.Font.Size <> 9 Then
-            lTip.Font = New Font(lTip.Font.FontFamily, 9)
-        End If
-
+        If lTip.Font.Size <> 9 Then lTip.Font = New Font(lTip.Font.FontFamily, 9 * s.UIScaleFactor)
         lTip.Text = "Click on the next button to add a job."
-
         AssistantPassed = True
     End Function
 
     Private Sub OpenTargetFolder()
-        g.ShellExecute(Filepath.GetDir(p.TargetFile))
+        g.StartProcess(FilePath.GetDir(p.TargetFile))
     End Sub
 
     Dim BlockAudioTextChanged As Boolean
 
     Sub AudioTextChanged(tb As TextBox, ap As AudioProfile)
-        If BlockAudioTextChanged Then
-            Exit Sub
-        End If
+        If BlockAudioTextChanged Then Exit Sub
 
-        If tb.Text.ContainsUnicode Then
+        If Not tb.Text.IsANSICompatible AndAlso p.Script.Engine = ScriptEngine.AviSynth Then
             MsgWarn(Strings.NoUnicode)
             tb.Text = ""
             Exit Sub
         End If
 
-        If tb.Text.Contains(":\") Then
+        If tb.Text.Contains(":\") OrElse tb.Text.StartsWith("\\") Then
             If tb.Text <> ap.File Then
                 ap.File = tb.Text
 
-                If Not p.VideoScript.GetFilter("Source").Script.Contains("DirectShowSource") Then
+                If Not p.Script.GetFilter("Source").Script.Contains("DirectShowSource") Then
                     ap.Delay = g.ExtractDelay(ap.File)
                 End If
 
                 ap.SetStreamOrLanguage()
             End If
 
-            UpdateAudio(ap)
-
+            UpdateSizeOrBitrate()
             BlockAudioTextChanged = True
+            tb.Text = ap.DisplayName
 
-            If ap.Stream Is Nothing Then
-                Dim streams = MediaInfo.GetAudioStreams(tb.Text)
-                If streams.Count > 0 Then tb.Text = GetAudioText(ap, streams(0), tb.Text)
+            If tb Is tbAudioFile0 Then
+                llAudioProfile0.Text = g.ConvertPath(ap.Name)
             Else
-                tb.Text = ap.Stream.Name + " (" + Filepath.GetExt(ap.File) + ")"
+                llAudioProfile1.Text = g.ConvertPath(ap.Name)
             End If
 
             BlockAudioTextChanged = False
         ElseIf tb.Text = "" Then
             ap.File = ""
-            UpdateAudio(ap)
+            UpdateSizeOrBitrate()
         End If
-    End Sub
-
-    Function GetAudioText(ap As AudioProfile, stream As AudioStream, path As String) As String
-        For Each i In Language.Languages
-            If path.Contains(i.CultureInfo.EnglishName) Then
-                stream.Language = i
-                Exit For
-            End If
-        Next
-
-        Dim matchDelay = Regex.Match(path, " (-?\d+)ms")
-        If matchDelay.Success Then stream.Delay = matchDelay.Groups(1).Value.ToInt
-
-        Dim matchID = Regex.Match(path, " ID(\d+)")
-        Dim name As String
-
-        If matchID.Success Then
-            stream.StreamOrder = matchID.Groups(1).Value.ToInt - 1
-            name = stream.Name
-        Else
-            name = stream.Name.Substring(4)
-        End If
-
-        If Filepath.GetBase(ap.File) = Filepath.GetBase(p.SourceFile) Then
-            Return name + " (" + Filepath.GetExt(ap.File) + ")"
-        Else
-            Return name + " (" + Filepath.GetName(ap.File) + ")"
-        End If
-    End Function
-
-    Sub UpdateAudio(ap As AudioProfile)
-        SetBitrateMuxAudioProfile(ap)
-        lAudioBitrate.Text = CInt(Calc.GetAudioBitrate).ToString
-        tbSize_TextChanged()
     End Sub
 
     Sub tbAudioFile0_TextChanged() Handles tbAudioFile0.TextChanged
@@ -2971,17 +2999,7 @@ Class MainForm
         AudioTextChanged(tbAudioFile1, p.Audio1)
     End Sub
 
-    Sub SetBitrateMuxAudioProfile(ap As AudioProfile)
-        If TypeOf ap Is MuxAudioProfile Then
-            If ap.Stream Is Nothing Then
-                ap.Bitrate = Calc.GetBitrateFromFile(ap.File, p.SourceSeconds)
-            Else
-                ap.Bitrate = ap.Stream.Bitrate + ap.Stream.BitrateCore
-            End If
-        End If
-    End Sub
-
-    Sub bSkip_Click() Handles bNext.Click
+    Sub bnSkip_Click() Handles bnNext.Click
         If Not CanIgnoreTip Then
             MsgWarn("The current assistant instruction or warning cannot be skipped.")
             Exit Sub
@@ -2991,23 +3009,94 @@ Class MainForm
             p.SkippedAssistantTips.Add(CurrentAssistantTipKey)
         End If
 
-        If Not Paths.VerifyRequirements() Then
-            Exit Sub
-        End If
+        If Not g.VerifyRequirements() Then Exit Sub
 
         If AssistantPassed Then
+            If AbortDueToLowDiskSpace() Then Exit Sub
+
+            If Not TypeOf p.VideoEncoder Is NullEncoder AndAlso File.Exists(p.VideoEncoder.OutputPath) Then
+                Select Case p.FileExistVideo
+                    Case FileExistMode.Ask
+                        Using td As New TaskDialog(Of String)
+                            td.MainInstruction = "The output file of the video encoder already exists"
+                            td.Content = "Would you like to skip video encoding and reuse the existing video encoder output file or would you like to re-encode and overwrite it?"
+                            td.AddCommandLink("Reuse", "skip")
+                            td.AddCommandLink("Re-encode", "encode")
+
+                            Select Case td.Show
+                                Case "skip"
+                                    p.SkipVideoEncoding = True
+                                Case "encode"
+                                    p.SkipVideoEncoding = False
+                                Case Else
+                                    Exit Sub
+                            End Select
+                        End Using
+                    Case FileExistMode.Overwrite
+                        p.SkipVideoEncoding = False
+                    Case FileExistMode.Skip
+                        p.SkipVideoEncoding = True
+                End Select
+            End If
+
+            If (p.Audio0.File <> "" AndAlso (TypeOf p.Audio0 Is GUIAudioProfile OrElse TypeOf p.Audio0 Is BatchAudioProfile) AndAlso File.Exists(p.Audio0.GetOutputFile)) OrElse
+            (p.Audio1.File <> "" AndAlso (TypeOf p.Audio1 Is GUIAudioProfile OrElse TypeOf p.Audio1 Is BatchAudioProfile) AndAlso File.Exists(p.Audio1.GetOutputFile)) Then
+                Select Case p.FileExistAudio
+                    Case FileExistMode.Ask
+                        Using td As New TaskDialog(Of String)
+                            td.MainInstruction = "An audio encoding output file already exists"
+                            td.Content = "Would you like to skip audio encoding and reuse existing audio encoding output files or would you like to re-encode and overwrite?"
+                            td.AddCommandLink("Reuse", "skip")
+                            td.AddCommandLink("Re-encode", "encode")
+
+                            Select Case td.Show
+                                Case "skip"
+                                    p.SkipAudioEncoding = True
+                                Case "encode"
+                                    p.SkipAudioEncoding = False
+                                Case Else
+                                    Exit Sub
+                            End Select
+                        End Using
+                    Case FileExistMode.Overwrite
+                        p.SkipAudioEncoding = False
+                    Case FileExistMode.Skip
+                        p.SkipAudioEncoding = True
+                End Select
+            End If
+
             AddJob(False, Nothing)
-            OpenJobsDialog()
+            ShowJobsDialog()
         Else
             Assistant()
         End If
     End Sub
 
-    <Command("Perform | Encode", "Creates a job and runs the job list.", Switch:="encode|e")>
+    Function AbortDueToLowDiskSpace() As Boolean
+        Try 'crashes with network shares
+            If p.TargetFile = "" OrElse p.TargetFile.StartsWith("\\") Then Exit Function
+            Dim di As New DriveInfo(p.TargetFile.Dir)
+
+            If di.AvailableFreeSpace / 1024 ^ 3 < s.MinimumDiskSpace Then
+                Using td As New TaskDialog(Of String)
+                    td.MainInstruction = "Low Disk Space"
+                    td.Content = $"The target drive {Path.GetPathRoot(p.TargetFile)} has only {(di.AvailableFreeSpace / 1024 ^ 3).ToString("f2")} GB free disk space." + BR2 +
+                        "This message can be configured at:" + BR2 + "Tools > Settings > System > Minimum Disk Space"
+                    td.MainIcon = TaskDialogIcon.Warning
+                    td.AddButton("Continue", "Continue")
+                    td.AddButton("Abort", "Abort")
+                    If td.Show <> "Continue" Then Return True
+                End Using
+            End If
+        Catch
+        End Try
+    End Function
+
+    <Command("Creates a job and runs the job list.")>
     Sub StartEncoding()
         AssistantPassed = True
         AddJob(False, Nothing)
-        RunJobs()
+        g.ProcessJobs()
     End Sub
 
     Private Sub Demux()
@@ -3024,37 +3113,21 @@ Class MainForm
                             Return ret.ToLower
                         End Function
 
-        Dim srcScript = p.VideoScript.GetFilter("Source").Script.ToLower
+        Dim srcScript = p.Script.GetFilter("Source").Script.ToLower
 
         For Each i In s.Demuxers
-            If i.Name = "dsmux" Then
-                If MediaInfo.GetAudioCount(p.SourceFile) = 0 Then
-                    Continue For
-                End If
+            If Not i.Active AndAlso (i.SourceFilters.NothingOrEmpty OrElse
+                Not srcScript.ContainsAny(i.SourceFilters.Select(Function(val) val.ToLower + "("))) Then Continue For
 
-                If CommandLineDemuxer.IsActive("DGIndexNV") OrElse
-                    CommandLineDemuxer.IsActive("DGIndexIM") Then
+            If i.InputExtensions?.Length = 0 OrElse i.InputExtensions.Contains(p.SourceFile.Ext) Then
+                If Not srcScript?.Contains("(") OrElse i.SourceFilters.NothingOrEmpty OrElse
+                    srcScript.ContainsAny(i.SourceFilters.Select(Function(val) val.ToLower + "(")) Then
 
-                    Continue For
-                End If
-
-                If p.VideoScript.Contains("Source", "DGSource(") OrElse
-                    p.VideoScript.Contains("Source", "DGSourceIM(") Then
-
-                    Continue For
-                End If
-            End If
-
-            If Not i.Active AndAlso (i.SourceFilter = "" OrElse Not srcScript.Contains(i.SourceFilter.ToLower + "(")) Then Continue For
-
-            If i.InputExtensions?.Length = 0 OrElse i.InputExtensions.Contains(Filepath.GetExt(p.SourceFile)) Then
-                If srcScript = "" OrElse i.SourceFilter = "" OrElse
-                    srcScript.Contains(i.SourceFilter.ToLower + "(") Then
-
-                    Dim inputFormats = Not OK(i.InputFormats) OrElse i.InputFormats.Contains(getFormat())
+                    Dim inputFormats = i.InputFormats.NothingOrEmpty OrElse
+                        i.InputFormats.Contains(getFormat())
 
                     If inputFormats Then
-                        i.Run()
+                        i.Run(p)
                         Refresh()
 
                         For Each iExt In i.OutputExtensions
@@ -3063,8 +3136,8 @@ Class MainForm
                             For Each iFile In Directory.GetFiles(p.TempDir, "*." + iExt)
                                 If g.IsSourceSame(iFile) AndAlso
                                     p.SourceFile <> iFile AndAlso
-                                    Not Filepath.GetBase(iFile).EndsWith("_out") AndAlso
-                                    Not Filepath.GetBase(iFile).Contains("_cut_") Then
+                                    Not iFile.Base.EndsWith("_out") AndAlso
+                                    Not iFile.Base.Contains("_cut_") Then
 
                                     p.SourceFile = iFile
                                     p.SourceFiles.Clear()
@@ -3090,7 +3163,8 @@ Class MainForm
     End Sub
 
     Sub Indexing()
-        Dim codeLower = p.VideoScript.GetFilter("Source").Script.ToLower
+        If p.SourceFile.Ext.EqualsAny("avs", "vpy") Then Exit Sub
+        Dim codeLower = p.Script.GetFilter("Source").Script.ToLower
 
         If codeLower.Contains("ffvideosource(") OrElse codeLower.Contains("ffms2.source") Then
             If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then
@@ -3101,9 +3175,9 @@ Class MainForm
             End If
 
             If codeLower.Contains("cachefile") Then
-                ffmsindex(p.SourceFile, p.TempDir + Filepath.GetBase(p.SourceFile) + ".ffindex")
+                g.ffmsindex(p.SourceFile, p.TempDir + p.SourceFile.Base + ".ffindex")
             Else
-                ffmsindex(p.SourceFile, p.SourceFile + ".ffindex")
+                g.ffmsindex(p.SourceFile, p.SourceFile + ".ffindex")
             End If
         ElseIf codeLower.Contains("lwlibavvideosource(") OrElse codeLower.Contains("lwlibavsource(") Then
             If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then
@@ -3113,30 +3187,41 @@ Class MainForm
                 BlockSourceTextBoxTextChanged = False
             End If
 
-            If Not File.Exists(p.SourceFile + ".lwi") AndAlso File.Exists(p.VideoScript.Path) AndAlso
-                Not FileTypes.VideoText.Contains(Filepath.GetExt(p.SourceFile)) Then
+            If Not File.Exists(p.SourceFile + ".lwi") AndAlso File.Exists(p.Script.Path) AndAlso
+                Not FileTypes.VideoText.Contains(FilePath.GetExt(p.SourceFile)) Then
 
                 Using proc As New Proc
-                    proc.Init("Index LWLibav")
+                    proc.Header = "Index LWLibav"
                     proc.Encoding = Encoding.UTF8
 
-                    If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
-                        proc.File = Packs.ffmpeg.GetPath
-                        proc.Arguments = "-i """ + p.VideoScript.Path + """"
+                    If p.Script.Engine = ScriptEngine.AviSynth Then
+                        proc.File = Package.ffmpeg.Path
+                        proc.Arguments = "-i " + p.Script.Path.Escape + " -hide_banner"
                     Else
-                        proc.File = Packs.vspipe.GetPath
-                        proc.Arguments = """" + p.VideoScript.Path + """ NUL -i"
+                        proc.File = Package.vspipe.Path
+                        proc.Arguments = p.Script.Path.Escape + " NUL -i"
                     End If
 
                     proc.AllowedExitCodes = {0, 1}
                     proc.Start()
                 End Using
             End If
+        ElseIf codeLower.Contains("lsmashvideosource(") OrElse
+            codeLower.Contains("libavsmashsource(") OrElse
+            codeLower.Contains("directshowsource(") OrElse
+            codeLower.Contains("dss2(") Then
+
+            If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then
+                p.SourceFile = p.LastOriginalSourceFile
+                BlockSourceTextBoxTextChanged = True
+                tbSourceFile.Text = p.SourceFile
+                BlockSourceTextBoxTextChanged = False
+            End If
         ElseIf codeLower.Contains("dgsource(") AndAlso Not p.SourceFile.Ext = "dgi" Then
             If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then p.SourceFile = p.LastOriginalSourceFile
-            Dim dgIndexNV = Demuxer.GetDefaults.Find(Function(demuxer) demuxer.Name = "DGIndexNV")
+            Dim dgIndexNV = Demuxer.GetDefaults.Find(Function(demuxer) demuxer.Name = "DGIndexNV: Index, No Demux")
             Dim outFile = p.TempDir + p.SourceFile.Base + ".dgi"
-            If Not File.Exists(outFile) Then dgIndexNV.Run()
+            If Not File.Exists(outFile) Then dgIndexNV.Run(p)
 
             If File.Exists(outFile) Then
                 p.SourceFile = outFile
@@ -3146,9 +3231,9 @@ Class MainForm
             End If
         ElseIf codeLower.Contains("dgsourceim(") AndAlso Not p.SourceFile.Ext = "dgim" Then
             If FileTypes.VideoIndex.Contains(p.SourceFile.Ext) Then p.SourceFile = p.LastOriginalSourceFile
-            Dim dgIndexIM = Demuxer.GetDefaults.Find(Function(demuxer) demuxer.Name = "DGIndexIM")
+            Dim dgIndexIM = Demuxer.GetDefaults.Find(Function(demuxer) demuxer.Name = "DGIndexIM: Index, No Demux")
             Dim outFile = p.TempDir + p.SourceFile.Base + ".dgim"
-            If Not File.Exists(outFile) Then dgIndexIM.Run()
+            If Not File.Exists(outFile) Then dgIndexIM.Run(p)
 
             If File.Exists(outFile) Then
                 p.SourceFile = outFile
@@ -3159,22 +3244,9 @@ Class MainForm
         End If
     End Sub
 
-    Sub ffmsindex(sourcePath As String, cachePath As String, Optional indexAudio As Boolean = False)
-        If File.Exists(sourcePath) AndAlso Not File.Exists(cachePath) AndAlso
-            Not FileTypes.VideoText.Contains(Filepath.GetExt(sourcePath)) Then
-
-            Using o As New Proc
-                o.Init("Index with ffmsindex", "Indexing, please wait...")
-                o.File = Packs.ffms2.GetDir + "ffmsindex.exe"
-                o.Arguments = If(indexAudio, "-t -1 ", "") + """" + sourcePath + """ """ + cachePath + """"
-                o.Start()
-            End Using
-        End If
-    End Sub
-
-    <Command("Project | Open", "Opens a project.")>
-    Sub OpenProjectFile()
-        Using d As New SWF.OpenFileDialog
+    <Command("Shows a file browser to open a project file.")>
+    Sub ShowFileBrowserToOpenProject()
+        Using d As New OpenFileDialog
             d.Filter = "Project Files|*.srip"
 
             If d.ShowDialog() = DialogResult.OK Then
@@ -3188,186 +3260,235 @@ Class MainForm
         Dim td As New TaskDialog(Of String)
         td.MainInstruction = "Please select a template"
 
-        For Each i In Directory.GetFiles(Paths.TemplateDir, "*.srip")
-            td.AddCommandLink(Filepath.GetBase(i), i)
+        For Each i In Directory.GetFiles(Folder.Template, "*.srip")
+            td.AddCommandLink(FilePath.GetBase(i), i)
         Next
 
         If td.Show <> "" Then Return OpenProject(td.SelectedValue, True)
     End Function
 
-    <Command("Dialog | Event Commands", Strings.EventCommands)>
-    Sub OpenEventCommandsDialog()
+    <Command(Strings.EventCommands)>
+    Sub ShowEventCommandsDialog()
         Using f As New EventCommandsEditor(s.EventCommands)
             If f.ShowDialog() = DialogResult.OK Then
-                s.EventCommands = f.lb.Items.OfType(Of EventCommand).ToList
+                s.EventCommands.Clear()
+
+                For Each i As ListViewItem In f.lv.Items
+                    s.EventCommands.Add(DirectCast(i.Tag, EventCommand))
+                Next
             End If
         End Using
 
-        SaveSettings()
+        g.SaveSettings()
     End Sub
 
-    <Command("Dialog | Settings", "Dialog to edit settings.")>
-    Sub OpenSettingsDialog()
+    <Command("Shows the settings dialog.")>
+    Sub ShowSettingsDialog()
         Using form As New SimpleSettingsForm("Settings")
             Dim ui = form.SimpleUI
+            ui.Store = s
 
-            Dim generalPage = ui.CreateFlowPage("General")
-            generalPage.SuspendLayout()
+            ui.CreateFlowPage("General")
 
-            Dim cb = ui.AddCheckBox(generalPage)
-            cb.Text = "Enable tooltips in menus (restart required)"
-            cb.Tooltip = "If you disable this you can still right-click menu items to show the tooltip."
-            cb.Checked = s.EnableTooltips
-            cb.SaveAction = Sub(value) s.EnableTooltips = value
+            Dim b = ui.AddBool()
+            b.Text = "Show template selection when loading new files"
+            b.Field = NameOf(s.ShowTemplateSelection)
 
-            Dim mb = ui.AddMenuButtonBlock(Of String)(generalPage)
-            mb.Label.Text = "Startup Template:"
-            mb.Label.Tooltip = "Template loaded when StaxRip starts."
-            mb.MenuButton.Value = s.StartupTemplate
-            mb.MenuButton.SaveAction = Sub(value) s.StartupTemplate = value
-            mb.MenuButton.Add(From i In Directory.GetFiles(Paths.TemplateDir) Select Filepath.GetBase(i))
+            b = ui.AddBool()
+            b.Text = "Reverse mouse wheel video seek direction"
+            b.Field = NameOf(s.ReverseVideoScrollDirection)
 
-            Dim tb = ui.AddTextBlock(generalPage)
-            tb.Label.Text = "Remember Window Positions:"
-            tb.Label.Tooltip = "Title or beginning of the title of windows of which the location should be remembered. For all windows enter '''all'''."
-            tb.Label.Offset = 12
-            tb.Expand(tb.Edit)
-            tb.Edit.Text = s.WindowPositionsRemembered.Join(", ")
-            tb.Edit.SaveAction = Sub(value) s.WindowPositionsRemembered = value.SplitNoEmptyAndWhiteSpace(",")
+            b = ui.AddBool()
+            b.Text = "Enable debug logging"
+            b.Field = NameOf(s.WriteDebugLog)
 
-            tb = ui.AddTextBlock(generalPage)
-            tb.Label.Text = "Center Screen Window Positions:"
-            tb.Label.Tooltip = "Title or beginning of the title of windows to be centered on the screen. For all windows enter '''all'''."
-            tb.Label.Offset = 12
-            tb.Expand(tb.Edit)
-            tb.Edit.Text = s.WindowPositionsCenterScreen.Join(", ")
-            tb.Edit.SaveAction = Sub(value) s.WindowPositionsCenterScreen = value.SplitNoEmptyAndWhiteSpace(",")
+            Dim mb = ui.AddMenu(Of String)()
+            mb.Text = "Startup Template"
+            mb.Help = "Template loaded when StaxRip starts."
+            mb.Field = NameOf(s.StartupTemplate)
+            mb.Add(From i In Directory.GetFiles(Folder.Template) Select i.Base)
 
-            ui.AddLine(generalPage, "Thumbnails")
+            Dim n = ui.AddNum()
+            n.Text = "Number of log files to keep"
+            n.Help = "Log files can be found at: Tools > Folders > Log Files"
+            n.Config = {0, Integer.MaxValue}
+            n.Field = NameOf(s.LogFileNum)
 
-            Dim num = ui.AddNumericBlock(generalPage)
-            num.Label.Text = "Width:"
-            num.NumEdit.Init(0, 10000, 16)
-            num.NumEdit.Value = s.ThumbnailWidth
-            num.NumEdit.SaveAction = Sub(value) s.ThumbnailWidth = CInt(value)
+            n = ui.AddNum()
+            n.Text = "Number of most recently used projects to keep"
+            n.Help = "MRU list shown in the main menu under: Project > Recent"
+            n.Config = {0, 15}
+            n.Field = NameOf(s.ProjectsMruNum)
 
-            num = ui.AddNumericBlock(generalPage)
-            num.Label.Text = "Rows:"
-            num.NumEdit.Init(0, 100, 1)
-            num.NumEdit.Value = s.ThumbnailRows
-            num.NumEdit.SaveAction = Sub(value) s.ThumbnailRows = CInt(value)
+            n = ui.AddNum()
+            n.Text = "Number of parallel processes"
+            n.Config = {1, 4}
+            n.Field = NameOf(s.ParallelProcsNum)
 
-            num = ui.AddNumericBlock(generalPage)
-            num.Label.Text = "Columns:"
-            num.NumEdit.Init(0, 100, 1)
-            num.NumEdit.Value = s.ThumbnailColumns
-            num.NumEdit.SaveAction = Sub(value) s.ThumbnailColumns = CInt(value)
+            n = ui.AddNum()
+            n.Text = "Minimum preview size compared to screen size (percent)"
+            n.Config = {10, 90, 10}
+            n.Field = NameOf(s.MinPreviewSize)
 
-            generalPage.ResumeLayout()
+            ui.CreateFlowPage("User Interface", True)
 
-            ui.CreateControlPage(New DemuxingControl, "Demuxing")
+            Dim t = ui.AddText()
+            t.Text = "Remember Window Positions:"
+            t.Help = "Title or beginning of the title of windows of which the location should be remembered. For all windows enter '''all'''."
+            t.Label.Offset = 12
+            t.Edit.Expand = True
+            t.Edit.Text = s.WindowPositionsRemembered.Join(", ")
+            t.Edit.SaveAction = Sub(value) s.WindowPositionsRemembered = value.SplitNoEmptyAndWhiteSpace(",")
 
-            Dim systemPage = ui.CreateFlowPage("System")
-            systemPage.SuspendLayout()
+            t = ui.AddText()
+            t.Text = "Center Screen Window Positions:"
+            t.Help = "Title or beginning of the title of windows to be centered on the screen. For all windows enter '''all'''."
+            t.Label.Offset = 12
+            t.Edit.Expand = True
+            t.Edit.Text = s.WindowPositionsCenterScreen.Join(", ")
+            t.Edit.SaveAction = Sub(value) s.WindowPositionsCenterScreen = value.SplitNoEmptyAndWhiteSpace(",")
 
-            Dim mb2 = ui.AddMenuButtonBlock(Of ProcessPriorityClass)(systemPage)
-            mb2.Label.Text = "Process Priority:"
-            mb2.Label.Tooltip = "Process priority of the applications StaxRip launches."
-            mb2.MenuButton.Value = s.ProcessPriority
-            mb2.MenuButton.SaveAction = Sub(value) s.ProcessPriority = value
+            n = ui.AddNum()
+            n.Text = "UI Scale Factor"
+            n.Help = "Requires to restart StaxRip."
+            n.Config = {0.3, 3, 0.05, 2}
+            n.Field = NameOf(s.UIScaleFactor)
 
-            Dim mb3 = ui.AddMenuButtonBlock(Of ToolStripRenderMode)(systemPage)
-            mb3.Label.Text = "Menu Style:"
-            mb3.Label.Tooltip = "Defines the style used to render main menus, context menus and toolbars."
-            mb3.MenuButton.Value = s.ToolStripRenderMode
-            mb3.MenuButton.SaveAction = Sub(value) s.ToolStripRenderMode = value
+            b = ui.AddBool()
+            b.Text = "Enable tooltips in menus (restart required)"
+            b.Help = "If you disable this you can still right-click menu items to show the tooltip."
+            b.Field = NameOf(s.EnableTooltips)
 
-            cb = ui.AddCheckBox(systemPage)
-            cb.Text = "Prevent system entering standby mode while encoding"
-            cb.Checked = s.PreventStandby
-            cb.SaveAction = Sub(value) s.PreventStandby = value
+            ui.AddControlPage(New PreprocessingControl, "Preprocessing").FormSizeScaleFactor = New Size(38, 21)
+            ui.FormSizeScaleFactor = New Size(31, 21)
 
-            cb = ui.AddCheckBox(systemPage)
-            cb.Text = "Use recycle bin when temp files are deleted"
-            cb.Checked = s.DeleteTempFilesToRecycleBin
-            cb.SaveAction = Sub(value) s.DeleteTempFilesToRecycleBin = value
+            Dim systemPage = ui.CreateFlowPage("System", True)
 
-            systemPage.ResumeLayout()
+            Dim procPriority = ui.AddMenu(Of ProcessPriorityClass)
+            procPriority.Text = "Process Priority"
+            procPriority.Help = "Process priority of the applications StaxRip launches."
+            procPriority.Field = NameOf(s.ProcessPriority)
 
-            Dim filterPage = ui.CreateDataPage("Source Filters")
+            Dim renderMode = ui.AddMenu(Of ToolStripRenderModeEx)
+            renderMode.Text = "Menu Style"
+            renderMode.Help = "Defines the style used to render main menus, context menus and toolbars."
+            renderMode.Field = NameOf(s.ToolStripRenderModeEx)
 
-            Dim tipsFunc = Function() As StringPairList
-                               Dim ret As New StringPairList
-                               ret.Add(" Filters Menu", "StaxRip allows to assign a source filter profile to a particular source file type. The source filter profiles can be customized by right-clicking the filters menu in the main dialog.")
+            Dim tempDelete = ui.AddMenu(Of DeleteMode)
+            tempDelete.Text = "Delete temp files"
+            tempDelete.Field = NameOf(s.DeleteTempFilesMode)
 
-                               For Each i In s.AviSynthProfiles.Where(
-                                   Function(v) v.Name = "Source").First.Filters
+            n = ui.AddNum
+            n.Text = "Minimum Disk Space"
+            n.Help = "Minimum allowed disk space in GB before StaxRip shows an error message."
+            n.Config = {0, 10000}
+            n.Field = NameOf(s.MinimumDiskSpace)
 
-                                   If i.Script <> "" Then
-                                       ret.Add(i.Name, i.Script)
-                                   End If
-                               Next
+            n = ui.AddNum
+            n.Text = "Shutdown Timeout"
+            n.Help = "Timeout in seconds before the shutdown is executed."
+            n.Field = NameOf(s.ShutdownTimeout)
 
-                               Return ret
-                           End Function
+            b = ui.AddBool
+            b.Text = "Prevent system entering standby mode while encoding"
+            b.Field = NameOf(s.PreventStandby)
 
-            filterPage.TipProvider.TipsFunc = tipsFunc
+            b = ui.AddBool
+            b.Text = "Minimize processing dialog to tray"
+            b.Field = NameOf(s.MinimizeToTray)
 
-            Dim c1 = filterPage.AddTextColumn()
-            c1.DataPropertyName = "Name"
-            c1.HeaderText = "File Type"
+            Dim bsAVS = AddFilterPreferences(ui, "Source Filters | AviSynth",
+                                             s.AviSynthFilterPreferences, s.AviSynthProfiles)
 
-            Dim c2 = filterPage.AddComboBoxColumn
-            c2.DataPropertyName = "Value"
-            c2.HeaderText = "Prefered Source Filter"
-            c2.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-
-            Dim filterNames = s.AviSynthProfiles.Where(
-                Function(v) v.Name = "Source").First.Filters.Where(
-                Function(v) v.Name <> "Automatic").Select(Function(v) v.Name).Sort.ToArray
-
-            c2.Items.AddRange(filterNames)
-            filterPage.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
-
-            Dim bs As New BindingSource
-
-            bs.DataSource = ObjectHelp.GetCopy(
-                New StringPairList(s.FilterPreferences.Where(
-                                   Function(a) filterNames.Contains(a.Value) AndAlso a.Name <> "")))
-
-            filterPage.DataSource = bs
+            Dim bsVS = AddFilterPreferences(ui, "Source Filters | VapourSynth",
+                                            s.VapourSynthFilterPreferences, s.VapourSynthProfiles)
 
             ui.SelectLast("last settings page")
 
             If form.ShowDialog() = DialogResult.OK Then
-                s.FilterPreferences = DirectCast(bs.DataSource, StringPairList)
-                s.FilterPreferences.Sort()
+                s.AviSynthFilterPreferences = DirectCast(bsAVS.DataSource, StringPairList)
+                s.AviSynthFilterPreferences.Sort()
+                s.VapourSynthFilterPreferences = DirectCast(bsVS.DataSource, StringPairList)
+                s.VapourSynthFilterPreferences.Sort()
                 ui.Save()
                 g.SetRenderer(MenuStrip)
                 SetMenuStyle()
-                SaveSettings()
+                s.UpdateRecentProjects(Nothing)
+                UpdateRecentProjectsMenu()
+                g.SaveSettings()
             End If
 
             ui.SaveLast("last settings page")
         End Using
     End Sub
 
-    <Command("Project | Save", "Saves the current project.")>
+    Function AddFilterPreferences(ui As SimpleUI,
+                                  pagePath As String,
+                                  preferences As StringPairList,
+                                  profiles As List(Of FilterCategory)) As BindingSource
+
+        Dim filterPage = ui.CreateDataPage(pagePath)
+
+        Dim tipsFunc = Function() As StringPairList
+                           Dim ret As New StringPairList From {
+                               {" Filters Menu", "StaxRip allows to assign a source filter profile to a particular source file type. The source filter profiles can be customized by right-clicking the filters menu in the main dialog."}
+                           }
+
+                           For Each i In profiles.Where(
+                               Function(v) v.Name = "Source").First.Filters
+
+                               If i.Script <> "" Then ret.Add(i.Name, i.Script)
+                           Next
+
+                           Return ret
+                       End Function
+
+        filterPage.TipProvider.TipsFunc = tipsFunc
+
+        Dim c1 = filterPage.AddTextBoxColumn()
+        c1.DataPropertyName = "Name"
+        c1.HeaderText = "File Type"
+
+        Dim c2 = filterPage.AddComboBoxColumn
+        c2.DataPropertyName = "Value"
+        c2.HeaderText = "Prefered Source Filter"
+
+        Dim filterNames = profiles.Where(
+            Function(v) v.Name = "Source").First.Filters.Where(
+            Function(v) v.Name <> "Automatic" AndAlso
+            v.Name <> "Manual" AndAlso Not v.Name.EndsWith("...")).Select(
+            Function(v) v.Name).Sort.ToArray
+
+        c2.Items.AddRange(filterNames)
+
+        filterPage.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
+
+        Dim ret2 As New BindingSource
+
+        ret2.DataSource = ObjectHelp.GetCopy(
+            New StringPairList(preferences.Where(
+                               Function(a) filterNames.Contains(a.Value) AndAlso a.Name <> "")))
+
+        filterPage.DataSource = ret2
+        Return ret2
+    End Function
+
+    <Command("Saves the current project.")>
     Sub SaveProject()
         If g.ProjectPath Is Nothing Then
-            ShowSaveDialog()
+            OpenSaveDialog()
         Else
-            SaveProjectByPath(g.ProjectPath)
+            SaveProjectPath(g.ProjectPath)
         End If
     End Sub
 
-    <Command("Project | Save Path", "Saves the current project at the specified path.")>
-    Sub SaveProjectByPath(<Description("The path may contain macros."),
+    <Command("Saves the current project at the specified path.")>
+    Sub SaveProjectPath(<Description("The path may contain macros."),
         Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))> path As String)
 
-        path = Macro.Solve(path)
+        path = Macro.Expand(path)
 
-        If path.StartsWith(Paths.TemplateDir) Then
+        If path.StartsWith(Folder.Template) Then
             If p.SourceFile <> "" Then
                 MsgWarn("A template cannot be created after a source file was opened.")
                 Exit Sub
@@ -3379,19 +3500,20 @@ Class MainForm
         Try
             SafeSerialization.Serialize(p, path)
             SetSavedProject()
-            Text = Application.ProductName + " x64 - " + Filepath.GetBase(path)
-            UpdateRecentProjectsMenuItems(path)
+            Text = Application.ProductName + " x64 - " + path.Base
+            s.UpdateRecentProjects(path)
+            UpdateRecentProjectsMenu()
         Catch ex As Exception
             g.ShowException(ex)
         End Try
     End Sub
 
-    <Command("Project | Save As", "Saves the current project.")>
+    <Command("Saves the current project.")>
     Sub SaveProjectAs()
-        ShowSaveDialog()
+        OpenSaveDialog()
     End Sub
 
-    <Command("Project | Save As Template", "Saves the current project as template.")>
+    <Command("Saves the current project as template.")>
     Sub SaveProjectAsTemplate()
         If p.SourceFile = "" Then
             Dim b As New InputBox
@@ -3402,8 +3524,8 @@ Class MainForm
 
             If b.Show = DialogResult.OK Then
                 p.TemplateName = b.Value.RemoveChars(Path.GetInvalidFileNameChars)
-                SaveProjectByPath(Paths.TemplateDir + p.TemplateName + ".srip")
-                UpdateTemplateProjectsMenuItems()
+                SaveProjectPath(Folder.Template + p.TemplateName + ".srip")
+                UpdateTemplatesMenuAsync()
 
                 If b.Checked Then
                     s.StartupTemplate = b.Value
@@ -3414,24 +3536,24 @@ Class MainForm
         End If
     End Sub
 
-    <Command("Perform | Start Compressibility Check", "Starts the compressibility check.")>
-    Sub RunCompCheck()
+    <Command("Starts the compressibility check.")>
+    Sub StartCompCheck()
         p.VideoEncoder.RunCompCheck()
     End Sub
 
-    <Command("Perform | Exit StaxRip", "Exits StaxRip", Switch:="exit")>
-    Sub ExitStaxRip()
+    <Command("Exits StaxRip")>
+    Sub [Exit]()
         Close()
     End Sub
 
-    <Command("Dialog | Applications", "Dialog to manage external applications.")>
-    Sub OpenApplicationsDialog()
-        Using f As New ApplicationsForm
+    <Command("Dialog to manage external applications.")>
+    Sub ShowAppsDialog()
+        Using f As New AppsForm
             Dim found As Boolean
 
             If s.StringDictionary.ContainsKey("RecentExternalApplicationControl") Then
-                For Each i As Package In Packs.Packages
-                    If i.Name = s.StringDictionary("RecentExternalApplicationControl") Then
+                For Each i In Package.Items.Values
+                    If i.Name + i.Version = s.StringDictionary("RecentExternalApplicationControl") Then
                         f.ShowPackage(i)
                         found = True
                         Exit For
@@ -3439,18 +3561,16 @@ Class MainForm
                 Next
             End If
 
-            If Not found Then
-                f.ShowPackage(Packs.x264)
-            End If
-
+            If Not found Then f.ShowPackage(Package.x265)
             f.ShowDialog()
+            g.SaveSettings()
         End Using
     End Sub
 
-    <Command("Dialog | Encoder Profiles", "Dialog to manage encoder profiles.")>
-    Sub OpenEncoderProfilesDialog()
+    <Command("Dialog to manage encoder profiles.")>
+    Sub ShowEncoderProfilesDialog()
         Using f As New ProfilesForm("Encoder Profiles", s.VideoEncoderProfiles,
-                                    AddressOf LoadVideoEncoder,
+                                    AddressOf g.LoadVideoEncoder,
                                     AddressOf GetNewVideoEncoderProfile,
                                     AddressOf VideoEncoder.GetDefaults)
 
@@ -3460,8 +3580,8 @@ Class MainForm
         End Using
     End Sub
 
-    <Command("Dialog | Muxer Profiles", "Dialog to manage Muxer profiles.")>
-    Sub OpenMuxerProfilesDialog()
+    <Command("Dialog to manage Muxer profiles.")>
+    Sub ShowMuxerProfilesDialog()
         If p.VideoEncoder.OpenMuxerProfilesDialog() = DialogResult.OK Then
             PopulateProfileMenu(DynamicMenuItemID.MuxerProfiles)
         End If
@@ -3469,45 +3589,24 @@ Class MainForm
         Assistant()
     End Sub
 
-    Sub LoadVideoEncoder(profile As Profile)
-        Dim currentMuxer = p.VideoEncoder.Muxer
-        p.VideoEncoder = DirectCast(ObjectHelp.GetCopy(profile), VideoEncoder)
-
-        If currentMuxer.IsSupported(p.VideoEncoder.OutputFileType) Then
-            p.VideoEncoder.Muxer = currentMuxer
-        Else
-            p.VideoEncoder.Muxer.Init()
-        End If
-
-        tbTargetFile.Text = Filepath.GetChangeExt(p.TargetFile, p.VideoEncoder.Muxer.GetExtension)
-        p.VideoEncoder.OnStateChange()
-        RecalcBitrate()
-        Assistant()
-    End Sub
-
     Sub RecalcBitrate()
-        tbSize_TextChanged()
+        UpdateSizeOrBitrate()
     End Sub
 
     Function GetNewVideoEncoderProfile() As Profile
         Dim sb As New SelectionBox(Of VideoEncoder)
         sb.Title = "Add New Profile"
-        sb.Text = "Please choose a profile from the defaults."
-
+        sb.Text = "Please select a profile from the defaults."
         sb.AddItem("Current Project", p.VideoEncoder)
 
         For Each i In VideoEncoder.GetDefaults()
             sb.AddItem(i)
         Next
 
-        If sb.Show = DialogResult.OK Then
-            Return sb.SelectedItem
-        End If
-
-        Return Nothing
+        If sb.Show = DialogResult.OK Then Return sb.SelectedValue
     End Function
 
-    <Command("Dynamic", "Placeholder for dynamically updated menu items.")>
+    <Command("Placeholder for dynamically updated menu items.")>
     Sub DynamicMenuItem(<DispName("ID")> id As DynamicMenuItemID)
     End Sub
 
@@ -3516,19 +3615,19 @@ Class MainForm
             If i.CustomMenuItem.MethodName = "DynamicMenuItem" AndAlso
                 i.CustomMenuItem.Parameters(0).Equals(id) Then
 
-                i.DropDownItems.Clear()
+                i.DropDownItems.ClearAndDisplose
 
                 Select Case id
                     Case DynamicMenuItemID.EncoderProfiles
-                        g.PopulateProfileMenu(i.DropDownItems, s.VideoEncoderProfiles, AddressOf OpenEncoderProfilesDialog, AddressOf LoadVideoEncoder)
+                        g.PopulateProfileMenu(i.DropDownItems, s.VideoEncoderProfiles, AddressOf ShowEncoderProfilesDialog, AddressOf g.LoadVideoEncoder)
                     Case DynamicMenuItemID.MuxerProfiles
-                        g.PopulateProfileMenu(i.DropDownItems, s.MuxerProfiles, AddressOf OpenMuxerProfilesDialog, AddressOf LoadMuxer)
+                        g.PopulateProfileMenu(i.DropDownItems, s.MuxerProfiles, AddressOf ShowMuxerProfilesDialog, AddressOf p.VideoEncoder.LoadMuxer)
                     Case DynamicMenuItemID.Audio1Profiles
-                        g.PopulateProfileMenu(i.DropDownItems, s.AudioProfiles, Sub() OpenAudioProfilesDialog(0), AddressOf LoadAudioProfile0)
+                        g.PopulateProfileMenu(i.DropDownItems, s.AudioProfiles, Sub() ShowAudioProfilesDialog(0), AddressOf g.LoadAudioProfile0)
                     Case DynamicMenuItemID.Audio2Profiles
-                        g.PopulateProfileMenu(i.DropDownItems, s.AudioProfiles, Sub() OpenAudioProfilesDialog(1), AddressOf LoadAudioProfile1)
+                        g.PopulateProfileMenu(i.DropDownItems, s.AudioProfiles, Sub() ShowAudioProfilesDialog(1), AddressOf g.LoadAudioProfile1)
                     Case DynamicMenuItemID.FilterSetupProfiles
-                        g.PopulateProfileMenu(i.DropDownItems, s.FilterSetupProfiles, AddressOf OpenAviSynthProfilesDialog, AddressOf LoadScriptProfile)
+                        g.PopulateProfileMenu(i.DropDownItems, s.FilterSetupProfiles, AddressOf ShowFilterSetupProfilesDialog, AddressOf LoadFilterSetup)
                 End Select
 
                 Exit For
@@ -3536,19 +3635,19 @@ Class MainForm
         Next
     End Sub
 
-    <Command("Dialog | Crop", "Dialog to crop borders.")>
-    Sub OpenCropDialog()
+    <Command("Dialog to crop borders.")>
+    Sub ShowCropDialog()
         If p.SourceFile = "" Then
-            OpenSourceFiles()
+            ShowOpenSourceDialog()
         Else
-            If Not Paths.VerifyRequirements Then Exit Sub
+            If Not g.VerifyRequirements Then Exit Sub
             If Not g.IsValidSource Then Exit Sub
 
             If Not g.EnableFilter("Crop") Then
-                If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
-                    p.VideoScript.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)", True))
+                If p.Script.Engine = ScriptEngine.AviSynth Then
+                    p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "Crop(%crop_left%, %crop_top%, -%crop_right%, -%crop_bottom%)"))
                 Else
-                    p.VideoScript.InsertAfter("Source", New VideoFilter("Crop", "CropAbs", "cropwidth = clip.width - %crop_left% - %crop_right%" + CrLf + "cropheight = clip.height - %crop_top% - %crop_bottom%" + CrLf + "clip = core.std.CropAbs(clip, cropwidth, cropheight, %crop_left%, %crop_top%)", True))
+                    p.Script.InsertAfter("Source", New VideoFilter("Crop", "Crop", "clip = core.std.Crop(clip, %crop_left%, %crop_right%, %crop_top%, %crop_bottom%)"))
                 End If
             End If
 
@@ -3557,39 +3656,38 @@ Class MainForm
             End Using
 
             DisableCropFilter()
-            AviSynthListView.Load()
             Assistant()
         End If
     End Sub
 
-    <Command("Dialog | Preview", "Dialog to preview or cut the video.")>
-    Sub OpenPreview()
+    <Command("Dialog to preview or cut the video.")>
+    Sub ShowPreview()
         If p.SourceFile = "" Then
-            OpenSourceFiles()
+            ShowOpenSourceDialog()
         Else
-            If Not Paths.VerifyRequirements OrElse Not g.IsValidSource Then
+            If Not g.VerifyRequirements OrElse Not g.IsValidSource Then
                 Exit Sub
             End If
 
-            Dim m = p.VideoScript.GetErrorMessage
+            Dim errMsg = p.Script.GetErrorMessage
 
-            If Not m Is Nothing Then
-                MsgError(m)
+            If Not errMsg Is Nothing Then
+                MsgError(errMsg)
                 Exit Sub
             End If
 
-            Dim cutting = p.VideoScript.GetFilter("Cutting")
+            Dim cutting = p.Script.GetFilter("Cutting")
 
             If Not cutting Is Nothing Then
-                p.VideoScript.Filters.Remove(cutting)
-                g.MainForm.AviSynthListView.Load()
-                g.MainForm.SetTargetLength(p.VideoScript.GetSeconds)
+                p.Script.Filters.Remove(cutting)
+                g.MainForm.FiltersListView.Load()
+                g.MainForm.UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
             End If
 
             Dim doc As New VideoScript
-            doc.Engine = p.VideoScript.Engine
-            doc.Filters = p.VideoScript.GetFiltersCopy
-            doc.Path = p.TempDir + p.Name + "_Preview." + doc.FileType
+            doc.Engine = p.Script.Engine
+            doc.Filters = p.Script.GetFiltersCopy
+            doc.Path = p.TempDir + p.TargetFile.Base + "_preview." + doc.FileType
             doc.Synchronize(True)
 
             Dim f As New PreviewForm(doc)
@@ -3598,296 +3696,201 @@ Class MainForm
         End If
     End Sub
 
-    <Command("Dialog | Main Menu Editor", "Dialog to configure the main menu.")>
-    Sub OpenMainMenuEditor()
+    <Command("Dialog to configure the main menu.")>
+    Sub ShowMainMenuEditor()
         s.CustomMenuMainForm = CustomMainMenu.Edit()
+        UpdateTemplatesMenuAsync()
+        UpdateScriptsMenuAsync()
+        UpdateRecentProjectsMenu()
+        UpdateDynamicMenuAsync()
         g.SetRenderer(MenuStrip)
         Refresh()
-        LoadMainMenuDynamic()
-        UpdateRecentProjectsMenuItems()
-        UpdateTemplateProjectsMenuItems()
-        UpdateDynamicMenu()
-        SaveSettings()
+        g.SaveSettings()
     End Sub
 
-    <Command("Dialog | Jobs", "Dialog to manage batch jobs.")>
-    Sub OpenJobsDialog()
-        Using f As New JobsForm()
-            If f.ShowDialog() = DialogResult.OK Then
-                Refresh()
-                RunJobs()
-            End If
+    <Command("Dialog to manage batch jobs.")>
+    Sub ShowJobsDialog()
+        Using form As New JobsForm()
+            form.ShowDialog()
         End Using
     End Sub
 
-    <Command("Perform | Clear Jobs", "Clears the job list.")>
+    <Command("Clears the job list.")>
     Sub ClearJobs()
-        FileHelp.Delete(Paths.SettingsDir + "Jobs.dat")
-    End Sub
-
-    <Command("Perform | Run Jobs", "Runs all active jobs of the job list.")>
-    Sub RunJobs()
-        If Not Paths.VerifyRequirements() Then Exit Sub
-        SaveSettings()
-        RunJobRecursive()
-        OpenProject(g.ProjectPath, False)
-        ProcessForm.CloseProcessForm(False)
-        g.RaiseApplicationEvent(ApplicationEvent.JobsEncoded)
-        g.ShutdownPC()
-    End Sub
-
-    Sub RunJobRecursive()
-        Dim jobs = From i In JobsForm.GetJobs() Where i.Value = True
-        If jobs.Count = 0 Then Exit Sub
-        Dim jobPath = jobs(0).Key
-        JobsForm.ActivateJob(jobPath, False)
-        g.MainForm.OpenProject(jobPath, False)
-
-        Try
-            If s.PreventStandby Then PowerRequest.SuppressStandby()
-            StaxRip.ProcessForm.ShutdownVisible = True
-            Encode()
-            Log.Save()
-            JobsForm.RemoveJob(jobPath)
-
-            If p.DeleteTempFilesDir AndAlso p.TempDir.Contains("temp files") Then
-                Try
-                    FileHelp.Delete(p.TempDir + p.Name + "_StaxRip.log", VB6.FileIO.RecycleOption.SendToRecycleBin)
-
-                    Dim moreJobsToProcessInTempDir = JobsForm.GetJobs.Where(Function(a) a.Value AndAlso a.Key.Contains(p.TempDir))
-
-                    If moreJobsToProcessInTempDir.Count = 0 Then
-                        Dim tempDir = p.TempDir
-                        OpenProject(Paths.StartupTemplatePath, False)
-                        MediaInfo.ClearCache()
-
-                        If s.DeleteTempFilesToRecycleBin Then
-                            DirectoryHelp.Delete(tempDir, VB6.FileIO.RecycleOption.SendToRecycleBin)
-                        Else
-                            DirectoryHelp.Delete(tempDir)
-                        End If
-                    End If
-                Catch
-                End Try
-            End If
-        Catch ex As AbortException
-            Log.Save()
-            OpenProject(g.ProjectPath, False)
-            ProcessForm.CloseProcessForm()
-            Exit Sub
-        Catch ex As ErrorAbortException
-            Log.Save()
-            OpenProject(g.ProjectPath, False)
-            ProcessForm.CloseProcessForm()
-            g.ShowException(ex, Nothing, 120)
-            g.ShellExecute(p.TempDir + p.Name + "_StaxRip.log")
-        Catch ex As Exception
-            Log.Save()
-            g.OnException(ex)
-            Exit Sub
-        Finally
-            If s.PreventStandby Then PowerRequest.EnableStandby()
-            StaxRip.ProcessForm.ShutdownVisible = False
-        End Try
-
-        RunJobRecursive()
+        FileHelp.Delete(Folder.Settings + "Jobs.dat")
     End Sub
 
     Function GetJobPath() As String
-        Dim name = Filepath.GetBase(p.TargetFile)
-
-        If Not OK(name) Then
-            name = Filepath.GetBase(p.SourceFile)
-        End If
-
+        Dim name = p.TargetFile.Base
+        If name = "" Then name = Macro.Expand(p.DefaultTargetName)
+        If name = "" Then name = p.SourceFile.Base
         Return p.TempDir + name + ".srip"
     End Function
 
-    <Command("Perform | Load Profile", "Loads a audio or video profile.")>
+    <Command("Loads a audio or video profile.")>
     Sub LoadProfile(<DispName("Video")> videoProfile As String,
                     <DispName("Audio 1")> audioProfile1 As String,
                     <DispName("Audio 2")> audioProfile2 As String)
 
         If videoProfile <> "" Then
             For Each i In s.VideoEncoderProfiles
-                If i.Name = videoProfile Then
-                    LoadVideoEncoder(i)
-                End If
+                If i.Name = videoProfile Then g.LoadVideoEncoder(i)
             Next
         End If
 
         If audioProfile1 <> "" Then
             For Each i In s.AudioProfiles
-                If i.Name = audioProfile1 Then
-                    LoadAudioProfile0(i)
-                End If
+                If i.Name = audioProfile1 Then g.LoadAudioProfile0(i)
             Next
         End If
 
         If audioProfile2 <> "" Then
             For Each i In s.AudioProfiles
-                If i.Name = audioProfile2 Then
-                    LoadAudioProfile1(i)
-                End If
+                If i.Name = audioProfile2 Then g.LoadAudioProfile1(i)
             Next
         End If
     End Sub
 
-    <Command("Perform | Add Job", "Adds a job to the job list.")>
+    <Command("Adds a job to the job list.")>
     Sub AddJob(
-        <DispName("Show Confirmation"), DefaultValue(True)> showConfirmation As Boolean,
-        <DispName("Template Name"), Description("Name of the template to be loaded after the job was added. Empty to load no template.")>
+        <DispName("Show Confirmation")>
+        showConfirmation As Boolean,
+        <DispName("Template Name"),
+        Description("Name of the template to be loaded after the job was added. Empty to load no template.")>
         templateName As String)
 
         AddJob(showConfirmation, templateName, True)
     End Sub
 
     Sub AddJob(showConfirmation As Boolean, templateName As String, showAssistant As Boolean)
-        If Not Paths.VerifyRequirements() Then Exit Sub
+        If Not g.VerifyRequirements() Then Exit Sub
 
         If showAssistant AndAlso Not IsLoading AndAlso Not g.MainForm.AssistantPassed Then
             MsgWarn("Please follow the assistant.")
             Exit Sub
         End If
 
-        Dim path = GetJobPath()
-        g.MainForm.SaveProjectByPath(path)
-        JobsForm.AddJob(path)
+        Dim jobPath = GetJobPath()
+        g.MainForm.SaveProjectPath(jobPath)
+        Job.AddJob(jobPath)
 
         If showConfirmation Then MsgInfo("Job added")
-        If templateName <> "" Then LoadProject(Paths.TemplateDir + templateName + ".srip")
+        If templateName <> "" Then LoadProject(Folder.Template + templateName + ".srip")
     End Sub
 
-    <Command("Dialog | Compare and extract images", "Compare and extract images for video comparisons.")>
+    <Command("Compare and extract images for video comparisons.")>
     Sub ShowVideoComparison()
         Dim f As New VideoComparisonForm
         f.Show()
         f.Add()
     End Sub
 
-    <Command("Dialog | Filters", "Dialog to edit filters.")>
-    Sub OpenFiltersEditor()
-        AviSynthListView.ShowEditor()
+    <Command("Dialog to edit filters.")>
+    Sub ShowFiltersEditor()
+        FiltersListView.ShowEditor()
     End Sub
 
-    <Command("Dialog | Tasks", "Shows a dialog to perform a large collection of tasks.")>
-    Sub OpenTaskDialog()
-        Using f As New MacrosForm
-            f.ShowDialog()
-        End Using
+    <Command("Dialog to configure project options.")>
+    Sub ShowOptionsDialog()
+        ShowOptionsDialog(Nothing)
     End Sub
 
-    <Command("Dialog | Options", "Dialog to configure project options.")>
-    Sub OpenOptionsDialog()
-        OpenOptionsDialog(Nothing)
-    End Sub
-
-    Sub OpenOptionsDialog(pagePath As String)
+    Sub ShowOptionsDialog(pagePath As String)
         Using form As New SimpleSettingsForm(
             "Project Options",
             "In order to save project options go to:",
-            "Main Menu > Project > Save As Template",
-            "In order to choose a template to be loaded on program startup go to:",
-            "Main Menu > Tools > Settings > General > Templates > Default Template")
+            "Project > Save As Template",
+            "In order to select a template to be loaded on program startup go to:",
+            "Tools > Settings > General > Templates > Default Template")
+
+            form.ScaleClientSize(30, 21)
 
             Dim ui = form.SimpleUI
+            ui.Store = p
 
-            Dim imagePage = ui.CreateFlowPage("Image")
+            ui.CreateFlowPage("Image", True)
 
-            Dim cb = ui.AddCheckBox(imagePage)
-            cb.Text = "Save Thumbnails"
-            cb.Tooltip = "Saves thumbnails in the target folder. Customizations can be made in the settings under:" + CrLf2 + "General > Advanced > Thumbnails"
-            cb.Checked = p.SaveThumbnails
-            cb.SaveAction = Sub(value) p.SaveThumbnails = value
+            'Dim b = ui.AddBool()
+            'Dim b = ui.AddBool()
+            'b.Text = "Save Thumbnails"
+            'b.Help = "Saves thumbnails in the target folder. Customizations can be made in the settings under:" + BR2 + "General > Advanced > Thumbnails"
+            'b.Field = NameOf(p.SaveThumbnails)
 
-            Dim nb = ui.AddNumericBlock(imagePage)
-            nb.Label.Text = "Auto resize image size:"
-            nb.Label.Tooltip = "Resizes to a given pixel size after loading a source file."
-            nb.Label.Offset = 9
-            nb.NumEdit.Init(0, Integer.MaxValue, 10000)
-            nb.NumEdit.Value = p.AutoResizeImage
-            nb.NumEdit.SaveAction = Sub(value) p.AutoResizeImage = CInt(value)
+            Dim n = ui.AddNum()
+            n.Text = "Auto resize image size"
+            n.Help = "Resizes to a given pixel size after loading a source file."
+            n.Config = {0, Integer.MaxValue, 10000}
+            n.Field = NameOf(p.AutoResizeImage)
 
-            ui.AddLabel(nb, "(0 = disabled)")
+            ui.AddLabel(n, "(0 = disabled)")
 
-            nb = ui.AddNumericBlock(imagePage)
-            nb.Label.Text = "Resize slider width:"
-            nb.Label.Offset = 9
-            nb.NumEdit.Init(0, Integer.MaxValue, 64)
-            nb.NumEdit.Value = p.ResizeSliderMaxWidth
-            nb.NumEdit.SaveAction = Sub(value) p.ResizeSliderMaxWidth = CInt(value)
+            n = ui.AddNum()
+            n.Text = "Resize slider width"
+            n.Config = {0, Integer.MaxValue, 64}
+            n.Field = NameOf(p.ResizeSliderMaxWidth)
 
-            ui.AddLabel(nb, "(0 = auto)")
+            ui.AddLabel(n, "(0 = auto)")
 
-            Dim mbi = ui.AddMenuButtonBlock(Of Integer)(imagePage)
-            mbi.Label.Text = "Output Mod:"
-            mbi.Label.Offset = 9
-            mbi.MenuButton.Add({2, 4, 8, 16})
-            mbi.MenuButton.Value = p.ForcedOutputMod
-            mbi.MenuButton.SaveAction = Sub(value) p.ForcedOutputMod = value
+            Dim m = ui.AddMenu(Of Integer)()
+            m.Text = "Output Mod"
+            m.Add(2, 4, 8, 16)
+            m.Field = NameOf(p.ForcedOutputMod)
 
-            Dim aspectRatioPage = ui.CreateFlowPage("Image|Aspect Ratio")
+            ui.CreateFlowPage("Image | Aspect Ratio", True)
 
-            cb = ui.AddCheckBox(aspectRatioPage)
-            cb.Text = "Auto Aspect Ratio Signaling"
-            cb.Tooltip = "In case no resize filter is used or the aspect ratio error exceeds the defined maximal value StaxRip signals the encoder to write the aspect ratio to the bitstream so players that support aspect ratio signaling playback still the proper aspect ratio." + CrLf2
-            cb.Checked = p.AutoARSignaling
-            cb.SaveAction = Sub(value) p.AutoARSignaling = value
+            Dim b = ui.AddBool()
+            b.Text = "Use ITU-R BT.601 compliant aspect ratio"
+            b.Help = "Calculates the aspect ratio according to ITU-R BT.601 standard. "
+            b.Field = NameOf(p.ITU)
 
-            cb = ui.AddCheckBox(aspectRatioPage)
-            cb.Text = "Use ITU-R BT.601 compliant aspect ratio"
-            cb.Tooltip = "Calculates the aspect ratio according to ITU-R BT.601 standard. "
-            cb.Checked = p.ITU
-            cb.SaveAction = Sub(value) p.ITU = value
+            b = ui.AddBool()
+            b.Text = "Adjust height according to target display aspect ratio"
+            b.Help = "Adjusts the height to match the target display aspect ratio in case the auto resize option is disabled."
+            b.Field = NameOf(p.AdjustHeight)
 
-            cb = ui.AddCheckBox(aspectRatioPage)
-            cb.Text = "Adjust height according to target display aspect ratio"
-            cb.Tooltip = "Adjusts the height to match the target display aspect ratio in case the auto resize option is disabled."
-            cb.Checked = p.AdjustHeight
-            cb.SaveAction = Sub(value) p.AdjustHeight = value
+            n = ui.AddNum()
+            n.Text = "Max AR Error"
+            n.Help = "Maximum aspect ratio error. In case of a higher value the AR signaled to the encoder or muxer."
+            n.Config = {1, 10, 0.1, 1}
+            n.Field = NameOf(p.MaxAspectRatioError)
 
-            nb = ui.AddNumericBlock(aspectRatioPage)
-            nb.Label.Text = "Maximum Aspect Ratio Error:"
-            nb.NumEdit.Init(1, 10, 1)
-            nb.NumEdit.Value = p.MaxAspectRatioError
-            nb.NumEdit.SaveAction = Sub(value) p.MaxAspectRatioError = CInt(value)
+            Dim t = ui.AddText()
+            t.Text = "Source DAR"
+            t.Help = "Custom source display aspect ratio."
+            t.Field = NameOf(p.CustomSourceDAR)
 
-            Dim tb = ui.AddTextBlock(aspectRatioPage)
-            tb.Label.Text = "Custom Source DAR:"
-            tb.Label.Tooltip = "Custom source display aspect ratio which overrides the automatic detection and uses the format 4/3 or 4:3 or " & 1.333333 & "."
-            tb.Label.Offset = 8
-            tb.Edit.Text = p.CustomDAR
-            tb.Edit.TextBox.ValidationFunc = AddressOf IsCorrectAspectRatioFormat
-            tb.Edit.SaveAction = Sub(value) p.CustomDAR = value
+            t = ui.AddText()
+            t.Text = "Source PAR"
+            t.Help = "Custom source pixel aspect ratio."
+            t.Field = NameOf(p.CustomSourcePAR)
 
-            tb = ui.AddTextBlock(aspectRatioPage)
-            tb.Label.Text = "Custom Source PAR: "
-            tb.Label.Tooltip = "Custom source pixel aspect ratio which overrides the automatic detection and uses the format 4/3 or 4:3 or " & 1.333333 & "."
-            tb.Label.Offset = 8
-            tb.Edit.Text = p.CustomPAR
-            tb.Edit.TextBox.ValidationFunc = AddressOf IsCorrectAspectRatioFormat
-            tb.Edit.SaveAction = Sub(value) p.CustomPAR = value
+            t = ui.AddText()
+            t.Text = "Target DAR"
+            t.Help = "Custom target display aspect ratio."
+            t.Field = NameOf(p.CustomTargetDAR)
 
-            Dim cropPage = ui.CreateFlowPage("Image|Crop")
+            t = ui.AddText()
+            t.Text = "Target PAR"
+            t.Help = "Custom target pixel aspect ratio."
+            t.Field = NameOf(p.CustomTargetPAR)
 
-            cb = ui.AddCheckBox(cropPage)
-            cb.Text = "Auto correct crop values"
-            cb.Tooltip = "Force crop values compatible with YUV/YV12 colorspace and with the forced output mod value. "
-            cb.Checked = p.AutoCorrectCropValues
-            cb.SaveAction = Sub(value) p.AutoCorrectCropValues = value
+            Dim cropPage = ui.CreateFlowPage("Image | Crop")
 
-            cb = ui.AddCheckBox(cropPage)
-            cb.Text = "Auto crop borders until proper aspect ratio is found"
-            cb.Tooltip = "Automatically crops borders until the proper aspect ratio is found."
-            cb.Checked = p.AutoSmartCrop
-            cb.SaveAction = Sub(value) p.AutoSmartCrop = value
+            b = ui.AddBool()
+            b.Text = "Auto correct crop values"
+            b.Help = "Force crop values compatible with YUV/YV12 colorspace and with the forced output mod value. "
+            b.Field = NameOf(p.AutoCorrectCropValues)
 
-            nb = ui.AddNumericBlock(cropPage)
-            nb.Label.Text = "Auto overcrop width to limit aspect ratio to:"
-            nb.Label.Tooltip = "On small devices it can help to restrict the aspect ratio and overcrop the width instead."
-            nb.NumEdit.Init(0, 2, 0.1D, 3)
-            nb.NumEdit.Value = CDec(p.AutoSmartOvercrop)
-            nb.NumEdit.SaveAction = Sub(value) p.AutoSmartOvercrop = value
+            b = ui.AddBool()
+            b.Text = "Auto crop borders until proper aspect ratio is found"
+            b.Help = "Automatically crops borders until the proper aspect ratio is found."
+            b.Field = NameOf(p.AutoSmartCrop)
+
+            n = ui.AddNum()
+            n.Text = "Auto overcrop width to limit aspect ratio to"
+            n.Help = "On small devices it can help to restrict the aspect ratio and overcrop the width instead."
+            n.Config = {0, 2, 0.1, 3}
+            n.Field = NameOf(p.AutoSmartOvercrop)
 
             ui.AddLine(cropPage, "Crop Values")
 
@@ -3896,16 +3899,16 @@ Class MainForm
             ui.AddLabel(eb, "Left:", 2)
 
             Dim te = ui.AddEdit(eb)
-            te.Width = 60
             te.Text = p.CropLeft.ToString
+            te.WidthFactor = 3
             te.TextBox.TextAlign = HorizontalAlignment.Center
             te.SaveAction = Sub(value) If value.IsInt Then p.CropLeft = CInt(value)
 
             Dim l = ui.AddLabel(eb, "Right:", 4)
 
             te = ui.AddEdit(eb)
-            te.Width = 60
             te.Text = p.CropRight.ToString
+            te.WidthFactor = 3
             te.TextBox.TextAlign = HorizontalAlignment.Center
             te.SaveAction = Sub(value) If value.IsInt Then p.CropRight = CInt(value)
 
@@ -3914,188 +3917,252 @@ Class MainForm
             ui.AddLabel(eb, "Top:", 2)
 
             te = ui.AddEdit(eb)
-            te.Width = 60
             te.Text = p.CropTop.ToString
+            te.WidthFactor = 3
             te.TextBox.TextAlign = HorizontalAlignment.Center
             te.SaveAction = Sub(value) If value.IsInt Then p.CropTop = CInt(value)
 
             l = ui.AddLabel(eb, "Bottom:", 4)
 
             te = ui.AddEdit(eb)
-            te.Width = 60
             te.Text = p.CropBottom.ToString
+            te.WidthFactor = 3
             te.TextBox.TextAlign = HorizontalAlignment.Center
             te.SaveAction = Sub(value) If value.IsInt Then p.CropBottom = CInt(value)
 
-            Dim audioPage = ui.CreateFlowPage("Audio")
-            audioPage.SuspendLayout()
+            Dim audioPage = ui.CreateFlowPage("Audio", True)
 
-            cb = ui.AddCheckBox(audioPage)
-            cb.Text = "Use AviSynth script as audio source"
-            cb.Tooltip = "Sets the AviSynth script (*.avs) as audio source file when loading a source file."
-            cb.Checked = p.UseAvsAsAudioSource
-            cb.SaveAction = Sub(value) p.UseAvsAsAudioSource = value
+            t = ui.AddText
+            t.Text = "Preferred Languages"
+            t.Help = "Preferred audio languages using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all languages just enter all." + BR2 + String.Join(BR, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
+            t.Field = NameOf(p.PreferredAudio)
 
-            Dim dec = ui.AddMenuButtonBlock(Of DecodingMode)(audioPage)
-            dec.Label.Text = "Force decoding using:"
-            dec.Tooltip = "Defines if audio should be processed without decoding if possible or if decoding should be forced with a certain decoder."
-            dec.MenuButton.Value = p.DecodingMode
-            dec.MenuButton.SaveAction = Sub(value) p.DecodingMode = value
+            Dim cut = ui.AddMenu(Of CuttingMode)
+            cut.Text = "Cutting Method"
+            cut.Help = "Defines which method to use for cutting."
+            cut.Field = NameOf(p.CuttingMode)
 
-            Dim cut = ui.AddMenuButtonBlock(Of CuttingMode)(audioPage)
-            cut.Label.Text = "Preferred cutting method:"
-            cut.Tooltip = "Defines which method to use for cutting."
-            cut.MenuButton.Value = p.CuttingMode
-            cut.MenuButton.SaveAction = Sub(value) p.CuttingMode = value
+            Dim audioDemux = ui.AddMenu(Of DemuxMode)
+            audioDemux.Text = "Demux Audio"
+            audioDemux.Field = NameOf(p.DemuxAudio)
 
-            audioPage.ResumeLayout()
+            Dim audioExist = ui.AddMenu(Of FileExistMode)
+            audioExist.Text = "Existing Output"
+            audioExist.Help = "What to do in case a audio encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite."
+            audioExist.Field = NameOf(p.FileExistAudio)
 
-            Dim subPage = ui.CreateFlowPage("Subtitles")
+            b = ui.AddBool
+            b.Text = "On load use AviSynth script as audio source"
+            b.Help = "Sets the AviSynth script (*.avs) as audio source file when loading a source file."
+            b.Field = NameOf(p.UseScriptAsAudioSource)
 
-            cb = ui.AddCheckBox(subPage)
-            cb.Text = "Convert Sup (PGS/Blu-ray) to Sub (IDX/DVD)"
-            cb.Tooltip = "Works only with demuxed subtitles."
-            cb.Checked = p.ConvertSup2Sub
-            cb.SaveAction = Sub(value) p.ConvertSup2Sub = value
+            Dim videoPage = ui.CreateFlowPage("Video", True)
 
-            tb = ui.AddTextBlock(subPage)
-            tb.Label.Text = "Auto load subtitles:"
-            tb.Label.Tooltip = "Subtitles loaded automatically using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two letter language] code separated by comma or the magic word 'all'." + CrLf2 + String.Join(CrLf, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode)
-            tb.Edit.Text = p.AutoSubtitles
-            tb.Edit.SaveAction = Sub(value) p.AutoSubtitles = value
+            Dim ThumbOptions = ui.AddMenu(Of Integer)
+            Dim videoExist = ui.AddMenu(Of FileExistMode)
+            Dim StaxRipThumbnailOption = ui.AddBool()
+            Dim MTNThumbnailOption = ui.AddBool()
+
+
+            ThumbOptions.Text = "Thumbnail Choices:"
+            ThumbOptions.Add("StaxRip Thumbnails", 0)
+            ThumbOptions.Add("MTN Thumbnails", 1)
+            ThumbOptions.Button.Value = s.Storage.GetInt("Thumbnail Choices", 1)
+            ThumbOptions.Button.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Choices", value)
+            AddHandler ThumbOptions.Button.ValueChangedUser, Sub()
+                                                                 StaxRipThumbnailOption.Visible = ThumbOptions.Button.Value = 0
+                                                                 MTNThumbnailOption.Visible = ThumbOptions.Button.Value = 1
+                                                             End Sub
+
+
+            StaxRipThumbnailOption.Text = "Create Thumbnails"
+            StaxRipThumbnailOption.Help = "Saves thumbnails to Source Location using the StaxRip Engine"
+            StaxRipThumbnailOption.Field = NameOf(p.SaveThumbnails)
+
+
+            MTNThumbnailOption.Text = "Create Thumbnails"
+            MTNThumbnailOption.Visible = True
+            MTNThumbnailOption.Help = "Saves thumbnails to Source Location using the MTN Engine"
+            MTNThumbnailOption.Field = NameOf(p.MTN)
+
+            StaxRipThumbnailOption.Visible = ThumbOptions.Button.Value = 0
+            MTNThumbnailOption.Visible = ThumbOptions.Button.Value = 1
+
+            videoExist.Text = "Existing Video Output"
+            videoExist.Help = "What to do in case the video encoding output file already exists from a previous job run, skip and reuse or re-encode and overwrite. The 'Copy/Mux' video encoder profile is also capable of reusing existing video encoder output.'"
+            videoExist.Field = NameOf(p.FileExistVideo)
+
+            b = ui.AddBool
+            b.Text = "Pre-render script into lossless AVI file"
+            b.Help = "Note that depending on the resolution this can result in very large files."
+            b.Field = NameOf(p.PreRenderIntoLossless)
+
+            b = ui.AddBool
+            b.Text = "Import VUI metadata"
+            b.Help = "Imports VUI metadata such as HDR from the source file to the video encoder."
+            b.Field = NameOf(p.ImportVUIMetadata)
+
+            b = ui.AddBool()
+            b.Text = "HDR Ingest"
+            b.Help = "Adds the Remaining Metadata Required to be Compliant to HDR10 or HLG Standards"
+            b.Field = NameOf(p.MKVHDR)
+
+            Dim subPage = ui.CreateFlowPage("Subtitles", True)
+
+            t = ui.AddText(subPage)
+            t.Text = "Preferred Languages"
+            t.Help = "Subtitles demuxed and loaded automatically using [http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes two or three letter language code] separated by space, comma or semicolon. For all subtitles just enter all." + BR2 + String.Join(BR, From i In Language.Languages Where i.IsCommon Select i.ToString + ": " + i.TwoLetterCode + ", " + i.ThreeLetterCode)
+            t.Field = NameOf(p.PreferredSubtitles)
+
+            Dim tbm = ui.AddTextMenu(subPage)
+            tbm.Text = "Stream Name"
+            tbm.Help = "Stream name used for muxing, may contain macros."
+            tbm.Field = NameOf(p.SubtitleName)
+            tbm.AddMenu("Language English", "%language_english%")
+            tbm.AddMenu("Language Native", "%language_native%")
+
+            Dim subDemux = ui.AddMenu(Of DemuxMode)
+            subDemux.Text = "Demux Subtitles"
+            subDemux.Field = NameOf(p.DemuxSubtitles)
+
+            Dim mb = ui.AddMenu(Of DefaultSubtitleMode)(subPage)
+            mb.Text = "Default Subtitle"
+            mb.Field = NameOf(p.DefaultSubtitle)
+
+            b = ui.AddBool(subPage)
+            b.Text = "Convert Sup (PGS/Blu-ray) to IDX (Sub/VobSub/DVD)"
+            b.Help = "Works only with demuxed subtitles."
+            b.Field = NameOf(p.ConvertSup2Sub)
+
+            b = ui.AddBool(subPage)
+            b.Text = "Add hardcoded subtitle"
+            b.Help = "Automatically hardcodes a subtitle." + BR2 + "Supported formats are SRT, ASS and VobSub."
+            b.Field = NameOf(p.HarcodedSubtitle)
 
             Dim pathPage = ui.CreateFlowPage("Paths")
 
-            l = ui.AddLabel(pathPage, "Default Target Directory:")
-            l.Tooltip = "Leave empty to use the source file directory"
+            l = ui.AddLabel(pathPage, "Default Target Folder:")
+            l.Help = "Leave empty to use the source file folder."
 
-            Dim tm = ui.AddTextMenuBlock(pathPage)
+            Dim tm = ui.AddTextMenu(pathPage)
             tm.Label.Visible = False
-            tm.Expand(tm.Edit)
+            tm.Edit.Expand = True
             tm.Edit.Text = p.DefaultTargetFolder
             tm.Edit.SaveAction = Sub(value) p.DefaultTargetFolder = value
-            tm.AddMenu("Edit...", Function() Paths.BrowseFolder(p.DefaultTargetFolder))
+            tm.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
             tm.AddMenu("Directory of source file", "%source_dir%")
             tm.AddMenu("Parent directory of source file directory", "%source_dir_parent%")
 
             l = ui.AddLabel(pathPage, "Default Target Name:")
-            l.Tooltip = "Leave empty to use the source file name"
+            l.Help = "Leave empty to use the source filename"
             l.MarginTop = Font.Height
 
-            tm = ui.AddTextMenuBlock(pathPage)
+            tm = ui.AddTextMenu(pathPage)
             tm.Label.Visible = False
-            tm.Expand(tm.Edit)
+            tm.Edit.Expand = True
             tm.Edit.Text = p.DefaultTargetName
             tm.Edit.SaveAction = Sub(value) p.DefaultTargetName = value
-            tm.AddMenu("Name of source file", "%source_name%")
+            tm.AddMenu("Name of source file without extension", "%source_name%")
             tm.AddMenu("Name of source file directory", "%source_dir_name%")
 
-            l = ui.AddLabel(pathPage, "Temp Files Directory:")
-            l.Tooltip = "Leave empty to use the source file directory"
+            l = ui.AddLabel(pathPage, "Temp Files Folder:")
+            l.Help = "Leave empty to use the source file folder."
             l.MarginTop = Font.Height
 
             Dim tempDirFunc = Function()
-                                  Dim tempDir = Paths.BrowseFolder(p.TempDir)
-                                  If tempDir <> "" Then Return DirPath.AppendSeparator(tempDir) + "%source_name% temp files"
+                                  Dim tempDir = g.BrowseFolder(p.TempDir)
+                                  If tempDir <> "" Then Return tempDir.FixDir + "%source_name%_temp"
                               End Function
 
-            tm = ui.AddTextMenuBlock(pathPage)
+            tm = ui.AddTextMenu(pathPage)
             tm.Label.Visible = False
-            tm.Expand(tm.Edit)
+            tm.Edit.Expand = True
             tm.Edit.Text = p.TempDir
             tm.Edit.SaveAction = Sub(value) p.TempDir = value
             tm.AddMenu("Edit...", tempDirFunc)
-            tm.AddMenu("Source File Directory", "%source_dir%%source_name% temp files")
+            tm.AddMenu("Source File Directory", "%source_dir%%source_name%_temp")
 
-            Dim assistantPage = ui.CreateFlowPage("Assistant")
+            ui.CreateFlowPage("Assistant")
 
-            cb = ui.AddCheckBox(assistantPage)
-            cb.Text = "Remind To Crop"
-            cb.Checked = p.RemindToCrop
-            cb.SaveAction = Sub(value) p.RemindToCrop = value
+            b = ui.AddBool()
+            b.Text = "Remind to crop"
+            b.Field = NameOf(p.RemindToCrop)
 
-            cb = ui.AddCheckBox(assistantPage)
-            cb.Text = "Remind To Cut"
-            cb.Checked = p.RemindToCut
-            cb.SaveAction = Sub(value) p.RemindToCut = value
+            b = ui.AddBool()
+            b.Text = "Remind to cut"
+            b.Field = NameOf(p.RemindToCut)
 
-            cb = ui.AddCheckBox(assistantPage)
-            cb.Text = "Remind To Do Compressibility Check"
-            cb.Checked = p.RemindToDoCompCheck
-            cb.SaveAction = Sub(value) p.RemindToDoCompCheck = value
+            b = ui.AddBool()
+            b.Text = "Remind to do compressibility check"
+            b.Field = NameOf(p.RemindToDoCompCheck)
 
-            cb = ui.AddCheckBox(assistantPage)
-            cb.Text = "Remind To Set Filters"
-            cb.Checked = p.RemindToSetFilters
-            cb.SaveAction = Sub(value) p.RemindToSetFilters = value
+            b = ui.AddBool()
+            b.Text = "Remind to set filters"
+            b.Field = NameOf(p.RemindToSetFilters)
 
-            cb = ui.AddCheckBox(assistantPage)
-            cb.Text = "Remind Not To Oversize"
-            cb.Checked = p.RemindOversize
-            cb.SaveAction = Sub(value) p.RemindOversize = value
+            b = ui.AddBool()
+            b.Text = "Remind about aspect ratio error"
+            b.Field = NameOf(p.RemindArError)
 
             Dim filtersPage = ui.CreateFlowPage("Filters")
 
             l = ui.AddLabel(filtersPage, "Code appended to trim functions:")
-            l.Tooltip = "Code appended to trim functions StaxRip generates using the cut feature."
+            l.Help = "Code appended to trim functions StaxRip generates using the cut feature."
             l.MarginTop = Font.Height \ 2
 
-            tb = ui.AddTextBlock(filtersPage)
-            tb.Label.Visible = False
-            tb.Expand(tb.Edit)
-            tb.Edit.Height = CInt(Font.Height * 3)
-            tb.Edit.TextBox.Multiline = True
-            tb.Edit.UseMacroEditor = True
-            tb.Edit.Text = p.TrimAvsCode
-            tb.Edit.SaveAction = Sub(value) p.TrimAvsCode = value
+            t = ui.AddText(filtersPage)
+            t.Label.Visible = False
+            t.Edit.Expand = True
+            t.Edit.TextBox.Multiline = True
+            t.Edit.UseMacroEditor = True
+            t.Edit.Text = p.TrimCode
+            t.Edit.SaveAction = Sub(value) p.TrimCode = value
 
             l = ui.AddLabel(filtersPage, "Code inserted at top of scripts:")
-            l.Tooltip = "Code inserted at the top of every script StaxRip generates."
+            l.Help = "Code inserted at the top of every script StaxRip generates."
             l.MarginTop = Font.Height \ 2
 
-            tb = ui.AddTextBlock(filtersPage)
-            tb.Label.Visible = False
-            tb.Expand(tb.Edit)
-            tb.Edit.Height = CInt(Font.Height * 3)
-            tb.Edit.TextBox.Multiline = True
-            tb.Edit.UseMacroEditor = True
-            tb.Edit.Text = p.AvsCodeAtTop
-            tb.Edit.SaveAction = Sub(value) p.AvsCodeAtTop = value
+            t = ui.AddText(filtersPage)
+            t.Label.Visible = False
+            t.Edit.Expand = True
+            t.Edit.TextBox.Multiline = True
+            t.Edit.UseMacroEditor = True
+            t.Edit.Text = p.CodeAtTop
+            t.Edit.SaveAction = Sub(value) p.CodeAtTop = value
 
             Dim miscPage = ui.CreateFlowPage("Misc")
+            miscPage.SuspendLayout()
 
-            cb = ui.AddCheckBox(miscPage)
-            cb.Text = "Delete temp files directory"
-            cb.Checked = p.DeleteTempFilesDir
-            cb.SaveAction = Sub(value) p.DeleteTempFilesDir = value
+            b = ui.AddBool(miscPage)
+            b.Text = "Hide dialogs asking to demux, source filter etc."
+            b.Checked = p.NoDialogs
+            b.SaveAction = Sub(value) p.NoDialogs = value
 
-            nb = ui.AddNumericBlock(miscPage)
-            nb.Label.Text = "Auto Force Film Threshold (Percent):"
-            nb.Label.Tooltip = "Threshold at which force film is applied automatically."
-            nb.NumEdit.Init(0, 100, 1)
-            nb.NumEdit.Value = p.AutoForceFilmThreshold
-            nb.NumEdit.SaveAction = Sub(value) p.AutoForceFilmThreshold = CInt(value)
+            b = ui.AddBool(miscPage)
+            b.Text = "Extract timestamps from VFR MKV files"
+            b.Checked = p.ExtractTimestamps
+            b.SaveAction = Sub(value) p.ExtractTimestamps = value
 
             ui.AddLine(miscPage, "Compressibility Check")
 
-            cb = ui.AddCheckBox(miscPage)
-            cb.Text = "Auto run compressibility check"
-            cb.Tooltip = "Performs a compressibility check after loading a source file."
-            cb.Checked = p.AutoCompCheck
-            cb.SaveAction = Sub(value) p.AutoCompCheck = value
+            b = ui.AddBool(miscPage)
+            b.Text = "Auto run compressibility check"
+            b.Help = "Performs a compressibility check after loading a source file."
+            b.Checked = p.AutoCompCheck
+            b.SaveAction = Sub(value) p.AutoCompCheck = value
 
-            nb = ui.AddNumericBlock(miscPage)
-            nb.Label.Text = "Percentage to use for compressibility check:"
-            nb.Label.Offset = 15
-            nb.NumEdit.Init(2, 20, 1)
-            nb.NumEdit.Value = p.CompCheckRange
-            nb.NumEdit.SaveAction = Sub(value) p.CompCheckRange = CInt(value)
+            n = ui.AddNum(miscPage)
+            n.Label.Text = "Percentage for comp. check"
+            n.NumEdit.Config = {2, 20}
+            n.NumEdit.Value = p.CompCheckRange
+            n.NumEdit.SaveAction = Sub(value) p.CompCheckRange = CInt(value)
 
-            Dim compCheckButton = ui.AddMenuButtonBlock(Of CompCheckAction)(miscPage)
-            compCheckButton.Label.Text = "After the compressibility check adjust:"
-            compCheckButton.Label.Offset = 15
-            compCheckButton.MenuButton.Value = p.CompCheckAction
-            compCheckButton.MenuButton.SaveAction = Sub(value) p.CompCheckAction = value
+            Dim compCheckButton = ui.AddMenu(Of CompCheckAction)(miscPage)
+            compCheckButton.Label.Text = "After comp. check adjust"
+            compCheckButton.Button.Value = p.CompCheckAction
+            compCheckButton.Button.SaveAction = Sub(value) p.CompCheckAction = value
+
+            miscPage.ResumeLayout()
 
             If pagePath <> "" Then
                 ui.ShowPage(pagePath)
@@ -4106,18 +4173,11 @@ Class MainForm
             If form.ShowDialog() = DialogResult.OK Then
                 ui.Save()
 
-                If p.CompCheckRange < 2 OrElse p.CompCheckRange > 20 Then
-                    p.CompCheckRange = 5
-                End If
+                If p.CompCheckRange < 2 OrElse p.CompCheckRange > 20 Then p.CompCheckRange = 5
+                If p.TempDir <> "" Then p.TempDir = p.TempDir.FixDir
 
-                If OK(p.TempDir) Then
-                    p.TempDir = DirPath.AppendSeparator(p.TempDir)
-                End If
-
-                If OK(p.DefaultTargetFolder) Then
-                    p.DefaultTargetFolder = DirPath.AppendSeparator(p.DefaultTargetFolder)
-                End If
-
+                UpdateSizeOrBitrate()
+                tbBitrate_TextChanged()
                 SetSlider()
                 Assistant()
             End If
@@ -4126,35 +4186,20 @@ Class MainForm
         End Using
     End Sub
 
-    Function IsCorrectAspectRatioFormat(inputString As String) As Boolean
-        If inputString = "" OrElse Regex.IsMatch(inputString, Strings.ParRegexPattern) Then
-            Return True
-        End If
-
-        Dim r = 0.0F
-
-        If Single.TryParse(inputString, r) Then
-            If r > 0 AndAlso r < 3 Then
-                Return True
-            End If
-        End If
-
-        MsgWarn("Invalid format, please use:" + CrLf2 + "4/3 or 4:3 or " & 1.333333)
-    End Function
-
     Sub DisableCropFilter()
-        Dim f = p.VideoScript.GetFilter("Crop")
+        Dim f = p.Script.GetFilter("Crop")
 
         If Not f Is Nothing AndAlso CInt(p.CropLeft Or p.CropTop Or p.CropRight Or p.CropBottom) = 0 Then
             f.Active = False
+            FiltersListView.Load()
         End If
     End Sub
 
-    <Command("Dialog | Filter Setup Profiles", "Dialog to configure filter setup profiles.")>
-    Sub OpenAviSynthProfilesDialog()
+    <Command("Dialog to configure filter setup profiles.")>
+    Sub ShowFilterSetupProfilesDialog()
         Using f As New ProfilesForm("AviSynth Profiles", s.FilterSetupProfiles,
-                                    AddressOf LoadScriptProfile,
-                                    AddressOf GetAVSDocAsProfile,
+                                    AddressOf LoadFilterSetup,
+                                    AddressOf GetScriptAsProfile,
                                     AddressOf VideoScript.GetDefaults)
 
             If f.ShowDialog() = DialogResult.OK Then
@@ -4165,87 +4210,76 @@ Class MainForm
 
     Function GetFilterProfilesText(categories As List(Of FilterCategory)) As String
         Dim ret = ""
+        Dim wasMultiline As Boolean
 
         For Each i In categories
-            ret += "[" + i.Name + "]" + CrLf
+            ret += "[" + i.Name + "]" + BR
 
-            For Each i2 In i.Filters
-                If i2.Category = "Source" AndAlso i2.Name = "Automatic" Then
-                    Continue For
-                End If
-
-                If i2.Script.Contains(CrLf) Then
-                    Dim lines = i2.Script.SplitLinesNoEmpty
+            For Each filter In i.Filters
+                If filter.Script.Contains(BR) Then
+                    Dim lines = filter.Script.SplitLinesNoEmpty
 
                     For x = 0 To lines.Length - 1
-                        lines(x) = VB6.vbTab + lines(x)
+                        lines(x) = "    " + lines(x)
                     Next
 
-                    ret += If(ret.EndsWith(CrLf2), "", CrLf) + i2.Path + " =" + CrLf + lines.Join(CrLf) + CrLf2
+                    ret += BR + filter.Path + " =" + BR + lines.Join(BR) + BR
+                    wasMultiline = True
                 Else
-                    ret += i2.Path + " = " + i2.Script + CrLf
+                    If wasMultiline Then ret += BR
+                    ret += filter.Path + " = " + filter.Script + BR
+                    wasMultiline = False
                 End If
             Next
 
-            ret += CrLf
+            If Not ret.EndsWith(BR2) Then ret += BR
         Next
 
         Return ret
     End Function
 
-    <Command("Dialog | AviSynth Filter Profiles", "Dialog to configure AviSynth filter profiles.")>
-    Sub OpenFilterProfilesDialog()
-        Dim filterProfiles As List(Of FilterCategory)
-        Dim getDefaults As Func(Of List(Of FilterCategory))
+    <Command("Dialog to configure AviSynth filter profiles.")>
+    Sub ShowFilterProfilesDialog()
+        Dim filterProfiles = If(p.Script.Engine = ScriptEngine.AviSynth, s.AviSynthProfiles, s.VapourSynthProfiles)
+        Dim getDefaults = If(p.Script.Engine = ScriptEngine.AviSynth, Function() FilterCategory.GetAviSynthDefaults, Function() FilterCategory.GetVapourSynthDefaults)
 
-        If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
-            filterProfiles = s.AviSynthProfiles
-            getDefaults = Function() FilterCategory.GetAviSynthDefaults
-        Else
-            filterProfiles = s.VapourSynthProfiles
-            getDefaults = Function() FilterCategory.GetVapourSynthDefaults
-        End If
-
-        Using f As New ScriptEditor(GetFilterProfilesText(filterProfiles))
+        Using f As New MacroEditorDialog
+            f.SetScriptDefaults()
             f.Text = "Filter Profiles"
-
+            f.MacroEditorControl.Value = GetFilterProfilesText(filterProfiles)
             f.bnContext.Text = " Restore Defaults... "
             f.bnContext.Visible = True
-
-            Dim t = f
-
-            Dim resetAction = Sub()
-                                  If MsgOK("Restore defaults?") Then
-                                      t.MacroEditorControl.Value = GetFilterProfilesText(getDefaults())
-                                  End If
-                              End Sub
-
-            f.bnContext.AddClickAction(resetAction)
+            f.MacroEditorControl.rtbDefaults.Text = GetFilterProfilesText(getDefaults())
+            f.bnContext.AddClickAction(Sub() If MsgOK("Restore defaults?") Then f.MacroEditorControl.Value = GetFilterProfilesText(getDefaults()))
 
             If f.ShowDialog(Me) = DialogResult.OK Then
                 filterProfiles.Clear()
                 Dim cat As FilterCategory
                 Dim filter As VideoFilter
 
-                For Each i In f.MacroEditorControl.Value.SplitLinesNoEmpty
-                    Dim multiline = i.StartsWith(VB6.vbTab) OrElse i.StartsWith(" "c)
-                    i = i.Trim()
+                For Each line In f.MacroEditorControl.Value.SplitLinesNoEmpty
+                    Dim multiline = line.StartsWith("    ") OrElse line.StartsWith(VB6.vbTab)
 
-                    If i.StartsWith("[") AndAlso i.EndsWith("]") Then
-                        cat = New FilterCategory(i.Substring(1, i.Length - 2).Trim)
+                    If line.StartsWith("[") AndAlso line.EndsWith("]") Then
+                        cat = New FilterCategory(line.Substring(1, line.Length - 2).Trim)
                         filterProfiles.Add(cat)
                     End If
 
                     If multiline Then
                         If Not filter Is Nothing Then
-                            filter.Script += CrLf + i.Trim
-                            filter.Script = filter.Script.Trim
+                            If filter.Script = "" Then
+                                If line.StartsWith(VB6.vbTab) Then filter.Script += line.Substring(1)
+                                If line.StartsWith("    ") Then filter.Script += line.Substring(4)
+                            Else
+                                If line.StartsWith(VB6.vbTab) Then filter.Script += BR + line.Substring(1)
+                                If line.StartsWith("    ") Then filter.Script += BR + line.Substring(4)
+                            End If
                         End If
                     Else
-                        Dim filterName = i.Left("=").Trim
+                        Dim filterName = line.Left("=").Trim
 
                         If filterName <> "" Then
-                            filter = New VideoFilter(cat.Name, filterName, i.Right("=").Trim, True)
+                            filter = New VideoFilter(cat.Name, filterName, line.Right("=").Trim)
                             cat.Filters.Add(filter)
                         End If
                     End If
@@ -4264,205 +4298,106 @@ Class MainForm
                     End If
                 Next
 
-                Dim src = filterProfiles.Where(Function(v) v.Name = "Source").First
-                src.Filters.Insert(0, New VideoFilter("Source", "Automatic", "", True))
-                g.MainForm.SaveSettings()
+                g.SaveSettings()
+                FiltersListView.RebuildMenu()
             End If
         End Using
     End Sub
 
-    <Command("Help | Command Line", "Opens the command line help.", Switch:="help|h|?")>
-    Private Sub OpenCmdlHelp()
-        Dim f As New HelpForm()
-        f.Owner = Me
-
-        f.Doc.WriteStart("Command Line Help")
-        f.Doc.WriteP("StaxRip uses a similar command line syntax as the .NET framework tools as it simplifies development and usage. The arguments are processed sequentially in the order they appear in the command line so it would be fatal to put the shutdown switch before the encode switch or to put the source files after the encode switch. Don't forget to enclose strings containing blanks with quotes and ensure to study the examples at the bottom of this page.")
-        f.Doc.WriteP("Many of the available switches might not be useful from the command line, the reason why these switches are available is they are provided by StaxRip's command engine that is also used for customizable menu's and event commands.")
-
-        Dim commands As New List(Of Command)(CommandManager.Commands.Values)
-        commands.Sort()
-
-        Dim basic, advanced As New StringPairList
-
-        For Each iCommand In commands
-            Dim params = iCommand.MethodInfo.GetParameters
-            Dim switches As String()
-            Dim switch = iCommand.Attribute.Switch
-
-            If switch Is Nothing Then
-                switches = {iCommand.Attribute.Name}
-            Else
-                If switch.Contains("|") Then
-                    switches = switch.SplitNoEmpty("|")
-                Else
-                    switches = {switch}
-                End If
-            End If
-
-            For iSwitch = 0 To switches.Length - 1
-                switches(iSwitch) = "-" + switches(iSwitch).Replace(" ", "").Replace("|", "/")
-            Next
-
-            Dim desc = iCommand.Attribute.Description
-
-            If desc Is Nothing Then
-                desc = "n/a"
-            End If
-
-            If params.Length = 0 Then
-                If switch Is Nothing Then
-                    advanced.Add(String.Join("<br>", switches), desc)
-                Else
-                    basic.Add(String.Join(", ", switches), desc)
-                End If
-            Else
-                Dim paramList As New List(Of String)
-                Dim enumList As New List(Of String)
-
-                For Each iParam As ParameterInfo In params
-                    If iParam.ParameterType.IsEnum Then
-                        Dim l As New List(Of String)
-
-                        For Each i As System.Enum In System.Enum.GetValues(iParam.ParameterType)
-                            l.Add(i.ToString)
-                        Next
-
-                        enumList.Add(iParam.ParameterType.Name + ": " + String.Join(", ", l.ToArray))
-                    End If
-
-                    paramList.Add("&lt;" + DispNameAttribute.GetValue(iParam.GetCustomAttributes(False)) + " As " + iParam.ParameterType.Name.Replace("Int32", "Integer") + "&gt;")
-                Next
-
-                For iSwitch As Integer = 0 To switches.Length - 1
-                    switches(iSwitch) += ":<i>" + String.Join(",", paramList.ToArray) + "</i>"
-                Next
-
-                Dim switchcell As String = String.Join("<br>", switches)
-
-                If enumList.Count > 0 Then
-                    switchcell += "<br><br>" + String.Join("<br>", enumList.ToArray)
-                End If
-
-                If switch Is Nothing Then
-                    advanced.Add(switchcell, desc)
-                Else
-                    basic.Add(switchcell, desc)
-                End If
-            End If
-        Next
-
-        f.Doc.WriteTable("Basic Switches", basic)
-        f.Doc.WriteTable("Advanced Switches", advanced)
-
-        f.Doc.WriteElement("h2", "Examples")
-        f.Doc.WriteP("StaxRip C:\Movie\project.srip")
-        f.Doc.WriteP("StaxRip ""C:\Movie 2\project.srip""")
-        f.Doc.WriteP("StaxRip ""C:\Movie 2\VTS_01_1.VOB""")
-        f.Doc.WriteP("StaxRip ""C:\Movie 2\VTS_01_1.VOB"" ""C:\Movie 2\VTS_01_2.VOB""")
-        f.Doc.WriteP("StaxRip -template:DVB ""C:\Movie 2\capture.mpg"" -encode -standby")
-        f.Doc.WriteP("StaxRip -template:""beware of blanks"" ""C:\Movie 2\VTS_01_1.VOB"" ""C:\Movie 2\VTS_01_2.VOB"" -encode -shutdown")
-        f.Doc.WriteP("StaxRip -Perform/ShowMessageBox:""beware of blanks"",title,info")
-        f.Doc.WriteP("StaxRip -Perform/ShowMessageBox:no_blanks_no_quotes,""wasted_quotes"",info")
-        f.Doc.WriteP("StaxRip -Perform/ShowMessageBox:no_blanks_no_quotes,nothingToWaste,info")
-        f.Doc.WriteP("StaxRip -perform/showmessagebox:""Windows and VB don't care about case, Unix and C do"",title,info")
-        f.Doc.WriteP("StaxRip /perform/showmessagebox:""I hope StaxRip CLI don't suck since I've seen too many ugly CLI's"",title,info")
-
-        f.Show()
-    End Sub
-
-    <Command("Dialog | Help File", "Opens a given URL or local file in the help browser.")>
-    Sub OpenHelpURL(
+    <Command("Opens a given URL or local file in the help browser.")>
+    Sub ShowHelpURL(
         <DispName("URL"),
         Description("URL or local file to be shown in the internet explorer powered help browser."),
         Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))>
         url As String)
 
-        Dim f As New HelpForm(Macro.Solve(url))
+        Dim f As New HelpForm(Macro.Expand(url))
         f.Show()
     End Sub
 
-    <Command("Help | Make Report Bug", "Makes a bug report.")>
-    Sub MakeBugReport()
-        g.MakeBugReport(Nothing)
-    End Sub
-
-    Shared Function GetDefaultMainMenu() As CustomMenuItem
+    Shared Function GetDefaultMenuMain() As CustomMenuItem
         Dim ret As New CustomMenuItem("Root")
 
-        ret.Add("Project|Open...", "OpenProjectFile", Keys.O Or Keys.Control)
-        ret.Add("Project|Save", "SaveProject", Keys.S Or Keys.Control)
-        ret.Add("Project|Save As...", "SaveProjectAs")
-        ret.Add("Project|Save As Template...", "SaveProjectAsTemplate")
+        ret.Add("Project|Open...", NameOf(ShowFileBrowserToOpenProject), Keys.O Or Keys.Control, Symbol.OpenFile)
+        ret.Add("Project|Save", NameOf(SaveProject), Keys.S Or Keys.Control, Symbol.Save)
+        ret.Add("Project|Save As...", NameOf(SaveProjectAs))
+        ret.Add("Project|Save As Template...", NameOf(SaveProjectAsTemplate))
         ret.Add("Project|-")
-        ret.Add("Project|Templates", "DynamicMenuItem", DynamicMenuItemID.TemplateProjects)
-        ret.Add("Project|Recent", "DynamicMenuItem", DynamicMenuItemID.RecentProjects)
+        ret.Add("Project|Templates", NameOf(DynamicMenuItem), {DynamicMenuItemID.TemplateProjects})
+        ret.Add("Project|Recent", NameOf(DynamicMenuItem), {DynamicMenuItemID.RecentProjects})
 
-        ret.Add("Crop", "OpenCropDialog", Keys.F4)
-        ret.Add("Preview", "OpenPreview", Keys.F5)
+        ret.Add("Crop", NameOf(ShowCropDialog), Keys.F4)
+        ret.Add("Preview", NameOf(ShowPreview), Keys.F5)
 
-        ret.Add("Options", "OpenOptionsDialog", Keys.F8)
+        ret.Add("Options", NameOf(ShowOptionsDialog), Keys.F8)
 
-        ret.Add("Tools|Jobs...", "OpenJobsDialog", Keys.F6)
-        ret.Add("Tools|Apps...", "OpenApplicationsDialog")
+        ret.Add("Tools|Jobs...", NameOf(ShowJobsDialog), Keys.F6, Symbol.MultiSelectLegacy)
+        ret.Add("Tools|Log File", NameOf(g.DefaultCommands.ShowLogFile), Symbol.Page)
+        ret.Add("Tools|Folders", Symbol.Folder)
+        ret.Add("Tools|Folders|Log Files", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%Log Files"""})
+        ret.Add("Tools|Folders|Plugins", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%plugin_dir%"""})
+        ret.Add("Tools|Folders|Programs", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%programs_dir%"""})
+        ret.Add("Tools|Folders|Scripts", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%script_dir%"""})
+        ret.Add("Tools|Folders|Settings", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%"""})
+        ret.Add("Tools|Folders|Source", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%source_dir%"""})
+        ret.Add("Tools|Folders|Startup", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%startup_dir%"""})
+        ret.Add("Tools|Folders|System", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%system_dir%"""})
+        ret.Add("Tools|Folders|Target", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%target_dir%"""})
+        ret.Add("Tools|Folders|Templates", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%settings_dir%TemplatesV2"""})
+        ret.Add("Tools|Folders|Working", NameOf(g.DefaultCommands.ExecuteCommandLine), {"""%working_dir%"""})
 
-        ret.Add("Tools|Log File", "ExecuteCmdl", """%text_editor%"" ""%working_dir%%target_name%_StaxRip.log""")
+        ret.Add("Tools|Advanced", Symbol.More)
+        If Application.StartupPath = "C:\Users\Revan\Desktop\staxrip-master\bin" Then ret.Add("Tools|Advanced|Test...", NameOf(g.DefaultCommands.Test), Keys.F12)
+        ret.Add("Tools|Advanced|Video Comparison...", NameOf(ShowVideoComparison))
+        ret.Add("Tools|Advanced|Command Prompt", Symbol.fa_terminal)
+        ret.Add("Tools|Advanced|Command Prompt|PowerShell", NameOf(g.DefaultCommands.ShowPowerShell), Keys.Control Or Keys.P, Symbol.fa_windows)
+        ret.Add("Tools|Advanced|Command Prompt|Command Prompt", NameOf(g.DefaultCommands.ShowCommandPrompt), Symbol.Connect)
+        ret.Add("Tools|Advanced|Event Commands...", NameOf(ShowEventCommandsDialog), Symbol.LightningBolt)
+        ret.Add("Tools|Advanced|Demux...", NameOf(g.DefaultCommands.ShowDemuxTool))
+        ret.Add("Tools|Advanced|Subtitles|BDSup2Sub++", NameOf(g.DefaultCommands.StartTool), {"BDSup2Sub++"})
+        ret.Add("Tools|Advanced|Subtitles|Hardcoded Subtitle...", NameOf(ShowHardcodedSubtitleDialog), Keys.Control Or Keys.H)
+        ret.Add("Tools|Advanced|Subtitles|SubtitleEdit", NameOf(g.DefaultCommands.StartTool), {"SubtitleEdit"})
+        ret.Add("Tools|Advanced|Subtitles|VSRip", NameOf(g.DefaultCommands.StartTool), {"VSRip"})
+        ret.Add("Tools|Advanced|LAV Filters Decoder", NameOf(ShowLAVFiltersConfigDialog), Symbol.Filter)
+        ret.Add("Tools|Advanced|Reset Settings", NameOf(ResetSettings))
+        'ret.Add("Tools|Advanced|Update", NameOf(UpdateStaxRip), Symbol.UpdateRestore)
 
-        ret.Add("Tools|Directories|Source", "ExecuteCmdl", """%source_dir%""")
-        ret.Add("Tools|Directories|Working", "ExecuteCmdl", """%working_dir%""")
-        ret.Add("Tools|Directories|Target", "ExecuteCmdl", """%target_dir%""")
-        ret.Add("Tools|Directories|Settings", "ExecuteCmdl", """%settings_dir%""")
-        ret.Add("Tools|Directories|Templates", "ExecuteCmdl", """%settings_dir%Templates""")
-        ret.Add("Tools|Directories|Plugins", "ExecuteCmdl", """%plugin_dir%""")
-        ret.Add("Tools|Directories|Startup", "ExecuteCmdl", """%startup_dir%""")
-        ret.Add("Tools|Directories|Programs", "ExecuteCmdl", """%programs_dir%""")
-        ret.Add("Tools|Directories|System", "ExecuteCmdl", """%system_dir%""")
-        ret.Add("Tools|Launch", "DynamicMenuItem", DynamicMenuItemID.LaunchApplications)
+        ret.Add("Tools|Scripts", NameOf(DynamicMenuItem), Symbol.Code, {DynamicMenuItemID.Scripts})
+        ret.Add("Tools|Edit Menu...", NameOf(ShowMainMenuEditor))
+        ret.Add("Tools|Settings...", NameOf(ShowSettingsDialog), Symbol.Settings, {""})
 
-        ret.Add("Tools|Advanced|AVSMeter...", "ExecuteCmdl", """%app:AVSMeter%"" ""%script_file%""" + CrLf + "pause", False, False, True)
-        ret.Add("Tools|Advanced|Video Comparison...", "ShowVideoComparison")
-        ret.Add("Tools|Advanced|Command Prompt...", "ShowCommandPrompt")
-        ret.Add("Tools|Advanced|Event Commands...", "OpenEventCommandsDialog")
-        ret.Add("Tools|Advanced|Hardcoded Subtitle...", "AddHardcodedSubtitle")
-        ret.Add("Tools|Advanced|LAV Filters video decoder configuration...", "OpenLAVFiltersConfiguration")
-        ret.Add("Tools|Advanced|MediaInfo Folder View...", "OpenMediaInfoFolderView")
-        ret.Add("Tools|Advanced|Reset Setting...", "ResetSettings")
-        ret.Add("Tools|Advanced|Thumbnails Generator...", "BatchGenerateThumbnails")
+        ret.Add("Apps|AVSMeter", NameOf(g.DefaultCommands.StartTool), {"AVSMeter"})
+        ret.Add("Apps|MediaInfo|MKVInfo", NameOf(MediainfoMKV))
+        ret.Add("Apps|MediaInfo|MediaInfo File", NameOf(MediaInfoShowMedia))
+        ret.Add("Apps|MediaInfo|MediaInfo Folder", NameOf(ShowMediaInfoFolderViewDialog))
+        ret.Add("Apps|MediaInfo|Ingest HDR", NameOf(SaveMKVHDR))
+        ret.Add("Apps|DGIndex|DGIndex", NameOf(g.DefaultCommands.StartTool), {"DGIndex"})
+        ret.Add("Apps|DGIndex|DGIndexNV", NameOf(g.DefaultCommands.StartTool), {"DGIndexNV"})
+        ret.Add("Apps|Players|MPV", NameOf(g.DefaultCommands.StartTool), {"mpvnet"})
+        ret.Add("Apps|Thumbnails|MTN Thumbnailer", NameOf(SaveMTN))
+        ret.Add("Apps|Thumbnails|StaxRip Thumbnailer", NameOf(ShowBatchGenerateThumbnailsDialog))
+        ret.Add("Apps|Animation|Animated GIF", NameOf(SaveGif))
+        ret.Add("Apps|Animation|Animated PNG", NameOf(SavePNG))
 
-        ret.Add("Tools|Edit Menu...", "OpenMainMenuEditor")
-        ret.Add("Tools|Settings...", "OpenSettingsDialog", "")
+        ret.Add("Apps|-")
+        ret.Add("Apps|Manage...", NameOf(ShowAppsDialog))
 
-        ret.Add("Help|Support Forum", "ExecuteCmdl", GetSupportThread)
-        ret.Add("Help|Guides", "ExecuteCmdl", "http://github.com/stax76/staxrip/wiki/Guides")
-        ret.Add("Help|Bug Report", "MakeBugReport")
-        ret.Add("Help|Mail", "ExecuteCmdl", "mailto:frank_skare@yahoo.de?subject=StaxRip%20feedback")
-        ret.Add("Help|Website", "ExecuteCmdl", "http://github.com/stax76/staxrip")
-        ret.Add("Help|Donate", "ExecuteCmdl", Strings.DonationsURL)
-        ret.Add("Help|Changelog", "OpenHelpTopic", "changelog")
-        ret.Add("Help|Command Line", "OpenCmdlHelp")
-        ret.Add("Help|Apps", "DynamicMenuItem", DynamicMenuItemID.HelpApplications)
+        ret.Add("Help|Docs", NameOf(g.DefaultCommands.ExecuteCommandLine), Symbol.Lightbulb, {"http://staxrip2.readthedocs.io"})
+        ret.Add("Help|Apps", NameOf(DynamicMenuItem), {DynamicMenuItemID.HelpApplications})
         ret.Add("Help|-")
-        ret.Add("Help|Info...", "OpenHelpTopic", "info")
+        ret.Add("Help|Info...", NameOf(g.DefaultCommands.OpenHelpTopic), Symbol.Info, {"info"})
 
         Return ret
     End Function
 
-    Shared Function GetSupportThread() As String
-        If g.IsCulture("de") Then
-            Return "http://forum.gleitz.info/showthread.php?26177-StaxRip-Encoding-Frontend-(Diskussion)"
-        Else
-            Return "http://forum.videohelp.com/threads/369913-StaxRip-support-%28encoder-GUI-for-x265-h265-hevc-mkv-4K%29"
-        End If
-    End Function
-
-    <Command("Perform | Add Hardcoded Subtitle", "Adds a hardcoded subtitle.")>
-    Sub AddHardcodedSubtitle()
-        Using d As New SWF.OpenFileDialog
-            d.SetFilter(FileTypes.SubtitleIncludingContainers)
+    <Command("Shows a dialog to add a hardcoded subtitle.")>
+    Sub ShowHardcodedSubtitleDialog()
+        Using d As New OpenFileDialog
+            d.SetFilter(FileTypes.SubtitleExludingContainers)
             d.SetInitDir(s.LastSourceDir)
 
             If d.ShowDialog = DialogResult.OK Then
-                If Filepath.GetExtFull(d.FileName) = ".idx" Then
+                If d.FileName.Ext = "idx" Then
                     Dim subs = Subtitle.Create(d.FileName)
 
                     If subs.Count = 0 Then
@@ -4478,29 +4413,13 @@ Class MainForm
                         sb.AddItem(i.Language.Name, i)
                     Next
 
-                    If sb.Show = DialogResult.Cancel Then
-                        Exit Sub
-                    End If
+                    If sb.Show = DialogResult.Cancel Then Exit Sub
 
                     Regex.Replace(File.ReadAllText(d.FileName), "langidx: \d+", "langidx: " +
-                                  sb.SelectedItem.IndexIDX.ToString).WriteFile(d.FileName)
+                                  sb.SelectedValue.IndexIDX.ToString).WriteANSIFile(d.FileName)
                 End If
 
-                Dim filter As New VideoFilter
-
-                filter.Category = "Subtitle"
-                filter.Path = Filepath.GetName(d.FileName)
-                filter.Active = True
-
-                If Filepath.GetExtFull(d.FileName) = ".idx" Then
-                    filter.Script = "VobSub(""" + d.FileName + """)"
-                Else
-                    filter.Script = "TextSub(""" + d.FileName + """)"
-                End If
-
-                Dim insertCat = If(p.VideoScript.IsFilterActive("Crop"), "Crop", "Source")
-                p.VideoScript.InsertAfter(insertCat, filter)
-                AviSynthListView.Load()
+                p.AddHardcodedSubtitleFilter(d.FileName, True)
             End If
         End Using
     End Sub
@@ -4513,13 +4432,11 @@ Class MainForm
         SkipAssistant = True
 
         If Not g.EnableFilter("Resize") Then
-            If p.VideoScript.Engine = ScriptingEngine.AviSynth Then
-                p.VideoScript.Filters.Add(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)", True))
+            If p.Script.Engine = ScriptEngine.AviSynth Then
+                p.Script.AddFilter(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
             Else
-                p.VideoScript.Filters.Add(New VideoFilter("Resize", "Bicubic", "clip = core.resize.Bicubic(clip, %target_width%, %target_height%)", True))
+                p.Script.AddFilter(New VideoFilter("Resize", "Bicubic", "clip = core.resize.Bicubic(clip, %target_width%, %target_height%)"))
             End If
-
-            AviSynthListView.Load()
         End If
 
         tbTargetWidth.Text = CInt(320 + tbResize.Value * p.ForcedOutputMod).ToString
@@ -4551,51 +4468,59 @@ Class MainForm
         End Try
     End Sub
 
+    Sub SetImageWidth()
+        Try
+            Dim modval = p.ForcedOutputMod
+            tbTargetWidth.Text = (CInt(p.TargetHeight * Calc.GetTargetDAR / modval) * modval).ToString()
+        Catch
+        End Try
+    End Sub
+
     Private Sub tbBitrate_KeyDown(sender As Object, e As KeyEventArgs) Handles tbBitrate.KeyDown
         If e.KeyData = Keys.Up Then
             e.Handled = True
-            tbBitrate.Text = Calc.GetPreviousMod(tbBitrate.Text.ToInt(1), 50).ToString
+            tbBitrate.Text = Math.Max(1, Calc.GetPreviousMod(tbBitrate.Text.ToInt, 50)).ToString
         ElseIf e.KeyData = Keys.Down Then
             e.Handled = True
-            tbBitrate.Text = Calc.GetNextMod(tbBitrate.Text.ToInt(1), 50).ToString
+            tbBitrate.Text = Math.Max(1, Calc.GetNextMod(tbBitrate.Text.ToInt, 50)).ToString
         End If
     End Sub
 
-    Private Sub tbSize_KeyDown(sender As Object, e As KeyEventArgs) Handles tbSize.KeyDown
-        Dim l As Integer
+    Private Sub tbSize_KeyDown(sender As Object, e As KeyEventArgs) Handles tbTargetSize.KeyDown
+        Dim modValue As Integer
 
         Select Case p.TargetSeconds
-            Case Is > 80 * 60
-                l = 50
-            Case Is > 40 * 60
-                l = 20
-            Case Is > 20 * 60
-                l = 10
+            Case Is > 50 * 60
+                modValue = 50
             Case Is > 10 * 60
-                l = 5
+                modValue = 10
+            Case Is > 60
+                modValue = 5
             Case Else
-                l = 1
+                modValue = 1
         End Select
 
         If e.KeyData = Keys.Up Then
             e.Handled = True
-            tbSize.Text = Calc.GetPreviousMod(tbSize.Text.ToInt(1), l).ToString
+            tbTargetSize.Text = Math.Max(1, Calc.GetPreviousMod(tbTargetSize.Text.ToInt, modValue)).ToString
         ElseIf e.KeyData = Keys.Down Then
             e.Handled = True
-            tbSize.Text = Calc.GetNextMod(tbSize.Text.ToInt(1), l).ToString
+            tbTargetSize.Text = Math.Max(1, Calc.GetNextMod(tbTargetSize.Text.ToInt, modValue)).ToString
         End If
     End Sub
 
-    Sub tbSize_TextChanged() Handles tbSize.TextChanged
+    Sub UpdateSizeOrBitrate()
+        If p.BitrateIsFixed Then tbBitrate_TextChanged() Else tbSize_TextChanged()
+    End Sub
+
+    Sub tbSize_TextChanged() Handles tbTargetSize.TextChanged
         Try
-            If Integer.TryParse(tbSize.Text, Nothing) Then
-                p.Size = CInt(tbSize.Text)
+            If tbTargetSize.Focused Then p.BitrateIsFixed = False
+
+            If Integer.TryParse(tbTargetSize.Text, Nothing) Then
+                p.TargetSize = Math.Max(1, CInt(tbTargetSize.Text))
                 BlockSize = True
-
-                If Not BlockBitrate Then
-                    tbBitrate.Text = CInt(Calc.GetVideoBitrate).ToString
-                End If
-
+                If Not BlockBitrate Then tbBitrate.Text = CInt(Calc.GetVideoBitrate).ToString
                 BlockSize = False
                 Assistant()
             End If
@@ -4605,14 +4530,12 @@ Class MainForm
 
     Sub tbBitrate_TextChanged() Handles tbBitrate.TextChanged
         Try
+            If tbBitrate.Focused Then p.BitrateIsFixed = True
+
             If Integer.TryParse(tbBitrate.Text, Nothing) Then
-                p.VideoBitrate = CInt(tbBitrate.Text)
+                p.VideoBitrate = Math.Max(1, CInt(tbBitrate.Text))
                 BlockBitrate = True
-
-                If Not BlockSize Then
-                    tbSize.Text = CInt((Calc.GetVideoKBytes() + Calc.GetAudioKBytes() + Calc.GetOverheadAndSubtitlesKBytes()) / 1024).ToString
-                End If
-
+                If Not BlockSize Then tbTargetSize.Text = CInt(Calc.GetSize).ToString
                 BlockBitrate = False
                 Assistant()
             End If
@@ -4665,42 +4588,42 @@ Class MainForm
     End Sub
 
     Shared Function GetDefaultMenuSize() As CustomMenuItem
-        Dim ret As CustomMenuItem = New CustomMenuItem("Root")
-
-        ret.Add("700 MB", "SetSize", 700)
-        ret.Add("800 MB", "SetSize", 800)
-        ret.Add("1/3 DVD", "SetSize", Keys.None, 1493)
-        ret.Add("1 DVD", "SetSize", 4480)
+        Dim ret = New CustomMenuItem("Root")
+        ret.Add("DVD/BD-5 (4480 MB)", NameOf(SetSize), {4480})
+        ret.Add("DVD-DL/BD-9 (8145 MB)", NameOf(SetSize), {8145})
         ret.Add("-")
-        ret.Add("50%", "SetPercent", 50)
-        ret.Add("60%", "SetPercent", 60)
+        ret.Add("BD (23450 MB)", NameOf(SetSize), {23450})
+        ret.Add("BD-DL (46900 MB)", NameOf(SetSize), {46900})
         ret.Add("-")
-        ret.Add("Edit Menu...", "OpenSizeMenuEditor")
-
+        ret.Add("50%", NameOf(SetPercent), {50})
+        ret.Add("60%", NameOf(SetPercent), {60})
+        ret.Add("-")
+        ret.Add("Edit Menu...", NameOf(ShowSizeMenuEditor))
         Return ret
     End Function
 
-    <Command("Parameter | Target Image Size", "Sets the target image size.")>
+    <Command("Sets the target image size.")>
     Sub SetTargetImageSize(width As Integer, height As Integer)
         If Not g.EnableFilter("Resize") Then
-            p.VideoScript.Filters.Add(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)", True))
-            AviSynthListView.Load()
+            p.Script.AddFilter(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
         End If
 
-        tbTargetWidth.Text = width.ToString
-
-        If height = 0 Then
+        If height = 0 AndAlso width > 0 Then
+            tbTargetWidth.Text = width.ToString
             SetImageHeight()
+        ElseIf width = 0 AndAlso height > 0 Then
+            tbTargetHeight.Text = height.ToString
+            SetImageWidth()
         Else
+            tbTargetWidth.Text = width.ToString
             tbTargetHeight.Text = height.ToString
         End If
     End Sub
 
-    <Command("Parameter | Target Image Size By Pixel", "Sets the target image size by pixels (width x height).")>
+    <Command("Sets the target image size by pixels (width x height).")>
     Sub SetTargetImageSizeByPixel(pixel As Integer)
         If Not g.EnableFilter("Resize") Then
-            p.VideoScript.Filters.Add(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)", True))
-            AviSynthListView.Load()
+            p.Script.AddFilter(New VideoFilter("Resize", "BicubicResize", "BicubicResize(%target_width%, %target_height%, 0, 0.5)"))
         End If
 
         Dim cropw = p.SourceWidth - p.CropLeft - p.CropRight
@@ -4715,35 +4638,37 @@ Class MainForm
         tbTargetHeight.Text = h.ToString()
     End Sub
 
-    <Command("Parameter | Target File Size", "Sets the target file size.")>
+    <Command("Sets the target file size in MB.")>
     Sub SetSize(<DispName("Target File Size")> targetSize As Integer)
-        tbSize.Text = targetSize.ToString
+        tbTargetSize.Text = targetSize.ToString
+        p.BitrateIsFixed = False
     End Sub
 
-    <Command("Parameter | Target Video Bitrate", "Sets the target video bitrate.")>
+    <Command("Sets the bitrate according to the compressibility.")>
+    Sub SetPercent(<DispName("Percent Value")> value As Integer)
+        tbTargetSize.Text = g.GetAutoSize(value).ToString
+        p.BitrateIsFixed = False
+    End Sub
+
+    <Command("Sets the target video bitrate in Kbps.")>
     Sub SetBitrate(<DispName("Target Video Bitrate")> bitrate As Integer)
         tbBitrate.Text = bitrate.ToString
     End Sub
 
-    <Command("Perform | Auto Crop", "Crops borders automatically.")>
-    Sub PerformAutoCrop()
-        g.AutoCrop()
+    <Command("Crops borders automatically.")>
+    Sub StartAutoCrop()
+        g.RunAutoCrop()
         Assistant()
     End Sub
 
-    <Command("Perform | Smart Crop", "Crops borders automatically until the proper aspect ratio is found.")>
-    Sub PerformSmartCrop()
+    <Command("Crops borders automatically until the proper aspect ratio is found.")>
+    Sub StartSmartCrop()
         g.SmartCrop()
         Assistant()
     End Sub
 
-    <Command("Parameter | Bitrate By Percent", "Sets the bitrate according to the compressibility.")>
-    Sub SetPercent(<DispName("Percent Value")> value As Integer)
-        tbSize.Text = g.GetAutoSize(value).ToString
-    End Sub
-
-    <Command("Dialog | Size Menu Editor", "Menu editor for the size menu.")>
-    Sub OpenSizeMenuEditor()
+    <Command("Menu editor for the size menu.")>
+    Sub ShowSizeMenuEditor()
         s.CustomMenuSize = CustomSizeMenu.Edit()
     End Sub
 
@@ -4755,176 +4680,40 @@ Class MainForm
         Next
     End Sub
 
-    Private Function GetAVSDocAsProfile() As Profile
+    Private Function GetScriptAsProfile() As Profile
         Dim sb As New SelectionBox(Of TargetVideoScript)
 
         sb.Title = "New Profile"
-        sb.Text = "Please choose a profile."
+        sb.Text = "Please select a profile."
 
-        sb.AddItem("Current Project", p.VideoScript)
+        sb.AddItem("Current Project", p.Script)
 
         For Each i In VideoScript.GetDefaults
             sb.AddItem(i)
         Next
 
-        If sb.Show = DialogResult.OK Then
-            Return sb.SelectedItem
-        End If
-
-        Return Nothing
+        If sb.Show = DialogResult.OK Then Return sb.SelectedValue
     End Function
 
-    Function GetTargetAviSynthDocument() As VideoScript
-        Return p.VideoScript
-    End Function
-
-    Sub LoadScriptProfile(profileInterface As Profile)
+    Sub LoadFilterSetup(profileInterface As Profile)
         Dim profile = DirectCast(ObjectHelp.GetCopy(profileInterface), TargetVideoScript)
 
-        If profile.Engine = ScriptingEngine.AviSynth OrElse
-                (Packs.Python.VerifyOK(True) AndAlso Packs.VapourSynth.VerifyOK(True)) Then
+        If profile.Engine = ScriptEngine.AviSynth OrElse
+                (Package.Python.VerifyOK(True) AndAlso
+                Package.VapourSynth.VerifyOK(True) AndAlso
+                Package.vspipe.VerifyOK(True)) Then
 
-            p.VideoScript = profile
-            AviSynthListView.Load()
-            AviSynthListView.RaiseScriptChanged()
+            p.Script = profile
+            ModifyFilters()
+            FiltersListView.OnChanged()
             Assistant()
         End If
+
+        FiltersListView.RebuildMenu()
     End Sub
 
-    Private Sub MainForm_Shown() Handles Me.Shown
-        Activate() 'needed for custom settings dir option
-        Refresh()
-
-        Packs.Init()
-
-        If Not File.Exists(Packs.NeroAACEnc.GetPath) Then
-            MsgError("Files included with StaxRip are missing, maybe the 7-Zip archive wasn't properly unpacked. You can find a packer at [http://www.7-zip.org www.7-zip.org].")
-            Close()
-            Exit Sub
-        End If
-
-        If Application.StartupPath.Contains(":\Program Files") Then
-            Try
-                Dim fp = Application.StartupPath + "\write privileges check"
-                File.WriteAllText(fp, "aaa")
-                File.Delete(fp)
-            Catch ex As Exception
-                MsgWarn("Please move StaxRip out of the Program Files directory.")
-                Close()
-                Exit Sub
-            End Try
-        End If
-
-        UpdateRecentProjectsMenuItems()
-        UpdateTemplateProjectsMenuItems()
-        UpdateDynamicMenu()
-        ProcessCmdl(Environment.GetCommandLineArgs)
-
-        IsLoading = False
-
-        'Using f As New TestForm
-        '    f.StartPosition = FormStartPosition.CenterScreen
-        '    f.ShowDialog()
-        'End Using
-
-        'AddHandler tbAudioFile0.TextChanged, Sub()
-        '                                         MsgInfo(Environment.StackTrace)
-        '                                     End Sub
-
-        'OpenVideoSourceFiles({"D:\Video\Samples\M2TS\1080p - VC-1 - AC3 - AC3 TrueHD - PCM.m2ts"}.ToList)
-
-        'For Each i In Directory.GetFiles("E:\Video\Samples\misc", "*.*", SearchOption.AllDirectories)
-        '    If i.EndsWith(".wmv") Then Continue For
-
-        '    Dim fpsMediaInfo = MediaInfo.GetFrameRate(i).ToSingle
-        '    Dim fps As Double
-
-        '    Dim doc As New AviSynthDocument
-        '    doc.Path = "D:\Temp\test.avs"
-        '    Dim cachefile = "D:\Temp\test.ffindex"
-        '    doc.Filters.Add(New AviSynthFilter("FFVideoSource(""" + i + """, cachefile = """ + cachefile + """)"))
-        '    doc.Synchronize()
-
-        '    Using avs As New AVIFile(doc.Path)
-        '        fps = avs.FrameRate
-        '    End Using
-
-        '    File.Delete(doc.Path)
-        '    File.Delete(cachefile)
-
-        '    Debug.WriteLine(fpsMediaInfo.ToString.PadRight(7) + "; " & fps.ToString.PadRight(15) + "; " + i)
-        'Next
-
-        'Using f As New MediaInfoForm("C:\Daten\Temp\Filme\The Rewrite.mkv")
-        '    f.ShowDialog()
-        'End Using
-
-        'MsgInfo(ProcessHelp.GetStandardOutput("C:\Daten\Projekte\VS\CPP\cpp_console\Debug\cpp_console.exe", ""))
-        'MsgInfo(ProcessHelp.GetErrorOutput("C:\Daten\Projekte\VS\CPP\cpp_console\Debug\cpp_console.exe", ""))
-
-        'Using pp As New Process
-        '    'pp.StartInfo.FileName = Packs.eac3to.GetPath
-        '    pp.StartInfo.FileName = "C:\Daten\Projekte\VS\CPP\cpp_console\Debug\cpp_console.exe"
-        '    'pp.StartInfo.Arguments = "aaa"
-        '    pp.StartInfo.CreateNoWindow = True
-        '    pp.StartInfo.RedirectStandardError = True
-        '    pp.StartInfo.RedirectStandardOutput = True
-        '    pp.StartInfo.UseShellExecute = False
-        '    pp.Start()
-        '    Dim aaa = pp.StandardError.ReadToEnd()
-        '    Dim bbb = pp.StandardOutput.ReadToEnd()
-        '    pp.WaitForExit()
-        '    MsgInfo(aaa)
-        '    MsgInfo(bbb)
-        'End Using
-
-        ''Exit Sub
-
-        'Using pr As New Proc
-        '    pr.BeginReadBoth("aaa")
-        '    'pr.File = Packs.eac3to.GetPath
-        '    'pr.Arguments = "aaa"
-        '    pr.File = "C:\Daten\Projekte\VS\CPP\cpp_console\Debug\cpp_console.exe"
-        '    pr.AllowedExitCodes = {0, 1}
-        '    pr.Start()
-        '    MsgInfo(ProcessForm.CmdlLog.ToString, "")
-        'End Using
-
-        'ProcessForm.CloseProcessForm()
-
-        'Dim fp2 = "C:\Daten\Temp\test.mkv"
-        'MediaInfo.GetVideo(fp2, "Format")
-
-        'Try
-        '    File.Delete(fp2)
-        'Catch ex As Exception
-        '    g.ShowException(ex)
-        'End Try
-
-        'Using avi As New AVIFile("C:\Daten\Temp\test temp files\test.avs")
-        '    avi.GetBitmap()
-        'End Using
-
-        'FileHelp.Delete("C:\Daten\Temp\test.mp4", VB6.FileIO.RecycleOption.SendToRecycleBin)
-
-        'Dim sw As New Stopwatch
-        'sw.Start()
-        'Dim output = ProcessHelp.GetStandardOutput(Packs.QSVEncC.GetPath, "--check-lib")
-        'sw.Stop()
-        'MsgInfo(sw.ElapsedMilliseconds.ToString)
-
-        'MsgInfo(Registry.LocalMachine.GetString("SOFTWARE\Intel\GFX", "Version"))
-
-        'Using f As New AviSynthEditor
-        '    f.StartPosition = FormStartPosition.CenterParent
-        '    f.ShowDialog()
-        'End Using
-
-        'LoadProject("E:\Video\Samples\MKV\MPEG-2 - AC3 - VobSub - Interlaced temp files\MPEG-2 - AC3 - VobSub - Interlaced_new.srip")
-    End Sub
-
-    <Command("Dialog | LAV Filters video decoder configuration", "Shows LAV Filters video decoder configuration")>
-    Private Sub OpenLAVFiltersConfiguration()
+    <Command("Shows LAV Filters video decoder configuration")>
+    Private Sub ShowLAVFiltersConfigDialog()
         Dim ret = Registry.ClassesRoot.GetString("CLSID\" + GUIDS.LAVVideoDecoder.ToString + "\InprocServer32", Nothing)
 
         If File.Exists(ret) Then
@@ -4945,32 +4734,14 @@ Class MainForm
     Public Shared Sub OpenConfiguration(hwnd As IntPtr, hinst As IntPtr, lpszCmdLine As String, nCmdShow As Integer)
     End Sub
 
-    <Command("Perform | Execute Multiple StaxRip Commands", "Executes multiple StaxRip commands using command line switches.")>
-    Private Sub EcecuteStaxRipCmdlArgs(<Description("Requires a single command line switch on each line."),
-        Editor(GetType(MacroStringTypeEditor), GetType(UITypeEditor))> switches As String)
-
-        Dim errorArg As String = Nothing
-
-        Try
-            For Each i In switches.SplitLinesNoEmpty
-                errorArg = i
-
-                If Not CommandManager.ProcessCmdlArgument(i) Then
-                    Throw New Exception
-                End If
-            Next
-        Catch
-            MsgWarn("Error parsing argument: " + errorArg)
-        End Try
-    End Sub
-
-    Private Sub ProcessCmdl(a As String())
+    Private Sub ProcessCommandLine(a As String())
         Dim files As New List(Of String)
 
         For Each i In CLIArg.GetArgs(a)
             Try
                 If Not i.IsFile AndAlso files.Count > 0 Then
                     Dim l As New List(Of String)(files)
+                    Refresh()
                     OpenAnyFile(l)
                     files.Clear()
                 End If
@@ -4978,101 +4749,101 @@ Class MainForm
                 If i.IsFile Then
                     files.Add(i.Value)
                 Else
-                    If Not CommandManager.ProcessCmdlArgument(i.Value) Then
-                        Throw New Exception
-                    End If
+                    If Not CommandManager.ProcessCommandLineArgument(i.Value) Then Throw New Exception
                 End If
             Catch ex As Exception
-                MsgWarn("Error parsing argument: " + i.Value)
-                OpenCmdlHelp()
+                MsgWarn("Error parsing argument:" + BR2 + i.Value + BR2 + ex.Message)
             End Try
         Next
 
         If files.Count > 0 Then
+            Refresh()
             OpenAnyFile(files)
         End If
     End Sub
 
-    <Command("Perform | Standby", "Puts PC in standby mode.", Switch:="standby")>
+    <Command("Sets the project option 'Hide dialogs asking to demux, source filter etc.'")>
+    Private Sub SetHideDialogsOption(hide As Boolean)
+        p.NoDialogs = hide
+    End Sub
+
+    <Command("Puts PC in standby mode.")>
     Private Sub Standby()
         g.ShutdownPC(ShutdownMode.Standby)
     End Sub
 
-    <Command("Perform | Shutdown", "Shuts PC down.", Switch:="shutdown")>
+    <Command("Shuts PC down.")>
     Private Sub Shutdown()
         g.ShutdownPC(ShutdownMode.Shutdown)
     End Sub
 
     Sub SetEncoderControl(c As Control)
-        pEncoder.Controls.Add(c)
+        pnEncoder.Controls.Add(c)
 
-        If pEncoder.Controls.Count > 1 Then
-            Dim old = pEncoder.Controls(0)
-            pEncoder.Controls.Remove(old)
+        If pnEncoder.Controls.Count > 1 Then
+            Dim old = pnEncoder.Controls(0)
+            pnEncoder.Controls.Remove(old)
             old.Dispose()
         End If
     End Sub
 
     Sub UpdateEncoderStateRelatedControls()
-        llFilesize.Visible = Not p.VideoEncoder.QualityMode
-        tbSize.Visible = Not p.VideoEncoder.QualityMode
+        blFilesize.Visible = Not p.VideoEncoder.QualityMode
+        tbTargetSize.Visible = Not p.VideoEncoder.QualityMode
         lBitrate.Visible = Not p.VideoEncoder.QualityMode
         tbBitrate.Visible = Not p.VideoEncoder.QualityMode
-        lQualityText.Visible = p.VideoEncoder.IsCompCheckEnabled
-        lQuality.Visible = p.VideoEncoder.IsCompCheckEnabled
-        lCompCheckText.Visible = p.VideoEncoder.IsCompCheckEnabled
-        lCompCheck.Visible = p.VideoEncoder.IsCompCheckEnabled
+        lTarget2.Visible = p.VideoEncoder.IsCompCheckEnabled
     End Sub
 
-    <Command("Dialog | Open Source Files", "Dialog to open source files.")>
-    Private Sub OpenSourceFiles()
+    <Command("Dialog to open source files.")>
+    Private Sub ShowOpenSourceDialog()
         Dim td As New TaskDialog(Of String)
-        td.MainInstruction = "Choose a method for opening a source."
-        td.AddCommandLink("Single File", "DVD and Blu-ray discs can be ripped very easily using MakeMKV.", "single")
-        td.AddCommandLink("Blu-ray folder", "Blu-ray folder directly on the Blu-ray drive or on the hard drive.", "blu")
-        td.AddCommandLink("Merge Files", "Merge multiple source files.", "merge")
-        td.AddCommandLink("File Batch", "Fully automated batch processing where every file is a separate encoding.", "batch")
-        td.AddCommandLink("Directory Batch", "Directories are processed as separate encoding, containing files are merged.", "batch2")
+        td.MainInstruction = "Select a method for opening a source."
+        td.AddCommandLink("Single File", "Single File")
+        td.AddCommandLink("Blu-ray Folder", "Blu-ray Folder")
+        td.AddCommandLink("Merge Files", "Merge Files")
+        td.AddCommandLink("File Batch", "File Batch")
 
         Select Case td.Show
-            Case "single"
+            Case "Single File"
                 Using d As New OpenFileDialog
                     d.SetFilter(FileTypes.Video)
                     d.SetInitDir(s.LastSourceDir)
-
-                    If d.ShowDialog() = DialogResult.OK Then
-                        OpenSingleFile(d.FileNames)
-                    End If
+                    If d.ShowDialog() = DialogResult.OK Then OpenVideoSourceFiles(d.FileNames)
                 End Using
-            Case "merge"
-                Using f As New SourceFilesForm()
-                    f.Mode = SourceInputMode.Combine
-                    f.UpdateControls()
+            Case "Merge Files"
+                Using form As New SourceFilesForm()
+                    form.Text = "Merge"
+                    form.IsMerge = True
 
-                    If f.ShowDialog() = DialogResult.OK Then
-                        Refresh()
+                    If form.ShowDialog() = DialogResult.OK AndAlso form.lb.Items.Count > 0 Then
+                        Dim files = form.GetFiles
 
-                        Select Case Filepath.GetExt(f.Files(0))
+                        Select Case FilePath.GetExt(files(0))
                             Case "mpg", "vob"
-                                OpenVideoSourceFiles(f.Files)
+                                OpenVideoSourceFiles(files)
                             Case Else
                                 Using proc As New Proc
-                                    proc.Init("Merge source files")
+                                    proc.Header = "Merge source files"
+
+                                    For Each i In files
+                                        Log.WriteLine(MediaInfo.GetSummary(i) + "---------------------------------------------------------" + BR2)
+                                    Next
+
                                     proc.Encoding = Encoding.UTF8
-                                    proc.File = Packs.Mkvmerge.GetPath
-                                    Dim outFile = Filepath.GetDirAndBase(f.Files(0)) + "_merged.mkv"
-                                    proc.Arguments = "-o """ + outFile + """ """ + f.Files.Join(""" + """) + """"
+                                    proc.Package = Package.mkvmerge
+                                    Dim outFile = files(0).DirAndBase + "_merged.mkv"
+                                    proc.Arguments = "-o " + outFile.Escape + " """ + files.Join(""" + """) + """"
 
                                     Try
                                         proc.Start()
                                     Catch ex As Exception
-                                        ProcessForm.CloseProcessForm()
                                         g.ShowException(ex)
-                                        MsgInfo("Manual Merging", "Please merge the files manually with a appropriate tool or visit the [" + GetSupportThread() + " support forum].")
+                                        MsgInfo("Manual Merging", "Please merge the files manually with a appropriate tool or visit the support forum].")
                                         Throw New AbortException
                                     End Try
 
-                                    If Not g.WasFileJustWritten(outFile) Then
+                                    If Not g.FileExists(outFile) Then
                                         Log.Write("Error merged output file is missing", outFile)
                                         Exit Sub
                                     Else
@@ -5082,235 +4853,160 @@ Class MainForm
                         End Select
                     End If
                 End Using
-            Case "batch"
-                Using f As New SourceFilesForm()
+            Case "File Batch"
+                If AbortDueToLowDiskSpace() Then Exit Sub
+
+                Using form As New SourceFilesForm()
+                    form.Text = "File Batch"
                     If p.DefaultTargetName = "%source_dir_name%" Then p.DefaultTargetName = "%source_name%"
 
-                    f.Mode = SourceInputMode.FileBatch
-                    f.UpdateControls()
+                    If form.ShowDialog() = DialogResult.OK AndAlso form.lb.Items.Count > 0 Then
+                        If p.SourceFiles.Count > 0 AndAlso Not LoadTemplateWithSelectionDialog() Then Exit Sub
 
-                    If f.ShowDialog() = DialogResult.OK Then
-                        Refresh()
+                        Dim batchFolder = Folder.Settings + "Batch Projects\"
+                        If Not Directory.Exists(batchFolder) Then Directory.CreateDirectory(batchFolder)
 
-                        If p.SourceFiles.Count > 0 AndAlso Not LoadTemplateWithSelectionDialog() Then
-                            Exit Sub
-                        End If
-
-                        Dim tempPath = Paths.TemplateDir + "temp.srip"
-                        p.BatchMode = Not f.cbDemuxAndIndex.Checked
-                        SaveProjectByPath(tempPath)
-
-                        For Each i In f.Files
-                            OpenProject(tempPath, False)
-                            OpenVideoSourceFile(i)
-                            g.SetTempDir()
-                            AddJob(False, Nothing, False)
+                        For Each i In form.GetFiles
+                            Dim batchProject = ObjectHelp.GetCopy(Of Project)(p)
+                            batchProject.BatchMode = True
+                            batchProject.SourceFiles = {i}.ToList
+                            Dim jobPath = batchFolder + i.Replace("\", "-").Replace(":", "-")
+                            SafeSerialization.Serialize(batchProject, jobPath)
+                            Job.AddJob(jobPath)
                         Next
 
-                        OpenProject(tempPath, False)
-                        FileHelp.Delete(tempPath)
-                        UpdateRecentProjectsMenuItems()
-                        OpenJobsDialog()
+                        ShowJobsDialog()
                     End If
                 End Using
-            Case "batch2"
-                Using f As New SourceFilesForm()
-                    f.Mode = SourceInputMode.DirectoryBatch
-                    f.UpdateControls()
+            Case "Blu-ray Folder"
+                If p.SourceFile <> "" Then If Not OpenProject() Then Exit Sub
 
-                    If f.ShowDialog() = DialogResult.OK Then
-                        Refresh()
-
-                        If p.SourceFiles.Count > 0 AndAlso Not LoadTemplateWithSelectionDialog() Then
-                            Exit Sub
-                        End If
-
-                        Dim tempPath = Paths.TemplateDir + "temp.srip"
-
-                        If f.cbDemuxAndIndex.Checked Then p.BatchMode = True
-
-                        SaveProjectByPath(tempPath)
-
-                        For Each i In f.DirTree.Paths
-                            OpenProject(tempPath, False)
-                            OpenVideoSourceFiles(GetSourceFilesFromDir(i))
-
-                            If f.cbDemuxAndIndex.Checked Then
-                                Try
-                                    g.SetTempDir()
-                                Catch ex As Exception
-                                    FileHelp.Delete(tempPath)
-                                    Exit Sub
-                                End Try
-
-                                AddJob(False, Nothing)
-                            End If
-                        Next
-
-                        OpenProject(tempPath, False)
-                        FileHelp.Delete(tempPath)
-                        UpdateRecentProjectsMenuItems()
-
-                        If f.cbDemuxAndIndex.Checked Then
-                            OpenJobsDialog()
-                        End If
-                    End If
-                End Using
-            Case "blu"
                 Using d As New FolderBrowserDialog
-                    d.Description = "Please choose a Blu-ray source folder."
+                    d.Description = "Please select a Blu-ray source folder."
                     d.SetSelectedPath(s.Storage.GetString("last blu-ray source folder"))
                     d.ShowNewFolderButton = False
 
                     If d.ShowDialog = DialogResult.OK Then
-                        s.Storage.SetString("last blu-ray source folder", d.SelectedPath)
+                        s.Storage.SetString("last blu-ray source folder", d.SelectedPath.FixDir)
+                        Dim srcPath = d.SelectedPath.FixDir
 
-                        Dim path = DirPath.AppendSeparator(d.SelectedPath)
+                        If Directory.Exists(srcPath + "BDMV") Then srcPath = srcPath + "BDMV\"
+                        If Directory.Exists(srcPath + "PLAYLIST") Then srcPath = srcPath + "PLAYLIST\"
 
-                        If Directory.Exists(path + "BDMV") Then
-                            path = path + "BDMV\"
-                        End If
-
-                        If Directory.Exists(path + "PLAYLIST") Then
-                            path = path + "PLAYLIST\"
-                        End If
-
-                        If Not path.ToUpper.EndsWith("PLAYLIST\") Then
+                        If Not srcPath.ToUpper.EndsWith("PLAYLIST\") Then
                             MsgWarn("No playlist directory found.")
                             Exit Sub
                         End If
 
-                        Dim output = ProcessHelp.GetStandardOutput(
-                            Packs.eac3to.GetPath, """" + path + """")
+                        Log.WriteEnvironment()
+                        Log.Write("Process Blu-Ray folder using eac3to", """" + Package.eac3to.Path + """ """ + srcPath + """" + BR2)
+                        Log.WriteLine("Source Drive Type: " + New DriveInfo(d.SelectedPath).DriveType.ToString + BR)
 
-                        Log.Write("Process Blu-Ray folder using eac3to", """" + Packs.eac3to.GetPath + """ """ + path + """" + CrLf2)
-
-                        output = output.Replace(VB6.vbBack, "")
-
+                        Dim output = ProcessHelp.GetStdOut(Package.eac3to.Path, srcPath.Escape).Replace(VB6.vbBack, "")
                         Log.WriteLine(output)
 
                         Dim a = Regex.Split(output, "^\d+\)", RegexOptions.Multiline).ToList
-
                         If a(0) = "" Then a.RemoveAt(0)
 
                         Dim td2 As New TaskDialog(Of Integer)
-                        td2.MainInstruction = "Please choose a playlist."
+                        td2.MainInstruction = "Please select a playlist."
 
                         For Each i In a
-                            If i.Contains(CrLf) Then
-                                td2.AddCommandLink(i.Left(CrLf).Trim, i.Right(CrLf).TrimEnd, a.IndexOf(i) + 1)
+                            If i.Contains(BR) Then
+                                td2.AddCommandLink(i.Left(BR).Trim, i.Right(BR).TrimEnd, a.IndexOf(i) + 1)
                             End If
                         Next
 
                         If td2.Show() = 0 Then Exit Sub
-
-                        Showeac3toDemuxForm(path, td2.SelectedValue)
+                        OpenEac3toDemuxForm(srcPath, td2.SelectedValue)
                     End If
                 End Using
         End Select
     End Sub
 
-    Sub Showeac3toDemuxForm(playlistFolder As String, playlistID As Integer)
-        Using f As New eac3toForm
-            f.PlaylistFolder = playlistFolder
-            f.PlaylistID = playlistID
+    Sub OpenEac3toDemuxForm(playlistFolder As String, playlistID As Integer)
+        Using form As New eac3toForm(p)
+            form.PlaylistFolder = playlistFolder
+            form.PlaylistID = playlistID
 
-            Dim workDir = DirPath.GetParent(DirPath.GetParent(playlistFolder))
-            Dim movieName = DirPath.GetName(workDir)
+            Dim workDir = playlistFolder.Parent.Parent
 
-            If movieName = "" Then movieName = "Untitled"
+            Dim title = InputBox.Show("Enter a short title used as filename.", "Title",
+                                      playlistFolder.Parent.Parent.DirName)
 
-            movieName = InputBox.Show("Please enter the name of this movie.", "Movie Name", movieName)
+            If title = "" Then Exit Sub
 
-            If Not Filepath.IsValidFileSystemName(movieName) Then
-                movieName = Filepath.RemoveIllegalCharsFromName(movieName)
+            If p.TempDir <> "" Then
+                workDir = p.TempDir.Replace("%source_name%", title)
+            Else
+                workDir += title
             End If
 
-            If movieName = "" Then Exit Sub
+            If Not DirPath.IsFixedDrive(workDir) Then
+                Using d As New FolderBrowserDialog
+                    d.Description = "Please select a folder for temporary files on a fixed local drive."
+                    d.SetSelectedPath(s.Storage.GetString("last blu-ray target folder").Parent)
 
-            If Directory.Exists(p.TempDir) Then
-                f.tbTempDir.Text = p.TempDir + movieName
-            Else
-                If workDir.StartsWith("\\") Then
-                    Using d As New FolderBrowserDialog
-                        d.Description = "Please choose a local directory for temporary files."
+                    If d.ShowDialog = DialogResult.OK Then
+                        workDir = d.SelectedPath.FixDir
+                    Else
+                        Exit Sub
+                    End If
+                End Using
+            End If
 
-                        If d.ShowDialog = DialogResult.OK Then
-                            workDir = d.SelectedPath
-                        Else
-                            Exit Sub
-                        End If
-                    End Using
+            form.teTempDir.Text = workDir
+
+            If form.ShowDialog() = DialogResult.OK Then
+                If Not Directory.Exists(form.OutputFolder) Then
+                    Try
+                        Directory.CreateDirectory(form.OutputFolder)
+                    Catch ex As Exception
+                        MsgError("The temp folder could not be created." + BR2 + form.OutputFolder)
+                        Exit Sub
+                    End Try
                 End If
 
-                If workDir.StartsWith("\\") Then
+                If Not DirPath.IsFixedDrive(form.OutputFolder) Then
+                    MsgError("Only fixed local drives are supported as temp dir.")
                     Exit Sub
                 End If
 
-                Dim di As New DriveInfo(Path.GetPathRoot(workDir))
-
-                If di.DriveType <> DriveType.Fixed Then
-                    Using d As New FolderBrowserDialog
-                        d.Description = "Please choose a directory on a local hard drive to save demuxed files."
-                        d.SetSelectedPath(s.Storage.GetString("last Blu-ray target dir"))
-
-                        If d.ShowDialog = DialogResult.OK Then
-                            s.Storage.SetString("last Blu-ray target dir", DirPath.GetParent(d.SelectedPath))
-                            f.tbTempDir.Text = DirPath.AppendSeparator(d.SelectedPath)
-                        Else
-                            Exit Sub
-                        End If
-                    End Using
-                Else
-                    f.tbTempDir.Text = workDir + "Temp"
-                End If
-            End If
-
-            If f.ShowDialog() = DialogResult.OK Then
                 Try
-                    Dim di2 As New DriveInfo(Path.GetPathRoot(f.OutputFolder))
+                    Dim di As New DriveInfo(form.OutputFolder)
 
-                    If di2.AvailableFreeSpace / 1024 ^ 3 < 50 Then
-                        If MsgQuestion("The drive has only " & CInt(di2.AvailableFreeSpace / 1024 ^ 3) &
-                                       " GB free space available. Depending on Blu-ray disc and processing options this might be insufficient, continue anyway?") = DialogResult.Cancel Then
-                            Exit Sub
-                        End If
-                    End If
-
-                    If Not Directory.Exists(f.OutputFolder) Then
-                        Try
-                            Directory.CreateDirectory(f.OutputFolder)
-                        Catch ex As Exception
-                            MsgError("Failed to create directory for temporary files.", f.OutputFolder)
-                            Exit Sub
-                        End Try
+                    If di.AvailableFreeSpace / 1024 ^ 3 < 50 Then
+                        MsgError("The target drive has not enough free disk space.")
+                        Exit Sub
                     End If
 
                     Using proc As New Proc
+                        proc.Header = "Demux M2TS"
                         proc.TrimChars = {"-"c, " "c}
                         proc.RemoveChars = {CChar(VB6.vbBack)}
-                        proc.Init("Demux M2TS using eac3to", "analyze: ", "process: ")
-                        proc.File = Packs.eac3to.GetPath
-                        proc.Process.StartInfo.Arguments = f.GetArgs(
-                            """" + playlistFolder + """ " & playlistID & ")", movieName)
+                        proc.SkipStrings = {"analyze: ", "process: "}
+                        proc.Package = Package.eac3to
+                        proc.Process.StartInfo.Arguments = form.GetArgs(
+                            playlistFolder.Escape + " " & playlistID & ")", title)
 
                         Try
                             proc.Start()
+                        Catch ex As AbortException
+                            Exit Sub
                         Catch ex As Exception
-                            ProcessForm.CloseProcessForm()
                             g.ShowException(ex)
                             Exit Sub
                         End Try
                     End Using
 
-                    Dim fs = f.OutputFolder + movieName + "." + f.cbVideoOutput.Text.ToLower
+                    s.Storage.SetString("last blu-ray target folder", form.OutputFolder)
+                    Dim fs = form.OutputFolder + title + "." + form.cbVideoOutput.Text.ToLower
 
                     If File.Exists(fs) Then
-                        p.TempDir = f.OutputFolder
+                        p.TempDir = form.OutputFolder
                         OpenVideoSourceFile(fs)
                     End If
-                Finally
-                    ProcessForm.CloseProcessForm()
+                Catch
                 End Try
             End If
         End Using
@@ -5320,20 +5016,15 @@ Class MainForm
         For Each i In FileTypes.Video
             Dim files = Directory.GetFiles(path, "*." + i)
             Array.Sort(files)
-
-            If files.Length > 0 Then
-                Return files
-            End If
+            If files.Length > 0 Then Return files
         Next
-
-        Return Nothing
     End Function
 
     Protected Overrides Sub WndProc(ByRef m As Message)
         Select Case m.Msg
             Case 800 'WM_DWMCOLORIZATIONCOLORCHANGED
                 If ToolStripRendererEx.IsAutoRenderMode Then
-                    ToolStripRendererEx.InitColors(s.ToolStripRenderMode)
+                    ToolStripRendererEx.InitColors(s.ToolStripRenderModeEx)
                     SetMenuStyle()
                     MenuStrip.Refresh()
                 End If
@@ -5343,7 +5034,7 @@ Class MainForm
     End Sub
 
     Sub tbSource_DoubleClick() Handles tbSourceFile.DoubleClick
-        Using d As New SWF.OpenFileDialog
+        Using d As New OpenFileDialog
             d.SetFilter(FileTypes.Video)
             d.Multiselect = True
             d.SetInitDir(s.LastSourceDir)
@@ -5353,57 +5044,9 @@ Class MainForm
 
                 Dim l As New List(Of String)(d.FileNames)
                 l.Sort()
-                OpenSingleFile(l)
+                OpenVideoSourceFiles(l)
             End If
         End Using
-    End Sub
-
-    Private Sub LoadAudioProfile0(profile As Profile)
-        Dim file = p.Audio0.File
-        Dim delay = p.Audio0.Delay
-        Dim language = p.Audio0.Language
-        Dim stream = p.Audio0.Stream
-        Dim streams = p.Audio0.Streams
-
-        p.Audio0 = DirectCast(ObjectHelp.GetCopy(profile), AudioProfile)
-
-        p.Audio0.File = file
-        p.Audio0.Language = language
-        p.Audio0.Stream = stream
-        p.Audio0.Streams = streams
-        p.Audio0.Delay = delay
-
-        llAudioProfile0.Text = g.ConvertPath(p.Audio0.Name)
-        SetBitrateMuxAudioProfile(p.Audio0)
-        lAudioBitrate.Text = CInt(Calc.GetAudioBitrate).ToString
-
-        If Not p.VideoEncoder.QualityMode Then
-            tbSize_TextChanged()
-        End If
-
-        Assistant()
-    End Sub
-
-    Private Sub LoadAudioProfile1(profile As Profile)
-        Dim file = p.Audio1.File
-        Dim delay = p.Audio1.Delay
-        Dim language = p.Audio1.Language
-        Dim stream = p.Audio1.Stream
-        Dim streams = p.Audio1.Streams
-
-        p.Audio1 = DirectCast(ObjectHelp.GetCopy(profile), AudioProfile)
-
-        p.Audio1.File = file
-        p.Audio1.Language = language
-        p.Audio1.Stream = stream
-        p.Audio1.Streams = streams
-        p.Audio1.Delay = delay
-
-        llAudioProfile1.Text = g.ConvertPath(p.Audio1.Name)
-        SetBitrateMuxAudioProfile(p.Audio1)
-        lAudioBitrate.Text = CInt(Calc.GetAudioBitrate).ToString
-        tbSize_TextChanged()
-        Assistant()
     End Sub
 
     Function GetAudioProfile0() As Profile
@@ -5417,7 +5060,7 @@ Class MainForm
     Function GetNewAudioProfile(currentProfile As AudioProfile) As AudioProfile
         Dim sb As New SelectionBox(Of AudioProfile)
         sb.Title = "New Profile"
-        sb.Text = "Please choose a profile."
+        sb.Text = "Please select a profile."
 
         If Not currentProfile Is Nothing Then
             sb.AddItem("Current Project", currentProfile)
@@ -5427,32 +5070,26 @@ Class MainForm
             sb.AddItem(i)
         Next
 
-        If sb.Show = DialogResult.OK Then
-            Return sb.SelectedItem
-        End If
-
-        Return Nothing
+        If sb.Show = DialogResult.OK Then Return sb.SelectedValue
     End Function
 
     Sub tbAudioFile0_DoubleClick() Handles tbAudioFile0.DoubleClick
-        Using d As New SWF.OpenFileDialog
-            d.SetFilter(FileTypes.Audio)
+        Using d As New OpenFileDialog
+            Dim filter = FileTypes.Audio.ToList
+            filter.Insert(0, "avs")
+            d.SetFilter(filter)
             d.SetInitDir(p.TempDir, s.LastSourceDir)
-
-            If d.ShowDialog() = DialogResult.OK Then
-                tbAudioFile0.Text = d.FileName
-            End If
+            If d.ShowDialog() = DialogResult.OK Then tbAudioFile0.Text = d.FileName
         End Using
     End Sub
 
     Sub tbAudioFile1_DoubleClick() Handles tbAudioFile1.DoubleClick
-        Using d As New SWF.OpenFileDialog
-            d.SetFilter(FileTypes.Audio)
+        Using d As New OpenFileDialog
+            Dim filter = FileTypes.Audio.ToList
+            filter.Insert(0, "avs")
+            d.SetFilter(filter)
             d.SetInitDir(p.TempDir, s.LastSourceDir)
-
-            If d.ShowDialog() = DialogResult.OK Then
-                tbAudioFile1.Text = d.FileName
-            End If
+            If d.ShowDialog() = DialogResult.OK Then tbAudioFile1.Text = d.FileName
         End Using
     End Sub
 
@@ -5463,56 +5100,27 @@ Class MainForm
         End If
     End Sub
 
-    Sub SetTargetLength(seconds As Integer)
+    Sub UpdateTargetParameters(seconds As Integer, frameRate As Double)
         p.TargetSeconds = seconds
-        lTargetLength.Text = GetLengthString(seconds)
-        SetBitrateMuxAudioProfile(p.Audio0)
-        SetBitrateMuxAudioProfile(p.Audio1)
-        tbSize_TextChanged()
+        p.TargetFrameRate = frameRate
+        UpdateSizeOrBitrate()
     End Sub
 
-    Function GetLengthString(seconds As Integer) As String
-        Dim sec As Integer = seconds Mod 60
-
-        If sec <= 9 Then
-            Return (seconds \ 60).ToString + ":0" + sec.ToString
-        Else
-            Return (seconds \ 60).ToString + ":" + sec.ToString
-        End If
-    End Function
-
-    Private Sub MainForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        If IsSaveCanceled() Then
-            e.Cancel = True
-            Exit Sub
-        End If
-
-        Hide()
-        SaveSettings()
-        g.RaiseApplicationEvent(ApplicationEvent.ApplicationExit)
-    End Sub
-
-    Sub SaveSettings()
-        SafeSerialization.Serialize(s, Paths.SettingsFile)
-    End Sub
-
-    Private Sub pEncoder_MouseLeave() Handles pEncoder.MouseLeave
+    Private Sub pEncoder_MouseLeave() Handles pnEncoder.MouseLeave
         Assistant()
     End Sub
 
     Private Sub AudioEdit0ToolStripMenuItemClick()
         p.Audio0.EditProject()
         UpdateAudioMenu()
-        SetBitrateMuxAudioProfile(p.Audio1)
-        tbSize_TextChanged()
+        UpdateSizeOrBitrate()
         llAudioProfile0.Text = g.ConvertPath(p.Audio0.Name)
     End Sub
 
     Private Sub AudioEdit1ToolStripMenuItemClick()
         p.Audio1.EditProject()
         UpdateAudioMenu()
-        SetBitrateMuxAudioProfile(p.Audio1)
-        tbSize_TextChanged()
+        UpdateSizeOrBitrate()
         llAudioProfile1.Text = g.ConvertPath(p.Audio1.Name)
     End Sub
 
@@ -5524,12 +5132,12 @@ Class MainForm
         tbAudioFile1_DoubleClick()
     End Sub
 
-    <Command("Perform | Reset a specific setting", "Shows a dialog allowing to reset various settings.")>
+    <Command("Shows a dialog allowing to reset various settings.")>
     Sub ResetSettings()
         Dim sb As New SelectionBox(Of String)
 
         sb.Title = "Reset Settings"
-        sb.Text = "Please choose a setting to reset."
+        sb.Text = "Please select a setting to reset."
 
         Dim appSettings As New ApplicationSettings
         appSettings.Init()
@@ -5541,55 +5149,44 @@ Class MainForm
         sb.Items.Sort()
 
         If sb.Show = DialogResult.OK Then
-            s.Versions(sb.SelectedItem) = 0
+            s.Versions(sb.SelectedValue) = 0
             MsgInfo("Will be reseted on next startup.")
         End If
     End Sub
 
-    <Command("Dialog | Audio Profiles", "Dialog to manage audio profiles.")>
-    Sub OpenAudioProfilesDialog(<DispName("Track Number")> number As Integer)
+    <Command("Dialog to manage audio profiles.")>
+    Sub ShowAudioProfilesDialog(<DispName("Track Number")> number As Integer)
         Dim f As ProfilesForm
 
         If number = 0 Then
-            f = New ProfilesForm("Audio Profiles", s.AudioProfiles, AddressOf LoadAudioProfile0, AddressOf GetAudioProfile0, AddressOf AudioProfile.GetDefaults)
+            f = New ProfilesForm("Audio Profiles", s.AudioProfiles, AddressOf g.LoadAudioProfile0, AddressOf GetAudioProfile0, AddressOf AudioProfile.GetDefaults)
         Else
-            f = New ProfilesForm("Audio Profiles", s.AudioProfiles, AddressOf LoadAudioProfile1, AddressOf GetAudioProfile1, AddressOf AudioProfile.GetDefaults)
+            f = New ProfilesForm("Audio Profiles", s.AudioProfiles, AddressOf g.LoadAudioProfile1, AddressOf GetAudioProfile1, AddressOf AudioProfile.GetDefaults)
         End If
 
         f.ShowDialog()
         f.Dispose()
 
         UpdateAudioMenu()
-
         PopulateProfileMenu(DynamicMenuItemID.Audio1Profiles)
         PopulateProfileMenu(DynamicMenuItemID.Audio2Profiles)
     End Sub
 
-    Private Sub LoadMainMenuDynamic()
-        PopulateProfileMenu(DynamicMenuItemID.EncoderProfiles)
-        PopulateProfileMenu(DynamicMenuItemID.MuxerProfiles)
-        PopulateProfileMenu(DynamicMenuItemID.Audio1Profiles)
-        PopulateProfileMenu(DynamicMenuItemID.Audio2Profiles)
-        PopulateProfileMenu(DynamicMenuItemID.FilterSetupProfiles)
+    Sub UpdateAudioMenu()
+        AudioMenu0.Items.ClearAndDisplose
+        AudioMenu1.Items.ClearAndDisplose
+        g.PopulateProfileMenu(AudioMenu0.Items, s.AudioProfiles, Sub() ShowAudioProfilesDialog(0), AddressOf g.LoadAudioProfile0)
+        g.PopulateProfileMenu(AudioMenu1.Items, s.AudioProfiles, Sub() ShowAudioProfilesDialog(1), AddressOf g.LoadAudioProfile1)
     End Sub
 
-    Private Sub UpdateAudioMenu()
-        AudioMenu0.Items.Clear()
-        AudioMenu1.Items.Clear()
+    Private Sub AviSynthListView_ScriptChanged() Handles FiltersListView.Changed
+        If Not IsLoading AndAlso Not FiltersListView.IsLoading Then
+            Package.DGDecodeNV.VerifyOK()
+            Package.DGDecodeIM.VerifyOK()
 
-        g.PopulateProfileMenu(AudioMenu0.Items, s.AudioProfiles, Sub() OpenAudioProfilesDialog(0), AddressOf LoadAudioProfile0)
-        g.PopulateProfileMenu(AudioMenu1.Items, s.AudioProfiles, Sub() OpenAudioProfilesDialog(1), AddressOf LoadAudioProfile1)
-    End Sub
-
-    Sub LoadMuxer(profile As Profile)
-        p.VideoEncoder.LoadMuxer(profile)
-    End Sub
-
-    Private Sub AviSynthListView_ScriptChanged() Handles AviSynthListView.ScriptChanged
-        If Not IsLoading Then
             If g.IsValidSource(False) Then
                 UpdateSourceParameters()
-                SetTargetLength(p.VideoScript.GetSeconds)
+                UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
             End If
 
             Assistant()
@@ -5597,231 +5194,189 @@ Class MainForm
     End Sub
 
     Sub UpdateFilters()
-        AviSynthListView.Load()
-
-        If g.IsValidSource(False) Then
-            SetTargetLength(p.VideoScript.GetSeconds)
-        End If
+        FiltersListView.Load()
+        If g.IsValidSource(False) Then UpdateTargetParameters(p.Script.GetSeconds, p.Script.GetFramerate)
     End Sub
 
-    Private Sub tbTargetFile_Validating(sender As Object, e As CancelEventArgs) Handles tbTargetFile.Validating
-        Assistant() 'script path is based on target path
-    End Sub
-
-    Sub tbTargetPath_TextChanged() Handles tbTargetFile.TextChanged
-        If tbTargetFile.Text <> "" AndAlso Not Filepath.IsValidFileSystemName(
-            Filepath.GetName(tbTargetFile.Text)) Then
-
-            MsgWarn("Filename contains invalid characters.")
-            tbTargetFile.Text = p.TargetFile
-        End If
-
-        If tbTargetFile.Text.ContainsUnicode Then
-            MsgWarn(Strings.NoUnicode)
-            tbTargetFile.Text = p.TargetFile
-        End If
-
-        p.Name = Filepath.GetBase(tbTargetFile.Text)
-        p.TargetFile = tbTargetFile.Text
-    End Sub
-
-    Sub tbTargetPath_DoubleClick() Handles tbTargetFile.DoubleClick
-        Using d As New SWF.SaveFileDialog
-            d.FileName = Filepath.GetBase(p.TargetFile)
-            d.SetInitDir(Filepath.GetDir(p.TargetFile))
-
-            If d.ShowDialog() = DialogResult.OK Then
-                Dim ext = p.VideoEncoder.Muxer.GetExtension
-
-                If d.FileName.ToLower.EndsWith(ext) Then
-                    tbTargetFile.Text = d.FileName
-                Else
-                    tbTargetFile.Text = d.FileName + ext
-                End If
-
-                Assistant()
-            End If
-        End Using
-    End Sub
-
-    Private Sub AviSynthListView_DoubleClick() Handles AviSynthListView.DoubleClick
-        AviSynthListView.ShowEditor()
+    Private Sub AviSynthListView_DoubleClick() Handles FiltersListView.DoubleClick
+        FiltersListView.ShowEditor()
     End Sub
 
     Private Sub gbFilters_MenuClick() Handles lgbFilters.LinkClick
-        AviSynthListView.UpdateMenu()
-        AviSynthListView.ContextMenuStrip.Show(lgbFilters, 0, 16)
+        FiltersListView.ContextMenuStrip.Show(lgbFilters, 0, 16)
     End Sub
 
     Private Sub gbEncoder_LinkClick() Handles lgbEncoder.LinkClick
-        EncoderMenu.Items.Clear()
-        g.PopulateProfileMenu(EncoderMenu.Items, s.VideoEncoderProfiles, AddressOf OpenEncoderProfilesDialog, AddressOf LoadVideoEncoder)
+        EncoderMenu.Items.ClearAndDisplose
+        g.PopulateProfileMenu(EncoderMenu.Items, s.VideoEncoderProfiles, AddressOf ShowEncoderProfilesDialog, AddressOf g.LoadVideoEncoder)
         EncoderMenu.Show(lgbEncoder, 0, 16)
     End Sub
 
-    Private Sub llSize_LinkClicked() Handles llFilesize.LinkClicked
+    Private Sub llSize_Click() Handles blFilesize.Click
         UpdateSizeMenu()
-        SizeContextMenuStrip.Show(llFilesize, 0, 16)
+        SizeContextMenuStrip.Show(blFilesize, 0, 16)
     End Sub
 
-    Private Sub lAudioProfile0_LinkClicked() Handles llAudioProfile0.LinkClicked
+    Private Sub lAudioProfile0_Click() Handles llAudioProfile0.Click
         AudioMenu0.Show(llAudioProfile0, 0, 16)
     End Sub
 
-    Private Sub lAudioProfile1_LinkClicked() Handles llAudioProfile1.LinkClicked
+    Private Sub lAudioProfile1_Click() Handles llAudioProfile1.Click
         AudioMenu1.Show(llAudioProfile1, 0, 16)
     End Sub
 
-    Private Sub llContainer_LinkClicked() Handles llMuxer.LinkClicked
-        ContainerMenu.Items.Clear()
-        g.PopulateProfileMenu(ContainerMenu.Items, s.MuxerProfiles, AddressOf OpenMuxerProfilesDialog, AddressOf LoadMuxer)
+    Private Sub llContainer_Click() Handles llMuxer.Click
+        ContainerMenu.Items.ClearAndDisplose
+        g.PopulateProfileMenu(ContainerMenu.Items, s.MuxerProfiles, AddressOf ShowMuxerProfilesDialog, AddressOf p.VideoEncoder.LoadMuxer)
         ContainerMenu.Show(llMuxer, 0, 16)
     End Sub
 
     Private Sub gbResize_LinkClick() Handles lgbResize.LinkClick
-        Dim cms = TextCustomMenu.GetMenu(s.TargetImageSizeMenu, lgbResize.ll, components, AddressOf TargetImageMenuClick)
-
-        Dim helpUrl = If(g.IsCulture("de"),
-                 "http://encodingwissen.de/videobild/zielaufloesung",
-                 "http://www.doom9.org/index.html?/aspectratios.htm")
-
-        Dim helpAction = Sub() g.ShellExecute(helpUrl)
-
-        cms.Items.Add(New ToolStripSeparator)
-
-        cms.Items.Add(New ActionMenuItem("Image Options...", Sub() OpenOptionsDialog("Image")))
-        cms.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.TargetImageSizeMenu = TextCustomMenu.EditMenu(s.TargetImageSizeMenu, "Target Image Help...", ApplicationSettings.GetDefaultTargetImageSizeMenu, Me)))
-        cms.Items.Add(New ActionMenuItem("Help...", helpAction))
-
-        cms.Show(lgbResize, 0, lgbResize.ll.Height)
+        Dim cms = TextCustomMenu.GetMenu(s.TargetImageSizeMenu, lgbResize.Label, components, AddressOf TargetImageMenuClick)
+        cms.Add("-")
+        cms.Add("Image Options...", Sub() ShowOptionsDialog("Image")).SetImage(Symbol.fa_photo)
+        cms.Add("Edit Menu...", Sub() s.TargetImageSizeMenu = TextCustomMenu.EditMenu(s.TargetImageSizeMenu, ApplicationSettings.GetDefaultTargetImageSizeMenu, Me))
+        cms.Show(lgbResize, 0, lgbResize.Label.Height)
     End Sub
 
-    Private Sub llSourceParText_Click(sender As Object, e As EventArgs) Handles llSourceParText.Click
-        Dim cms = TextCustomMenu.GetMenu(s.SourceAspectRatioMenu, llSourceParText, components, AddressOf SourceAspectRatioMenuClick)
-
-        Dim helpUrl = If(g.IsCulture("de"),
-                         "http://encodingwissen.de/video/anamorph-quelle.html",
-                         "http://www.doom9.org/index.html?/capture/par.html")
-
-        Dim helpAction = Sub() g.ShellExecute(helpUrl)
-
-        cms.Items.Insert(0, New ToolStripSeparator)
-        cms.Items.Insert(0, New ActionMenuItem("Automatic 4:3", Sub() SetAutoAspectRatio(False)))
-        cms.Items.Insert(0, New ActionMenuItem("Automatic 16:9", Sub() SetAutoAspectRatio(True)))
-
-        cms.Items.Add(New ToolStripSeparator)
-
-        cms.Items.Add(New ActionMenuItem("Image Options...", Sub() OpenOptionsDialog("Image")))
-        cms.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.SourceAspectRatioMenu = TextCustomMenu.EditMenu(s.SourceAspectRatioMenu, "Source Image Help...", ApplicationSettings.GetDefaultSourceAspectRatioMenu, Me)))
-        cms.Items.Add(New ActionMenuItem("Help...", helpAction))
-
-        cms.Font = New Font("Consolas", 9)
-        cms.Show(llSourceParText, 0, llSourceParText.Height)
+    Private Sub blSourceParText_Click(sender As Object, e As EventArgs) Handles blSourceParText.Click
+        Dim menu = TextCustomMenu.GetMenu(s.ParMenu, blSourceParText, components, AddressOf SourceParMenuClick)
+        menu.Add("-")
+        menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.ParMenu = TextCustomMenu.EditMenu(s.ParMenu, ApplicationSettings.GetParMenu, Me)))
+        menu.Show(blSourceParText, 0, blSourceParText.Height)
     End Sub
 
-    Sub SourceAspectRatioMenuClick(value As String)
-        value = Macro.Solve(value)
+    Private Sub blSourceDarText_Click(sender As Object, e As EventArgs) Handles blSourceDarText.Click
+        Dim menu = TextCustomMenu.GetMenu(s.DarMenu, blSourceDarText, components, AddressOf SourceDarMenuClick)
+        menu.Add("-")
+        menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.DarMenu = TextCustomMenu.EditMenu(s.DarMenu, ApplicationSettings.GetDarMenu, Me)))
+        menu.Show(blSourceDarText, 0, blSourceDarText.Height)
+    End Sub
 
-        If value.IsSingle Then
-            Dim dar = CSng(value)
+    Private Sub blTargetDarText_Click(sender As Object, e As EventArgs) Handles blTargetDarText.Click
+        Dim menu = TextCustomMenu.GetMenu(s.DarMenu, blTargetDarText, components, AddressOf TargetDarMenuClick)
+        menu.Add("-")
+        menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.DarMenu = TextCustomMenu.EditMenu(s.DarMenu, ApplicationSettings.GetDarMenu, Me)))
+        menu.Show(blTargetDarText, 0, blTargetDarText.Height)
+    End Sub
 
-            If dar > 1 AndAlso dar < 3 Then
-                p.CustomDAR = value
-                p.CustomPAR = ""
-                Assistant()
-                Exit Sub
-            End If
-        End If
+    Private Sub blTargetParText_Click(sender As Object, e As EventArgs) Handles blTargetParText.Click
+        Dim menu = TextCustomMenu.GetMenu(s.ParMenu, blTargetParText, components, AddressOf TargetParMenuClick)
+        menu.Add("-")
+        menu.Items.Add(New ActionMenuItem("Edit Menu...", Sub() s.ParMenu = TextCustomMenu.EditMenu(s.ParMenu, ApplicationSettings.GetParMenu, Me)))
+        menu.Show(blTargetParText, 0, blTargetParText.Height)
+    End Sub
 
-        Dim m = Regex.Match(value, Strings.ParRegexPattern)
+    Sub SourceDarMenuClick(value As String)
+        value = Macro.Expand(value)
+        Dim tup = Macro.ExpandGUI(value)
+        If tup.Cancel Then Exit Sub
+        p.CustomSourcePAR = ""
+        p.CustomSourceDAR = tup.Value
+        If Calc.ParseCustomAR(tup.Value, 0, 0).X = 0 Then p.CustomSourceDAR = ""
+        Assistant()
+    End Sub
 
-        If m.Success Then
-            p.CustomDAR = ""
-            p.CustomPAR = value
-            Assistant()
-            Exit Sub
-        End If
+    Sub SourceParMenuClick(value As String)
+        value = Macro.Expand(value)
+        Dim tup = Macro.ExpandGUI(value)
+        If tup.Cancel Then Exit Sub
+        p.CustomSourcePAR = tup.Value
+        p.CustomSourceDAR = ""
+        If Calc.ParseCustomAR(tup.Value, 0, 0).X = 0 Then p.CustomSourcePAR = ""
+        Assistant()
+    End Sub
 
-        MsgWarn("Invalid format, please use:" + CrLf2 + "4/3 or 4:3 or " & 1.333333)
-        s.SourceAspectRatioMenu = TextCustomMenu.EditMenu(s.SourceAspectRatioMenu, Me)
+    Sub TargetDarMenuClick(value As String)
+        value = Macro.Expand(value)
+        Dim tup = Macro.ExpandGUI(value)
+        If tup.Cancel Then Exit Sub
+        p.CustomTargetPAR = ""
+        p.CustomTargetDAR = tup.Value
+        If Calc.ParseCustomAR(tup.Value, 0, 0).X = 0 Then p.CustomTargetDAR = ""
+        Assistant()
+    End Sub
+
+    Sub TargetParMenuClick(value As String)
+        value = Macro.Expand(value)
+        Dim tup = Macro.ExpandGUI(value)
+        If tup.Cancel Then Exit Sub
+        p.CustomTargetPAR = tup.Value
+        p.CustomTargetDAR = ""
+        If Calc.ParseCustomAR(tup.Value, 0, 0).X = 0 Then p.CustomTargetPAR = ""
+        Assistant()
     End Sub
 
     Sub TargetImageMenuClick(value As String)
         g.EnableFilter("Resize")
 
-        value = Macro.Solve(value)
+        value = Macro.Expand(value)
+        Dim tup = Macro.ExpandGUI(value)
+        If tup.Cancel Then Exit Sub
+        value = tup.Value
 
         If value.IsInt Then
             SetTargetImageSizeByPixel(CInt(value))
             Exit Sub
         End If
 
-        Dim a = value.SplitNoEmptyAndWhiteSpace("x")
+        If value?.Contains("x") Then
+            Dim a = value.SplitNoEmptyAndWhiteSpace("x")
 
-        If a.Length = 2 AndAlso a(0).IsInt AndAlso a(1).IsInt Then
-            SetTargetImageSize(a(0).ToInt, a(1).ToInt)
-            Exit Sub
+            If a.Length = 2 AndAlso a(0).IsInt AndAlso a(1).IsInt Then
+                SetTargetImageSize(a(0).ToInt, a(1).ToInt)
+                Exit Sub
+            End If
         End If
 
         MsgWarn("Invalid format")
-        s.TargetImageSizeMenu = TextCustomMenu.EditMenu(s.TargetImageSizeMenu, Me)
     End Sub
 
     Sub SetAutoAspectRatio(isAnamorphic As Boolean)
         p.SourceAnamorphic = isAnamorphic
-        p.CustomPAR = ""
-        p.CustomDAR = ""
-
-        If p.VideoScript.IsFilterActive("Resize)") Then
-            SetTargetImageSize(p.TargetWidth, 0)
-        End If
-
+        p.CustomSourcePAR = ""
+        p.CustomSourceDAR = ""
+        If p.Script.IsFilterActive("Resize)") Then SetTargetImageSize(p.TargetWidth, 0)
         Assistant()
     End Sub
 
     Sub SetTip()
         With TipProvider
-            .SetTip("Target Display Aspect Ratio", lDAR, lDarText)
-            .SetTip("Target Pixel Aspect Ratio", lPAR, lParText)
+            .SetTip("Target Display Aspect Ratio", lDAR, blTargetDarText)
+            .SetTip("Target Pixel Aspect Ratio", lPAR, blTargetParText)
             .SetTip("Target Storage Aspect Ratio", lSAR, lSarText)
             .SetTip("Imagesize in pixel (width x height)", lPixel, lPixelText)
             .SetTip("Zoom factor between source and target image size", lZoom, lZoomText)
             .SetTip("Press Ctrl while using the slider to resize anamorphic.", tbResize)
             .SetTip("Aspect Ratio Error", lAspectRatioError, lAspectRatioErrorText)
-            .SetTip("Source Framerate (frames/seconds)", lSourceFramerate, lSourceFramerateText)
-            .SetTip("Source Length (minutes:seconds)", lbSourceLength, lbSourceLengthText)
-            .SetTip("Storage source image size in pixel (width/height)", lSourceImageSize, lSourceImageSizeText)
             .SetTip("Cropped image size", lCrop, lCropText)
-            .SetTip("Source Display Aspect Ratio", lSourceDar, lSourceDarText)
-            .SetTip("Source Pixel Aspect Ratio", lSourcePAR, llSourceParText)
+            .SetTip("Source Display Aspect Ratio", lSourceDar, blSourceDarText)
+            .SetTip("Source Pixel Aspect Ratio", lSourcePAR, blSourceParText)
             .SetTip("Target Video Bitrate in Kbps (Up/Down key)", tbBitrate, lBitrate)
-            .SetTip("Target Length (minutes:seconds)", lTargetLength, lTargetLengthText)
-            .SetTip("Compressibility value", lCompCheck, lCompCheckText)
-            .SetTip("Audio Bitrate of both tracks in Kbps", lAudioBitrate, lAudioBitrateText)
             .SetTip("Target Image Width in pixel (Up/Down key)", tbTargetWidth, lTargetWidth)
             .SetTip("Target Image Height in pixel (Up/Down key)", tbTargetHeight, lTargetHeight)
-            .SetTip("Target File Size (Up/Down key)", tbSize)
+            .SetTip("Target File Size (Up/Down key)", tbTargetSize)
             .SetTip("Source file", tbSourceFile)
             .SetTip("Target file", tbTargetFile)
             .SetTip("Opens audio settings for the current project/template", llEditAudio0, llEditAudio1)
             .SetTip("Shows audio profiles", llAudioProfile0)
             .SetTip("Shows audio profiles", llAudioProfile1)
             .SetTip("Shows a menu with Container/Muxer profiles", llMuxer)
-            .SetTip("Shows a menu with video encoder profiles", lgbEncoder.ll)
-            .SetTip("Shows a menu with AviSynth filter options", lgbFilters.ll)
+            .SetTip("Shows a menu with video encoder profiles", lgbEncoder.Label)
+            .SetTip("Shows a menu with AviSynth filter options", lgbFilters.Label)
         End With
     End Sub
 
     Sub UpdateSourceParameters()
-        If Not p.SourceAviSynthDocument Is Nothing Then
+        If Not p.SourceScript Is Nothing Then
             Try
-                p.SourceWidth = p.SourceAviSynthDocument.GetSize.Width
-                p.SourceHeight = p.SourceAviSynthDocument.GetSize.Height
-                p.SourceSeconds = CInt(p.SourceAviSynthDocument.GetFrames / p.SourceAviSynthDocument.GetFramerate)
-                p.SourceFrameRate = p.SourceAviSynthDocument.GetFramerate
-                p.SourceFrames = p.SourceAviSynthDocument.GetFrames
+                p.SourceWidth = p.SourceScript.GetSize.Width
+                p.SourceHeight = p.SourceScript.GetSize.Height
+                p.SourceSeconds = CInt(p.SourceScript.GetFrames / p.SourceScript.GetFramerate)
+                p.SourceFrameRate = p.SourceScript.GetFramerate
+                p.SourceFrames = p.SourceScript.GetFrames
             Catch ex As Exception
-                MsgError("Source filter returned invalid parameters", Macro.Solve(p.SourceAviSynthDocument.GetScript))
+                MsgError("Source filter returned invalid parameters", p.SourceScript.GetFullScript)
                 Throw New AbortException()
             End Try
         End If
@@ -5829,37 +5384,43 @@ Class MainForm
 
     Private Sub tbSource_TextChanged(sender As Object, e As EventArgs) Handles tbSourceFile.TextChanged
         If Not BlockSourceTextBoxTextChanged Then
-            If File.Exists(tbSourceFile.Text) Then
-                OpenVideoSourceFile(tbSourceFile.Text)
-            End If
+            If File.Exists(tbSourceFile.Text) Then OpenVideoSourceFile(tbSourceFile.Text)
         End If
     End Sub
 
     Private Sub gbTarget_LinkClick() Handles lgbTarget.LinkClick
         UpdateTargetFileMenu()
-        TargetFileMenu.Show(lgbTarget, 0, lgbTarget.ll.Height)
+        TargetFileMenu.Show(lgbTarget, 0, lgbTarget.Label.Height)
     End Sub
 
     Private Sub gbSource_MenuClick() Handles lgbSource.LinkClick
         UpdateSourceFileMenu()
 
         If File.Exists(p.SourceFile) Then
-            SourceFileMenu.Show(lgbSource, 0, lgbSource.ll.Height)
+            SourceFileMenu.Show(lgbSource, 0, lgbSource.Label.Height)
         Else
-            OpenSourceFiles()
+            ShowOpenSourceDialog()
         End If
+    End Sub
+
+    Sub tbTargetFile_DoubleClick() Handles tbTargetFile.DoubleClick
+        Using d As New SaveFileDialog
+            d.FileName = p.TargetFile.Base
+            d.SetInitDir(p.TargetFile.Dir)
+
+            If d.ShowDialog() = DialogResult.OK Then
+                Dim ext = p.VideoEncoder.Muxer.OutputExtFull
+                p.TargetFile = If(d.FileName.Ext = ext, d.FileName, d.FileName + ext)
+            End If
+        End Using
     End Sub
 
     Private Sub tbTargetFile_MouseDown(sender As Object, e As MouseEventArgs) Handles tbTargetFile.MouseDown
-        If e.Button = MouseButtons.Right Then
-            UpdateTargetFileMenu()
-        End If
+        If e.Button = MouseButtons.Right Then UpdateTargetFileMenu()
     End Sub
 
     Private Sub tbSourceFile_MouseDown(sender As Object, e As MouseEventArgs) Handles tbSourceFile.MouseDown
-        If e.Button = MouseButtons.Right Then
-            UpdateSourceFileMenu()
-        End If
+        If e.Button = MouseButtons.Right Then UpdateSourceFileMenu()
     End Sub
 
     Private Sub tbAudioFile0_MouseDown(sender As Object, e As MouseEventArgs) Handles tbAudioFile0.MouseDown
@@ -5874,11 +5435,12 @@ Class MainForm
         End If
     End Sub
 
-    Sub UpdateAudioFileMenu(m As ContextMenuStrip,
+    Sub UpdateAudioFileMenu(m As ContextMenuStripEx,
                             a As Action,
                             ap As AudioProfile,
                             tb As TextBox)
-        m.Items.Clear()
+
+        m.Items.ClearAndDisplose
         Dim exist = File.Exists(ap.File)
 
         If ap.Streams.Count > 0 Then
@@ -5886,196 +5448,642 @@ Class MainForm
                 Dim temp = i
 
                 Dim menuAction = Sub()
-                                     If ap.File <> p.LastOriginalSourceFile Then
-                                         tb.Text = p.LastOriginalSourceFile
+                                     If ap.File <> p.LastOriginalSourceFile Then tb.Text = p.LastOriginalSourceFile
+                                     tb.Text = temp.Name + " (" + ap.File.Ext + ")"
+                                     ap.Stream = temp
+
+                                     If tb Is tbAudioFile0 Then
+                                         llAudioProfile0.Text = g.ConvertPath(ap.Name)
+                                     Else
+                                         llAudioProfile1.Text = g.ConvertPath(ap.Name)
                                      End If
 
-                                     tb.Text = temp.Name + " (" + Filepath.GetExt(ap.File) + ")"
-                                     ap.Stream = temp
-                                     UpdateAudio(ap)
+                                     UpdateSizeOrBitrate()
                                  End Sub
 
-                m.Items.Add(New ActionMenuItem(i.Name, menuAction, Nothing))
+                If ap.Streams.Count > 10 Then
+                    m.Add("Streams | " + i.Name, menuAction)
+                Else
+                    m.Add(i.Name, menuAction)
+                End If
             Next
 
             m.Items.Add("-")
         End If
 
+        If p.SourceFile.Ext = "avs" OrElse p.Script.GetScript.ToLowerInvariant.Contains("audiodub(") Then
+            m.Add(p.Script.Path.FileName, Sub() tb.Text = p.Script.Path)
+        End If
+
         If p.TempDir <> "" AndAlso Directory.Exists(p.TempDir) Then
             Dim audioFiles = Directory.GetFiles(p.TempDir).Where(
-                Function(audioPath) FileTypes.Audio.Contains(Filepath.GetExt(audioPath)))
+                Function(audioPath) FileTypes.Audio.Contains(audioPath.Ext)).ToList
+
+            audioFiles.Sort(New StringLogicalComparer)
 
             If audioFiles.Count > 0 Then
                 For Each i In audioFiles
                     Dim temp = i
-                    Dim menuAction = Sub() tb.Text = temp
-                    m.Items.Add(New ActionMenuItem(Filepath.GetName(i), menuAction))
+
+                    If audioFiles.Count > 10 Then
+                        m.Add("Files | " + FilePath.GetName(i), Sub() tb.Text = temp)
+                    Else
+                        m.Add(FilePath.GetName(i), Sub() tb.Text = temp)
+                    End If
                 Next
 
                 m.Items.Add("-")
             End If
         End If
 
-        m.Items.Add(New ActionMenuItem("Open", a, "Change the audio source file."))
-        m.Items.Add(New ActionMenuItem("Play audio", Sub() PlayAudio(ap), "Plays the audio source file with MPC.", exist))
-        m.Items.Add(New ActionMenuItem("Play audio and video", Sub() g.PlayScript(p.VideoScript, ap), "Plays the audio source file together with the AviSynth script.", exist))
-        m.Items.Add(New ActionMenuItem("MediaInfo", Sub() g.DefaultCommands.ShowMediaInfo(ap.File), "Show MediaInfo for the audio source file.", exist))
-        m.Items.Add(New ActionMenuItem("Explore", Sub() g.OpenDirAndSelectFile(ap.File, Handle), "Open the audio source file directory with Windows Explorer.", exist))
-        m.Items.Add("-")
-        m.Items.Add(New ActionMenuItem("Copy Path", Sub() Clipboard.SetText(ap.File), Nothing, tb.Text <> ""))
-        m.Items.Add(New ActionMenuItem("Copy Selection", Sub() tb.Copy(), Nothing, tb.Text <> ""))
-        m.Items.Add(New ActionMenuItem("Paste", Sub() tb.Paste(), Nothing, Clipboard.GetText.Trim <> ""))
-        m.Items.Add("-")
-        m.Items.Add(New ActionMenuItem("Clear", Sub() tb.Text = "", "Remove audio file", tb.Text <> ""))
+        m.Add("Open", a, "Change the audio source file.").SetImage(Symbol.OpenFile)
+        m.Add("Play", Sub() g.PlayAudio(ap), "Plays the audio source file with a media player.", exist).SetImage(Symbol.Play)
+        m.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(ap.File), "Show MediaInfo for the audio source file.", exist).SetImage(Symbol.Info)
+        m.Add("Explore", Sub() g.OpenDirAndSelectFile(ap.File, Handle), "Open the audio source file directory with File Explorer.", exist).SetImage(Symbol.FileExplorer)
+        m.Add("Execute", Sub() ExecuteAudio(ap), "Processes the audio profile.", exist).SetImage(Symbol.fa_terminal)
+        m.Add("-")
+        m.Add("Copy Path", Sub() Clipboard.SetText(ap.File), Nothing, tb.Text <> "")
+        m.Add("Copy Selection", Sub() Clipboard.SetText(tb.SelectedText), Nothing, tb.Text <> "").SetImage(Symbol.Copy)
+        m.Add("Paste", Sub() tb.Paste(), Nothing, Clipboard.GetText.Trim <> "").SetImage(Symbol.Paste)
+        m.Add("-")
+        m.Add("Remove", Sub() tb.Text = "", "Remove audio file", tb.Text <> "").SetImage(Symbol.Remove)
     End Sub
 
-    Sub PlayAudio(ap As AudioProfile)
-        g.Play(ap.File)
+    Sub ExecuteAudio(ap As AudioProfile)
+        Try
+            If p.TempDir = "" Then p.TempDir = ap.File.Dir
+            ap = ObjectHelp.GetCopy(Of AudioProfile)(ap)
+            Audio.Process(ap)
+            ap.Encode()
+        Catch
+        End Try
     End Sub
 
     Sub UpdateTargetFileMenu()
-        TargetFileMenu.Items.Clear()
-        TargetFileMenu.Items.Add(New ActionMenuItem("Edit...", AddressOf tbTargetPath_DoubleClick, "Change the path of the target file."))
-        TargetFileMenu.Items.Add(New ActionMenuItem("Play...", Sub() g.Play(p.TargetFile), "Play the target file.", File.Exists(p.TargetFile)))
-        TargetFileMenu.Items.Add(New ActionMenuItem("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.TargetFile), "Show MediaInfo for the target file.", File.Exists(p.TargetFile)))
-        TargetFileMenu.Items.Add(New ActionMenuItem("Explore...", Sub() g.OpenDirAndSelectFile(p.TargetFile, Handle), "Open the target file directory with Windows Explorer.", Directory.Exists(Filepath.GetDir(p.TargetFile))))
-        TargetFileMenu.Items.Add("-")
-        TargetFileMenu.Items.Add(New ActionMenuItem("Copy", Sub() tbTargetFile.Copy(), "", tbTargetFile.Text <> ""))
-        TargetFileMenu.Items.Add(New ActionMenuItem("Paste", Sub() tbTargetFile.Paste(), "", Clipboard.GetText.Trim <> ""))
+        TargetFileMenu.Items.ClearAndDisplose
+        TargetFileMenu.Add("Edit...", AddressOf tbTargetFile_DoubleClick, "Change the path of the target file.")
+        TargetFileMenu.Add("Play...", Sub() g.Play(p.TargetFile), "Play the target file.", File.Exists(p.TargetFile)).SetImage(Symbol.Play)
+        TargetFileMenu.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.TargetFile), "Show MediaInfo for the target file.", File.Exists(p.TargetFile)).SetImage(Symbol.Info)
+        TargetFileMenu.Add("Explore...", Sub() g.OpenDirAndSelectFile(p.TargetFile, Handle), "Open the target file directory with File Explorer.", Directory.Exists(p.TargetFile.Dir)).SetImage(Symbol.FileExplorer)
+        TargetFileMenu.Add("-")
+        TargetFileMenu.Add("Copy", Sub() tbTargetFile.Copy(), "", tbTargetFile.Text <> "").SetImage(Symbol.Copy)
+        TargetFileMenu.Add("Paste", Sub() tbTargetFile.Paste(), "", Clipboard.GetText.Trim <> "").SetImage(Symbol.Paste)
     End Sub
 
     Sub UpdateSourceFileMenu()
-        SourceFileMenu.Items.Clear()
-        Dim isIndex = FileTypes.VideoIndex.Contains(Filepath.GetExt(p.SourceFile))
+        SourceFileMenu.Items.ClearAndDisplose
+        Dim isIndex = FileTypes.VideoIndex.Contains(FilePath.GetExt(p.SourceFile))
 
-        SourceFileMenu.Items.Add(New ActionMenuItem("Open...", AddressOf OpenSourceFiles, "Open source files"))
-        SourceFileMenu.Items.Add(New ActionMenuItem("Play...", Sub() g.Play(p.SourceFile), "Play the source file.", File.Exists(p.SourceFile) AndAlso Not isIndex))
-        SourceFileMenu.Items.Add(New ActionMenuItem("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.SourceFile), "Show MediaInfo for the source file.", File.Exists(p.SourceFile) AndAlso Not isIndex))
-        SourceFileMenu.Items.Add(New ActionMenuItem("Explore...", Sub() g.OpenDirAndSelectFile(p.SourceFile, Handle), "Open the source file directory with Windows Explorer.", File.Exists(p.SourceFile)))
+        SourceFileMenu.Add("Open...", AddressOf ShowOpenSourceDialog, "Open source files").SetImage(Symbol.OpenFile)
+        SourceFileMenu.Add("Play...", Sub() g.Play(p.SourceFile), "Play the source file.", File.Exists(p.SourceFile) AndAlso Not isIndex).SetImage(Symbol.Play)
+        SourceFileMenu.Add("MediaInfo...", Sub() g.DefaultCommands.ShowMediaInfo(p.SourceFile), "Show MediaInfo for the source file.", File.Exists(p.SourceFile) AndAlso Not isIndex).SetImage(Symbol.Info)
+        SourceFileMenu.Add("Explore...", Sub() g.OpenDirAndSelectFile(p.SourceFile, Handle), "Open the source file directory with File Explorer.", File.Exists(p.SourceFile)).SetImage(Symbol.FileExplorer)
         SourceFileMenu.Items.Add("-")
-        SourceFileMenu.Items.Add(New ActionMenuItem("Copy", Sub() tbSourceFile.Copy(), "Copies the selected text to the clipboard.", tbSourceFile.Text <> ""))
-        SourceFileMenu.Items.Add(New ActionMenuItem("Paste", Sub() tbSourceFile.Paste(), "Copies the full source file path to the clipboard.", Clipboard.GetText.Trim <> ""))
+        SourceFileMenu.Add("Copy", Sub() tbSourceFile.Copy(), "Copies the selected text to the clipboard.", tbSourceFile.Text <> "").SetImage(Symbol.Copy)
+        SourceFileMenu.Add("Paste", Sub() tbSourceFile.Paste(), "Copies the full source file path to the clipboard.", Clipboard.GetText.Trim <> "").SetImage(Symbol.Paste)
     End Sub
 
-    Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'on small screensizes like netbooks dialogs get cut at screensize
-        If lgbEncoder.Right > ClientSize.Width Then
-            ClientSize = New Size(lgbEncoder.Right + lgbFilters.Left, gbAssistant.Bottom + lgbFilters.Left)
-        End If
-    End Sub
-
-    <Command("Perform | Show Command Prompt", "Shows a command prompt with the temp directory of the current project.")>
-    Sub ShowCommandPrompt()
-        Dim batchCode = "@echo off" + CrLf
-
-        For Each i In Packs.Packages
-            Dim dir = i.GetDir
-
-            If Directory.Exists(dir) AndAlso
-                Not dir.ToLower.Contains("system32") AndAlso
-                Not batchCode.Contains(dir) Then
-
-                batchCode += "@set PATH=" + dir + ";%PATH%" + CrLf
-            End If
-        Next
-
-        Dim batchPath = CommonDirs.Temp + Guid.NewGuid.ToString + ".bat"
-        File.WriteAllText(batchPath, batchCode, Encoding.GetEncoding(850))
-        AddHandler g.MainForm.Disposed, Sub() FileHelp.Delete(batchPath)
-
-        Dim batchProcess As New Process
-        batchProcess.StartInfo.FileName = "cmd.exe"
-        batchProcess.StartInfo.Arguments = "/k """ + batchPath + """"
-        batchProcess.StartInfo.WorkingDirectory = p.TempDir
-        batchProcess.Start()
-    End Sub
-
-    <Command("Perform | Batch Generate Thumbnails", "Generates a thumbnails image.")>
-    Sub BatchGenerateThumbnails()
+    <Command("View the Metadata of any Selected File")>
+    Private Sub MediaInfoShowMedia()
         Using fd As New OpenFileDialog
             fd.Title = "Select files"
-            fd.SetFilter(FileTypes.Video)
-            fd.Multiselect = True
-
+            fd.Multiselect = False
             If fd.ShowDialog = DialogResult.OK Then
-                Using f As New SimpleSettingsForm("Thumbnails Options")
-                    f.Size = New Size(500, 300)
+                g.DefaultCommands.ShowMediaInfo(fd.FileName)
+            End If
+        End Using
+    End Sub
+    <Command("Shows the Metadata Information for MKV file including HDR10 data.")>
+    Sub MediainfoMKV()
+        Using fd As New OpenFileDialog
+            fd.Title = "Select file"
+            fd.Filter = "mkv|*.mkv"
+            fd.SetFilter(FileTypes.Video)
+            fd.Multiselect = False
+            If fd.ShowDialog = DialogResult.OK Then
+                For Each i In fd.FileNames
+                    Try
+                        MKVInfo.MetadataInfo(i, Nothing)
+                    Catch ex As Exception
+                        g.ShowException(ex)
+                    End Try
+                Next
+            End If
+        End Using
+    End Sub
+    <Command("Adds the Remaining HDR10 Metadata to MKV file.")>
+    Sub SaveMKVHDR()
+        Using fd As New OpenFileDialog
+            fd.Title = "Select file"
+            fd.SetFilter(FileTypes.Video)
+            fd.Multiselect = False
+            fd.Filter = "mkv|*.mkv"
+            If fd.ShowDialog = DialogResult.OK Then
+                For Each i In fd.FileNames
+                    Try
+                        MKVInfo.MetadataHDR(i, Nothing)
+                    Catch ex As Exception
+                        g.ShowException(ex)
+                    End Try
+                Next
+            End If
+        End Using
+    End Sub
+
+    <Command("Generates a Short Gif Based on Input data.")>
+    Sub SaveGif()
+        Using fd As New OpenFileDialog
+            fd.Title = "Select files"
+            fd.Multiselect = True
+            If fd.ShowDialog = DialogResult.OK Then
+                Using f As New SimpleSettingsForm("Gif Options")
+                    f.ScaleClientSize(27, 18)
 
                     Dim ui = f.SimpleUI
-
                     Dim page = ui.CreateFlowPage("main page")
+                    ui.Store = s
+                    page.SuspendLayout()
 
-                    Dim nb = ui.AddNumericBlock(page)
-                    nb.Label.Text = "Thumbnail Width:"
-                    nb.Label.Offset = 7
-                    nb.NumEdit.Init(260, 4000, 10)
-                    nb.NumEdit.Value = s.ThumbnailWidth
-                    nb.NumEdit.SaveAction = Sub(value) s.ThumbnailWidth = CInt(value)
+                    Dim PaletteGen = ui.AddMenu(Of String)
+                    Dim Compression = ui.AddMenu(Of String)
+                    Dim PaletteUse = ui.AddMenu(Of String)
 
-                    nb = ui.AddNumericBlock(page)
-                    nb.Label.Text = "Rows:"
-                    nb.Label.Offset = 7
-                    nb.NumEdit.Init(1, 1000, 1)
-                    nb.NumEdit.Value = s.ThumbnailRows
-                    nb.NumEdit.SaveAction = Sub(value) s.ThumbnailRows = CInt(value)
+                    Dim Time = ui.AddNum()
+                    Time.Text = "Starting Time:"
+                    Time.Config = {1.0, 3600.0, 0.2, 1}
+                    Time.Help = "The Time Position Where the Animation Should start at in Seconds"
+                    Time.NumEdit.Value = s.Storage.GetDouble("GifTime", 15.0)
+                    Time.NumEdit.SaveAction = Sub(value) s.Storage.SetDouble("GifTime", value)
 
-                    nb = ui.AddNumericBlock(page)
-                    nb.Label.Text = "Columns:"
-                    nb.Label.Offset = 7
-                    nb.NumEdit.Init(1, 1000, 1)
-                    nb.NumEdit.Value = s.ThumbnailColumns
-                    nb.NumEdit.SaveAction = Sub(value) s.ThumbnailColumns = CInt(value)
+                    Dim Length = ui.AddNum()
+                    Length.Text = "Length:"
+                    Length.Config = {1.0, 9.0, 0.2, 1}
+                    Length.Help = "The Length of the Animation in Seconds"
+                    Length.NumEdit.Value = s.Storage.GetDouble("GifLength", 4.2)
+                    Length.NumEdit.SaveAction = Sub(value) s.Storage.SetDouble("GifLength", value)
+
+                    Dim FrameRate = ui.AddNum()
+                    FrameRate.Text = "Framerate:"
+                    FrameRate.Config = {15, 60}
+                    FrameRate.NumEdit.Value = s.Storage.GetInt("GifFrameRate", 15)
+                    FrameRate.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("GifFrameRate", value)
+
+                    Dim Scale = ui.AddNum()
+                    Scale.Text = "Scale:"
+                    Scale.Config = {240, 2160}
+                    Scale.NumEdit.Value = s.Storage.GetInt("GifScale", 480)
+                    Scale.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("GifScale", value)
+
+                    PaletteGen.Text = "Statistics Mode:"
+                    PaletteGen.Add("Full", "full")
+                    PaletteGen.Add("Difference", "diff")
+                    PaletteGen.Button.Value = s.Storage.GetString("PaletteGen", "diff")
+                    PaletteGen.Button.SaveAction = Sub(value) s.Storage.SetString("PaletteGen", value)
+
+                    PaletteUse.Text = "Diff Mode:"
+                    PaletteUse.Add("Rectangle", "rectangle")
+                    PaletteUse.Add("None", "none")
+                    PaletteUse.Button.Value = s.Storage.GetString("PaletteUse", "rectangle")
+                    PaletteUse.Button.SaveAction = Sub(value) s.Storage.SetString("PaletteUse", value)
+
+                    Compression.Text = "Dither:"
+                    Compression.Add("Bayer Scale", "dither=bayer:bayer_scale=5")
+                    Compression.Add("Heckbert", "dither=heckbert")
+                    Compression.Add("Floyd Steinberg", "dither=floyd_steinberg")
+                    Compression.Add("Sierra 2", "dither=sierra2")
+                    Compression.Add("Sierra 2_4a", "dither=sierra2_4a")
+                    Compression.Add("None", "dither=none")
+                    Compression.Button.Value = s.Storage.GetString("GifDither", "dither=floyd_steinberg")
+                    Compression.Button.SaveAction = Sub(value) s.Storage.SetString("GifDither", value)
+
+                    Dim Output = ui.AddBool()
+                    Output.Text = "Output Path"
+                    Output.Checked = s.Storage.GetBool("GifOutput", False)
+                    Output.SaveAction = Sub(value) s.Storage.SetBool("GifOutput", value)
+
+                    Dim CustomDirectory = ui.AddTextMenu() 'Custom Output Directory
+                    CustomDirectory.Label.Visible = False
+                    CustomDirectory.Edit.Text = s.Storage.GetString("GifDirectory", p.DefaultTargetFolder)
+                    CustomDirectory.Edit.SaveAction = Sub(value) s.Storage.SetString("GifDirectory", value)
+                    CustomDirectory.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
+
+                    AddHandler Output.CheckStateChanged, Sub()
+                                                             CustomDirectory.Visible = Output.Checked = True
+                                                         End Sub
+
+                    CustomDirectory.Visible = Output.Checked = True
+
+                    page.ResumeLayout()
 
                     If f.ShowDialog() = DialogResult.OK Then
                         ui.Save()
 
-                        Dim tmp = ""
-
-                        SyncLock p.Log
-                            tmp = p.Log.ToString
-                        End SyncLock
-
-                        ProcessForm.ShowForm(False)
-
                         For Each i In fd.FileNames
                             Try
-                                Thumbnails.SaveThumbnails(i)
+                                Animation.GIF(i, Nothing)
                             Catch ex As Exception
                                 g.ShowException(ex)
                             End Try
                         Next
-
-                        SyncLock p.Log
-                            p.Log.Length = 0
-                            p.Log.Append(tmp)
-                        End SyncLock
-
-                        ProcessForm.CloseProcessForm()
-                        g.ShellExecute(Filepath.GetDir(fd.FileName))
                     End If
                 End Using
             End If
         End Using
     End Sub
 
-    <Command("Perform | Show MediaInfo of all files in a folder", "Presents MediaInfo of all files in a folder in a list view.")>
-    Sub OpenMediaInfoFolderView()
+    <Command("Generate Thumbnails Using MTN Engine")>
+    Sub SaveMTN()
+        Using fd As New OpenFileDialog
+            fd.Title = "Select files"
+            fd.Multiselect = True
+
+            If fd.ShowDialog = DialogResult.OK Then
+                Using f As New SimpleSettingsForm("Thumbnail Options")
+                    f.ScaleClientSize(27, 15)
+
+                    Dim ui = f.SimpleUI
+                    Dim page = ui.CreateFlowPage("main page")
+                    ui.Store = s
+                    page.SuspendLayout()
+
+                    Dim Column = ui.AddNum()
+                    Column.Text = "Columns:"
+                    Column.Config = {1, 12}
+                    Column.NumEdit.Value = s.Storage.GetInt("MTNColumn", 4)
+                    Column.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNColumn", value)
+
+                    Dim Row = ui.AddNum()
+                    Row.Text = "Rows:"
+                    Row.Config = {1, 12}
+                    Row.NumEdit.Value = s.Storage.GetInt("MTNRow", 6)
+                    Row.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNRow", value)
+
+                    Dim Quality = ui.AddNum()
+                    Quality.Text = "Quality:"
+                    Quality.Config = {25, 100}
+                    Quality.NumEdit.Value = s.Storage.GetInt("MTNQuality", 95)
+                    Quality.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNQuality", value)
+
+                    Dim Height = ui.AddNum()
+                    Height.Text = "Height:"
+                    Height.Config = {150, 500}
+                    Height.NumEdit.Value = s.Storage.GetInt("MTNHeight", 250)
+                    Height.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNHeight", value)
+
+                    Dim Width = ui.AddNum()
+                    Width.Text = "Width:"
+                    Width.Config = {960, 2000}
+                    Width.NumEdit.Value = s.Storage.GetInt("MTNWidth", 1920)
+                    Width.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNWidth", value)
+
+                    Dim Depth = ui.AddNum()
+                    Depth.Text = "Depth:"
+                    Depth.Config = {4, 12}
+                    Depth.NumEdit.Value = s.Storage.GetInt("MTNDepth", 12)
+                    Depth.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("MTNDepth", value)
+
+                    Dim Output = ui.AddBool()
+                    Output.Text = "Custom Output"
+                    Output.Checked = s.Storage.GetBool("MTNOutput", False)
+                    Output.SaveAction = Sub(value) s.Storage.SetBool("MTNOutput", value)
+
+
+                    Dim CustomDirectory = ui.AddTextMenu() 'Custom Output Directory
+                    CustomDirectory.Label.Visible = False
+                    CustomDirectory.Edit.Text = s.Storage.GetString("MTNDirectory", p.DefaultTargetFolder)
+                    CustomDirectory.Edit.SaveAction = Sub(value) s.Storage.SetString("MTNDirectory", value)
+                    CustomDirectory.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
+
+                    AddHandler Output.CheckStateChanged, Sub()
+                                                             CustomDirectory.Visible = Output.Checked = True
+                                                         End Sub
+
+                    CustomDirectory.Visible = Output.Checked = True
+
+                    page.ResumeLayout()
+
+                    If f.ShowDialog() = DialogResult.OK Then
+                        ui.Save()
+
+                        For Each i In fd.FileNames
+                            Try
+                                MTN.Thumbnails(i, Nothing)
+                            Catch ex As Exception
+                                g.ShowException(ex)
+                            End Try
+                        Next
+
+                    End If
+                End Using
+            End If
+        End Using
+    End Sub
+
+    <Command("Creates Very High Quality Animations in the Form of PNG.")>
+    Sub SavePNG()
+        Using fd As New OpenFileDialog
+            fd.Title = "Select files"
+            fd.Multiselect = True
+
+            If fd.ShowDialog = DialogResult.OK Then
+                Using f As New SimpleSettingsForm("PNG Options")
+                    f.ScaleClientSize(27, 15)
+
+                    Dim ui = f.SimpleUI
+                    Dim page = ui.CreateFlowPage("main page")
+                    ui.Store = s
+                    page.SuspendLayout()
+
+                    Dim Opt = ui.AddMenu(Of String)
+
+                    Dim PNGTime = ui.AddNum()
+                    PNGTime.Text = "Starting Time:"
+                    PNGTime.Config = {1.0, 3600.0, 0.2, 1}
+                    PNGTime.Help = "The Time Position Where the Animation Should start at in Seconds"
+                    PNGTime.NumEdit.Value = s.Storage.GetDouble("PNGTime", 15.0)
+                    PNGTime.NumEdit.SaveAction = Sub(value) s.Storage.SetDouble("PNGTime", value)
+
+                    Dim PNGLength = ui.AddNum()
+                    PNGLength.Text = "Length:"
+                    PNGLength.Config = {1.0, 9.0, 0.2, 1}
+                    PNGLength.Help = "The Length of the Animation in Seconds"
+                    PNGLength.NumEdit.Value = s.Storage.GetDouble("PNGLength", 3.8)
+                    PNGLength.NumEdit.SaveAction = Sub(value) s.Storage.SetDouble("PNGLength", value)
+
+                    Dim PNGFrameRate = ui.AddNum()
+                    PNGFrameRate.Text = "FrameRate:"
+                    PNGFrameRate.Config = {15, 60}
+                    PNGFrameRate.NumEdit.Value = s.Storage.GetInt("PNGFrameRate", 15)
+                    PNGFrameRate.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("PNGFrameRate", value)
+
+                    Dim PNGScale = ui.AddNum()
+                    PNGScale.Text = "Scale:"
+                    PNGScale.Config = {240, 2160}
+                    PNGScale.Help = "The Size to Scale the Resolution to"
+                    PNGScale.NumEdit.Value = s.Storage.GetInt("PNGScale", 480)
+                    PNGScale.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("PNGScale", value)
+
+                    Dim OptSettings = ui.AddBool()
+                    OptSettings.Text = "Enable Opt"
+                    OptSettings.Help = "Enable or Disable the Usage of PNG Opt"
+                    OptSettings.Checked = s.Storage.GetBool("OptSetting", False)
+                    OptSettings.SaveAction = Sub(value) s.Storage.SetBool("OptSetting", value)
+                    AddHandler OptSettings.CheckStateChanged, Sub()
+                                                                  Opt.Visible = OptSettings.Checked = True
+                                                              End Sub
+
+                    Opt.Text = "Opt Settings:"
+                    Opt.Add("Zlib", "-z0")
+                    Opt.Add("7zip", "-z1")
+                    Opt.Add("Zopfli", "-z2")
+                    Opt.Help = "Compression and Optimization Method Used" + BR + "ZLib = Fastest" + BR + "7Zip = Balance" + BR + "Zopfli = Slowest"
+                    Opt.Button.Value = s.Storage.GetString("PNGopt", "-z1")
+                    Opt.Button.SaveAction = Sub(value) s.Storage.SetString("PNGopt", value)
+
+                    Opt.Visible = OptSettings.Checked = True
+
+                    Dim Output = ui.AddBool()
+                    Output.Text = "Output Path"
+                    Output.Checked = s.Storage.GetBool("PNGOutput", False)
+                    Output.SaveAction = Sub(value) s.Storage.SetBool("PNGOutput", value)
+
+
+                    Dim CustomDirectory = ui.AddTextMenu() 'Custom Output Directory
+                    CustomDirectory.Label.Visible = False
+                    CustomDirectory.Edit.Text = s.Storage.GetString("PNGDirectory", p.DefaultTargetFolder)
+                    CustomDirectory.Edit.SaveAction = Sub(value) s.Storage.SetString("PNGDirectory", value)
+                    CustomDirectory.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
+
+                    AddHandler Output.CheckStateChanged, Sub()
+                                                             CustomDirectory.Visible = Output.Checked = True
+                                                         End Sub
+
+                    CustomDirectory.Visible = Output.Checked = True
+
+                    page.ResumeLayout()
+
+                    If f.ShowDialog() = DialogResult.OK Then
+                        ui.Save()
+
+                        For Each i In fd.FileNames
+                            Try
+                                Animation.aPNG(i, Nothing)
+                            Catch ex As Exception
+                                g.ShowException(ex)
+                            End Try
+                        Next
+                    End If
+                End Using
+            End If
+        End Using
+    End Sub
+
+    <Command("Shows a dialog to generate thumbnails.")>
+    Sub ShowBatchGenerateThumbnailsDialog()
+        Using fd As New OpenFileDialog
+            fd.Title = "Select files"
+            fd.SetFilter(FileTypes.Video)
+            fd.Multiselect = True
+
+            If fd.ShowDialog = DialogResult.OK Then
+                Using f As New SimpleSettingsForm("Thumbnail Options")
+                    f.ScaleClientSize(27, 20)
+
+                    Dim ui = f.SimpleUI
+                    Dim page = ui.CreateFlowPage("main page")
+                    ui.Store = s
+                    page.SuspendLayout()
+
+                    Dim row As SimpleUI.NumBlock
+                    Dim interval As SimpleUI.NumBlock
+
+                    Dim mode = ui.AddMenu(Of Integer)
+                    mode.Text = "Row Count Mode"
+                    mode.Add("Manual", 0)
+                    mode.Add("Row count is calculated based on time interval", 1)
+                    mode.Button.Value = s.Storage.GetInt("Thumbnail Mode")
+                    mode.Button.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Mode", value)
+                    AddHandler mode.Button.ValueChangedUser, Sub()
+                                                                 row.Visible = mode.Button.Value = 0
+                                                                 interval.Visible = mode.Button.Value = 1
+                                                             End Sub
+                    Dim m = ui.AddMenu(Of Integer)
+                    m.Text = "Timestamp Position"
+                    m.Add("Left Top", 0)
+                    m.Add("Right Top", 1)
+                    m.Add("Left Bottom", 2)
+                    m.Add("Right Bottom", 3)
+                    m.Button.Value = s.Storage.GetInt("Thumbnail Position", 3)
+                    m.Button.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Position", value)
+
+                    Dim k = ui.AddMenu(Of String)
+                    k.Text = "Picture Format:"
+                    k.Add("JPG", "jpg")
+                    k.Add("PNG", "png")
+                    k.Add("TIFF", "tiff")
+                    k.Add("BMP", "bmp")
+                    k.Button.Value = s.Storage.GetString("Picture Format", "png")
+                    k.Button.SaveAction = Sub(value) s.Storage.SetString("Picture Format", CStr(value))
+
+                    Dim cp = ui.AddColorPicker()
+                    cp.Text = "Background Color"
+                    cp.Field = NameOf(s.ThumbnailBackgroundColor)
+
+                    Dim nb = ui.AddNum()
+                    nb.Text = "Thumbnail Width:"
+                    nb.Config = {200, 4000, 10}
+                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Width", 500)
+                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Width", CInt(value))
+
+                    nb = ui.AddNum()
+                    nb.Text = "Column Count:"
+                    nb.Config = {1, 20}
+                    nb.NumEdit.Value = s.Storage.GetInt("Thumbnail Columns", 4)
+                    nb.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Columns", CInt(value))
+
+                    row = ui.AddNum()
+                    row.Text = "Row Count:"
+                    row.Config = {1, 20}
+                    row.NumEdit.Value = s.Storage.GetInt("Thumbnail Rows", 6)
+                    row.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Rows", CInt(value))
+
+                    interval = ui.AddNum()
+                    interval.Text = "Interval (seconds):"
+                    interval.NumEdit.Value = s.Storage.GetInt("Thumbnail Interval")
+                    interval.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Interval", CInt(value))
+
+                    row.Visible = mode.Button.Value = 0
+                    interval.Visible = mode.Button.Value = 1
+
+                    Dim cq = ui.AddNum()
+                    cq.Text = "Compression Quality:"
+                    cq.Config = {1, 100}
+                    cq.NumEdit.Value = s.Storage.GetInt("Thumbnail Compression Quality", 95)
+                    cq.NumEdit.SaveAction = Sub(value) s.Storage.SetInt("Thumbnail Compression Quality", CInt(value))
+                    AddHandler k.Button.ValueChangedUser, Sub()
+                                                              cq.Visible = k.Button.Value = "jpg"
+                                                          End Sub
+
+                    cq.Visible = k.Button.Value = "jpg"
+
+                    Dim Logo = ui.AddBool()
+                    Logo.Text = "Disable Logo"
+                    Logo.Help = "Enable or Disable the StaxRip Watermark"
+                    Logo.Checked = s.Storage.GetBool("Logo", False)
+                    Logo.SaveAction = Sub(value) s.Storage.SetBool("Logo", CBool(value))
+
+                    Dim Output = ui.AddBool()
+                    Output.Text = "Output Path"
+                    Output.Checked = s.Storage.GetBool("StaxRipOutput", False)
+                    Output.SaveAction = Sub(value) s.Storage.SetBool("StaxRipOutput", value)
+
+
+                    Dim CustomDirectory = ui.AddTextMenu() 'Custom Output Directory
+                    CustomDirectory.Label.Visible = False
+                    CustomDirectory.Edit.Text = s.Storage.GetString("StaxRipDirectory", p.DefaultTargetFolder)
+                    CustomDirectory.Edit.SaveAction = Sub(value) s.Storage.SetString("StaxRipDirectory", value)
+                    CustomDirectory.AddMenu("Edit...", Function() g.BrowseFolder(p.DefaultTargetFolder))
+
+                    AddHandler Output.CheckStateChanged, Sub()
+                                                             CustomDirectory.Visible = Output.Checked = True
+                                                         End Sub
+
+                    CustomDirectory.Visible = Output.Checked = True
+
+
+                    page.ResumeLayout()
+
+                    If f.ShowDialog() = DialogResult.OK Then
+                        ui.Save()
+
+                        For Each i In fd.FileNames
+                            Try
+                                Thumbnails.SaveThumbnails(i, Nothing)
+                            Catch ex As Exception
+                                g.ShowException(ex)
+                            End Try
+                        Next
+                        MsgInfo("Thumbnail Has Been Created")
+                    End If
+                End Using
+            End If
+        End Using
+    End Sub
+
+    <Command("Presents MediaInfo of all files in a folder in a list view.")>
+    Sub ShowMediaInfoFolderViewDialog()
         Using d As New FolderBrowserDialog
-            d.Description = "Please choose a folder to be viewed."
             d.ShowNewFolderButton = False
             d.SetSelectedPath(s.Storage.GetString("MediaInfo Folder View folder"))
 
             If d.ShowDialog = DialogResult.OK Then
                 s.Storage.SetString("MediaInfo Folder View folder", d.SelectedPath)
-                Dim f As New MediaInfoFolderViewForm(DirPath.AppendSeparator(d.SelectedPath))
+                Dim f As New MediaInfoFolderViewForm(d.SelectedPath.FixDir)
                 f.Show()
             End If
         End Using
     End Sub
 
+    '<Command("Searches for New Releases of Staxrip")>
+    'Sub UpdateStaxRip()
+    '    Using f As New UpdateForm
+    '        Try
+    '            f.ShowDialog()
+    '        Catch ex As Exception
+    '            MsgInfo(ex.Message)
+    '        End Try
+    '    End Using
+    'End Sub
+
+    Protected Overrides Sub OnDragEnter(e As DragEventArgs)
+        Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+        If Not files.NothingOrEmpty Then e.Effect = DragDropEffects.Copy
+        MyBase.OnDragEnter(e)
+    End Sub
+
+    Protected Overrides Sub OnDragDrop(e As DragEventArgs)
+        Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+        If Not files.NothingOrEmpty Then BeginInvoke(Sub() OpenAnyFile(files.ToList))
+        MyBase.OnDragDrop(e)
+    End Sub
+
+    Protected Overrides Sub OnActivated(e As EventArgs)
+        Assistant()
+        UpdateScriptsMenuAsync()
+        MyBase.OnActivated(e)
+        g.WriteDebugLog("MainForm.Activated")
+    End Sub
+
+    Protected Overrides Sub OnShown(e As EventArgs)
+        UpdateDynamicMenuAsync()
+        UpdateRecentProjectsMenu()
+        UpdateTemplatesMenuAsync()
+        IsLoading = False
+        Refresh()
+        ProcessCommandLine(Environment.GetCommandLineArgs)
+        MyBase.OnShown(e)
+        'TestForm.ShowForm()
+    End Sub
+
+    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
+        If IsSaveCanceled() Then e.Cancel = True
+        MyBase.OnFormClosing(e)
+    End Sub
+
+    Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
+        If Not g.ProcForm Is Nothing Then g.ProcForm.Invoke(Sub() g.ProcForm.Close())
+        g.SaveSettings()
+        g.RaiseAppEvent(ApplicationEvent.ApplicationExit)
+        MyBase.OnFormClosed(e)
+    End Sub
+
     Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean
         Get
-            Return True
+            Dim hwnd = Native.GetForegroundWindow()
+            Dim styles = Native.GetWindowLong(hwnd, -16) 'GWL_STYLE
+            If (&HC00000L And styles) <> &HC00000L Then Return True 'WS_CAPTION
+            If ProcController.BlockActivation Then Return True
+            Return MyBase.ShowWithoutActivation
         End Get
     End Property
 End Class

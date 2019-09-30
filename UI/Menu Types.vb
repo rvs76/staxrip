@@ -1,12 +1,5 @@
-Imports System.Threading
-Imports System.Runtime.InteropServices
 Imports System.ComponentModel
 Imports System.Drawing.Design
-Imports System.Reflection
-Imports System.Text
-Imports System.Drawing.Drawing2D
-
-Imports StaxRip.UI
 
 Namespace UI
     <Serializable()>
@@ -19,69 +12,20 @@ Namespace UI
         End Sub
 
         <NonSerialized()>
-        Private CustomMenuValue As CustomMenu
+        Public CustomMenu As CustomMenu
 
-        Property CustomMenu() As CustomMenu
-            Get
-                Return CustomMenuValue
-            End Get
-            Set(Value As CustomMenu)
-                CustomMenuValue = Value
-            End Set
-        End Property
+        Overridable Property Text As String
 
-        Private TextValue As String
-
-        Overridable Property Text() As String
-            Get
-                Return TextValue
-            End Get
-            Set(Value As String)
-                TextValue = Value
-            End Set
-        End Property
-
-        Private SubItemsValue As New List(Of CustomMenuItem)
-
-        Property SubItems() As List(Of CustomMenuItem)
-            Get
-                Return SubItemsValue
-            End Get
-            Set(Value As List(Of CustomMenuItem))
-                SubItemsValue = Value
-            End Set
-        End Property
-
-        Private KeyDataValue As Keys
-
-        Property KeyData() As Keys
-            Get
-                Return KeyDataValue
-            End Get
-            Set(Value As Keys)
-                KeyDataValue = Value
-            End Set
-        End Property
-
-        Private MethodNameValue As String
-
-        Property MethodName() As String
-            Get
-                Return MethodNameValue
-            End Get
-            Set(Value As String)
-                MethodNameValue = Value
-            End Set
-        End Property
+        Property SubItems As New List(Of CustomMenuItem)
+        Property KeyData As Keys
+        Property Symbol As Symbol
+        Property MethodName As String
 
         Private ParametersValue As List(Of Object)
 
         Property Parameters() As List(Of Object)
             Get
-                If ParametersValue Is Nothing Then
-                    ParametersValue = New List(Of Object)
-                End If
-
+                If ParametersValue Is Nothing Then ParametersValue = New List(Of Object)
                 Return ParametersValue
             End Get
             Set(Value As List(Of Object))
@@ -90,23 +34,49 @@ Namespace UI
         End Property
 
         Sub Add(path As String)
-            Add(path, Nothing, Keys.None, Nothing)
+            Add(path, Nothing, Keys.None, Symbol.None, Nothing)
+        End Sub
+
+        Sub Add(path As String, symbol As Symbol)
+            Add(path, Nothing, Keys.None, symbol, Nothing)
         End Sub
 
         Sub Add(path As String, methodName As String)
-            Add(path, methodName, Keys.None, Nothing)
+            Add(path, methodName, Keys.None, Symbol.None, Nothing)
         End Sub
 
-        Sub Add(path As String, methodName As String, ParamArray params As Object())
+        Sub Add(path As String, methodName As String, symbol As Symbol)
+            Add(path, methodName, Keys.None, symbol, Nothing)
+        End Sub
+
+        Sub Add(path As String, methodName As String, symbol As Symbol, params As Object())
+            Add(path, methodName, Keys.None, symbol, params)
+        End Sub
+
+        Sub Add(path As String, methodName As String, keyData As Keys)
+            Add(path, methodName, keyData, Symbol.None, Nothing)
+        End Sub
+
+        Sub Add(path As String, methodName As String, keyData As Keys, symbol As Symbol)
+            Add(path, methodName, keyData, symbol, Nothing)
+        End Sub
+
+        Sub Add(path As String, methodName As String, keyData As Keys, params As Object())
+            Add(path, methodName, keyData, Symbol.None, params)
+        End Sub
+
+        Sub Add(path As String, methodName As String, params As Object())
             Add(path, methodName, Keys.None, params)
         End Sub
 
-        Sub Add(path As String, methodName As String, keyData As Keys, ParamArray params As Object())
-            Add(path.SplitNoEmpty("|"), methodName, keyData, params)
-        End Sub
+        Sub Add(path As String,
+                methodName As String,
+                keyData As Keys,
+                symbol As Symbol,
+                params As Object())
 
-        Private Sub Add(pathArray As String(), methodName As String, keyData As Keys, ParamArray params As Object())
-            Dim l As List(Of CustomMenuItem) = SubItems
+            Dim pathArray = path.SplitNoEmpty("|")
+            Dim l = SubItems
 
             For i = 0 To pathArray.Length - 1
                 Dim found As Boolean = False
@@ -128,26 +98,15 @@ Namespace UI
                     If i = pathArray.Length - 1 Then
                         item.MethodName = methodName
                         item.KeyData = keyData
-
-                        If Not params Is Nothing Then
-                            item.Parameters.AddRange(params)
-                        End If
+                        item.Symbol = symbol
+                        If Not params Is Nothing Then item.Parameters.AddRange(params)
                     End If
                 End If
             Next
         End Sub
 
         <NonSerialized()>
-        Private ParentValue As CustomMenuItem
-
-        Property Parent() As CustomMenuItem
-            Get
-                Return ParentValue
-            End Get
-            Set(Value As CustomMenuItem)
-                ParentValue = Value
-            End Set
-        End Property
+        Public Parent As CustomMenuItem
 
         Shared Sub SetParents(item As CustomMenuItem)
             For Each i In item.SubItems
@@ -181,6 +140,14 @@ Namespace UI
     Public Class CustomMenu
         Private Items As New List(Of CustomMenuItem)
 
+        Property Menu As Menu
+        Property MenuStrip As MenuStrip
+        Property ToolStrip As ToolStrip
+        Property MenuItems As New List(Of MenuItemEx)
+        Property DefaultMenu As Func(Of CustomMenuItem)
+        Property MenuItem As CustomMenuItem
+        Property CommandManager As CommandManager
+
         Event Command(e As CustomMenuItemEventArgs)
 
         Sub New(defaultMenu As Func(Of CustomMenuItem),
@@ -193,83 +160,6 @@ Namespace UI
             Me.MenuItem = menuItem
             Me.ToolStrip = toolStrip
         End Sub
-
-        Private MenuValue As Menu
-
-        Property Menu() As Menu
-            Get
-                Return MenuValue
-            End Get
-            Set(Value As Menu)
-                MenuValue = Value
-            End Set
-        End Property
-
-        Private MenuStripValue As MenuStrip
-
-        Property MenuStrip() As MenuStrip
-            Get
-                Return MenuStripValue
-            End Get
-            Set(Value As MenuStrip)
-                MenuStripValue = Value
-            End Set
-        End Property
-
-        Private ToolStripValue As ToolStrip
-
-        Property ToolStrip() As ToolStrip
-            Get
-                Return ToolStripValue
-            End Get
-            Set(Value As ToolStrip)
-                ToolStripValue = Value
-            End Set
-        End Property
-
-        Private MenuItemsValue As New List(Of MenuItemEx)
-
-        Property MenuItems() As List(Of MenuItemEx)
-            Get
-                Return MenuItemsValue
-            End Get
-            Set(Value As List(Of MenuItemEx))
-                MenuItemsValue = Value
-            End Set
-        End Property
-
-        Private DefaultMenuValue As Func(Of CustomMenuItem)
-
-        Property DefaultMenu() As Func(Of CustomMenuItem)
-            Get
-                Return DefaultMenuValue
-            End Get
-            Set(Value As Func(Of CustomMenuItem))
-                DefaultMenuValue = Value
-            End Set
-        End Property
-
-        Private MenuItemValue As CustomMenuItem
-
-        Property MenuItem() As CustomMenuItem
-            Get
-                Return MenuItemValue
-            End Get
-            Set(Value As CustomMenuItem)
-                MenuItemValue = Value
-            End Set
-        End Property
-
-        Private CommandManagerValue As CommandManager
-
-        Property CommandManager() As CommandManager
-            Get
-                Return CommandManagerValue
-            End Get
-            Set(Value As CommandManager)
-                CommandManagerValue = Value
-            End Set
-        End Property
 
         Sub AddKeyDownHandler(control As Control)
             AddHandler control.KeyDown, AddressOf OnKeyDown
@@ -347,16 +237,9 @@ Namespace UI
             If item.MethodName <> "" Then
                 Dim e As New CustomMenuItemEventArgs(item)
                 RaiseEvent Command(e)
-
-                If Not e.Handled Then
-                    Process(item)
-                End If
-
-                Dim f As Form = ToolStrip.FindForm
-
-                If Not f Is Nothing Then
-                    f.Refresh()
-                End If
+                If Not e.Handled Then Process(item)
+                Dim f = ToolStrip.FindForm
+                If Not f Is Nothing Then f.Refresh()
             End If
         End Sub
 
@@ -365,9 +248,10 @@ Namespace UI
         End Sub
 
         Sub BuildMenu()
-            ToolStrip.Items.Clear()
+            ToolStrip.Items.ClearAndDisplose
             Items.Clear()
             MenuItems.Clear()
+            Application.DoEvents()
             BuildMenu(ToolStrip, MenuItem)
         End Sub
 
@@ -390,6 +274,11 @@ Namespace UI
                         emi.ShortcutKeyDisplayString = keys
                     End If
 
+                    If i.Symbol <> Symbol.None Then
+                        emi.ImageScaling = ToolStripItemImageScaling.None
+                        emi.SetImage(i.Symbol)
+                    End If
+
                     AddHandler mi.Click, AddressOf MenuClick
                 End If
 
@@ -410,31 +299,12 @@ Namespace UI
     Public Class CustomMenuItemEventArgs
         Inherits EventArgs
 
+        Property Handled As Boolean
+        Property Item As CustomMenuItem
+
         Sub New(item As CustomMenuItem)
             Me.Item = item
         End Sub
-
-        Private HandledValue As Boolean
-
-        Property Handled() As Boolean
-            Get
-                Return HandledValue
-            End Get
-            Set(Value As Boolean)
-                HandledValue = Value
-            End Set
-        End Property
-
-        Private ItemValue As CustomMenuItem
-
-        Property Item() As CustomMenuItem
-            Get
-                Return ItemValue
-            End Get
-            Set(Value As CustomMenuItem)
-                ItemValue = Value
-            End Set
-        End Property
     End Class
 
     Public Class MenuItemEx
@@ -447,6 +317,38 @@ Namespace UI
 
         Sub New(text As String)
             MyBase.New(text)
+        End Sub
+
+        Public Overrides Function GetPreferredSize(constrainingSize As Size) As Size
+            Dim ret = MyBase.GetPreferredSize(constrainingSize)
+            ret.Height = CInt(Font.Height * 1.4)
+            Return ret
+        End Function
+
+        Sub SetImage(symbol As Symbol)
+            SetImage(symbol, Me)
+        End Sub
+
+        Shared Async Sub SetImage(symbol As Symbol, mi As ToolStripMenuItem)
+            If symbol = Symbol.None Then
+                mi.Image = Nothing
+                Exit Sub
+            End If
+
+            Dim img = Await ImageHelp.GetSymbolImageAsync(symbol)
+
+            Try
+                If Not mi.IsDisposed Then
+                    mi.ImageScaling = ToolStripItemImageScaling.None
+                    mi.Image = img
+                End If
+            Catch
+            End Try
+        End Sub
+
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            MyBase.Dispose(disposing)
+            CustomMenuItem = Nothing
         End Sub
 
         Function GetHelp() As StringPair
@@ -475,7 +377,8 @@ Namespace UI
 
         Private CustomMenuItemValue As CustomMenuItem
 
-        <Browsable(False), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
+        <Browsable(False)>
+        <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
         Property CustomMenuItem() As CustomMenuItem
             Get
                 Return CustomMenuItemValue
@@ -490,7 +393,7 @@ Namespace UI
                     Dim c = CustomMenuItem.CustomMenu.CommandManager.GetCommand(CustomMenuItem.MethodName)
 
                     If c.MethodInfo.Name <> "DynamicMenuItem" Then
-                        If c.MethodInfo.Name = "ExecuteCmdl" Then
+                        If c.MethodInfo.Name = "ExecuteCommandLine" Then
                             Help = CustomMenuItem.Parameters(0).ToString.Trim(""""c)
                         Else
                             Help = c.Attribute.Description
@@ -560,6 +463,8 @@ Namespace UI
         Private Action As Action
 
         Property EnabledFunc As Func(Of Boolean)
+        Property VisibleFunc As Func(Of Boolean)
+
         Property Form As Form
 
         Sub New()
@@ -588,13 +493,16 @@ Namespace UI
             End Get
             Set(value As Keys)
                 ShortcutValue = value
-                ShortcutKeyDisplayString = KeysHelp.GetKeyString(value)
+                ShortcutKeyDisplayString = KeysHelp.GetKeyString(value) + "  "
                 AddHandler Form.KeyDown, AddressOf KeyDown
             End Set
         End Property
 
         Sub KeyDown(sender As Object, e As KeyEventArgs)
-            If Enabled AndAlso e.KeyData = Shortcut Then
+            If Enabled AndAlso e.KeyData = Shortcut AndAlso
+                If(EnabledFunc Is Nothing, True, EnabledFunc.Invoke) AndAlso
+                If(VisibleFunc Is Nothing, True, VisibleFunc.Invoke) Then
+
                 PerformClick()
                 e.Handled = True
             End If
@@ -602,12 +510,22 @@ Namespace UI
 
         Sub Opening(sender As Object, e As CancelEventArgs)
             If Not EnabledFunc Is Nothing Then Enabled = EnabledFunc.Invoke
+            If Not VisibleFunc Is Nothing Then Visible = VisibleFunc.Invoke
         End Sub
 
         Protected Overrides Sub OnClick(e As EventArgs)
             Application.DoEvents()
             If Not Action Is Nothing Then Action()
             MyBase.OnClick(e)
+        End Sub
+
+        Protected Overrides Sub Dispose(disposing As Boolean)
+            MyBase.Dispose(disposing)
+            If Not Form Is Nothing Then RemoveHandler Form.KeyDown, AddressOf KeyDown
+            Action = Nothing
+            EnabledFunc = Nothing
+            VisibleFunc = Nothing
+            Form = Nothing
         End Sub
 
         Shared Function Add(Of T)(items As ToolStripItemCollection,
@@ -620,8 +538,30 @@ Namespace UI
         End Function
 
         Shared Function Add(items As ToolStripItemCollection,
+                            path As String) As ActionMenuItem
+
+            Return Add(items, path, Nothing)
+        End Function
+
+        Shared Function Add(items As ToolStripItemCollection,
+                            path As String,
+                            action As Action) As ActionMenuItem
+
+            Return Add(items, path, action, Symbol.None, Nothing)
+        End Function
+
+        Shared Function Add(items As ToolStripItemCollection,
                             path As String,
                             action As Action,
+                            tip As String) As ActionMenuItem
+
+            Return Add(items, path, action, Symbol.None, tip)
+        End Function
+
+        Shared Function Add(items As ToolStripItemCollection,
+                            path As String,
+                            action As Action,
+                            symbol As Symbol,
                             Optional tip As String = Nothing) As ActionMenuItem
 
             Dim a = path.SplitNoEmpty(" | ")
@@ -645,6 +585,7 @@ Namespace UI
                             l.Add(New ToolStripSeparator)
                         Else
                             Dim item As New ActionMenuItem(a(x), action, tip)
+                            item.SetImage(symbol)
                             l.Add(item)
                             l = item.DropDownItems
                             Return item
@@ -661,35 +602,24 @@ Namespace UI
     End Class
 
     Public Class TextCustomMenu
-        Shared Function EditMenu(value As String, owner As Form) As String
-            Return EditMenu(value, Nothing, Nothing, owner)
-        End Function
-
         Shared Function EditMenu(value As String,
-                                 helpName As String,
                                  defaults As String,
                                  owner As Form) As String
 
-            Using f As New MacroEditor
-                f.SetMacroDefaults()
-                f.MacroEditorControl.Value = value
-                f.Text = "Menu Editor"
-                Dim t = f
+            Using dia As New MacroEditorDialog
+                dia.SetMacroDefaults()
+                dia.MacroEditorControl.Value = value
+                dia.MacroEditorControl.rtbDefaults.Text = defaults
+                dia.Text = "Menu Editor"
 
-                Dim resetAction = Sub()
-                                      If MsgOK("Restore defaults?") Then
-                                          t.MacroEditorControl.Value = defaults
-                                      End If
-                                  End Sub
-
-                If helpName <> "" Then
-                    f.bnContext.Text = " Restore Defaults... "
-                    f.bnContext.Visible = True
-                    f.bnContext.AddClickAction(resetAction)
+                If defaults <> "" Then
+                    dia.bnContext.Text = " Restore Defaults... "
+                    dia.bnContext.Visible = True
+                    dia.bnContext.AddClickAction(Sub() If MsgOK("Restore defaults?") Then dia.MacroEditorControl.Value = defaults)
                 End If
 
-                If f.ShowDialog(owner) = DialogResult.OK Then
-                    value = f.MacroEditorControl.Value
+                If dia.ShowDialog(owner) = DialogResult.OK Then
+                    value = dia.MacroEditorControl.Value
                 End If
             End Using
 
@@ -699,35 +629,46 @@ Namespace UI
         Shared Function GetMenu(definition As String,
                                 owner As Control,
                                 components As IContainer,
-                                action As Action(Of String)) As ContextMenuStrip
+                                action As Action(Of String)) As ContextMenuStripEx
 
-            If owner.ContextMenuStrip Is Nothing Then
-                owner.ContextMenuStrip = New ContextMenuStrip(components)
-            End If
+            If owner.ContextMenuStrip Is Nothing Then owner.ContextMenuStrip = New ContextMenuStripEx(components)
+            Dim ret = DirectCast(owner.ContextMenuStrip, ContextMenuStripEx)
+            ret.Items.ClearAndDisplose
 
-            Dim r = owner.ContextMenuStrip
-            r.Items.Clear()
-
-            For Each i In definition.SplitKeepEmpty(CrLf)
+            For Each i In definition.SplitKeepEmpty(BR)
                 If i.Contains("=") Then
                     Dim arg = i.Right("=").Trim
-                    ActionMenuItem.Add(r.Items, i.Left("="), action, arg, Nothing)
-                ElseIf i.EndsWith(" | -") Then
-                    ActionMenuItem.Add(r.Items, i, Nothing, Nothing)
+                    ActionMenuItem.Add(ret.Items, i.Left("="), action, arg, Nothing)
+                ElseIf i.EndsWith("-") Then
+                    ActionMenuItem.Add(ret.Items, i)
                 ElseIf i = "" Then
-                    r.Items.Add(New ToolStripSeparator)
+                    ret.Items.Add(New ToolStripSeparator)
                 End If
             Next
 
-            Return r
+            Return ret
         End Function
     End Class
 
-    Class ContextMenuStripEx
+    Public Class ContextMenuStripEx
         Inherits ContextMenuStrip
 
         Private FormValue As Form
 
+        Sub New()
+        End Sub
+
+        Sub New(container As IContainer)
+            MyBase.New(container)
+        End Sub
+
+        Protected Overrides Sub OnHandleCreated(e As EventArgs)
+            MyBase.OnHandleCreated(e)
+            g.SetRenderer(Me)
+            Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+        End Sub
+
+        <DefaultValue(GetType(Form), Nothing)>
         Property Form As Form
             Get
                 Return FormValue
@@ -738,21 +679,43 @@ Namespace UI
             End Set
         End Property
 
+        Function Add(path As String) As ActionMenuItem
+            Return Add(path, Nothing)
+        End Function
+
+        Function Add(path As String,
+                     action As Action) As ActionMenuItem
+
+            Return Add(path, action, Nothing)
+        End Function
+
         Function Add(path As String,
                      action As Action,
-                     Optional help As String = Nothing) As ActionMenuItem
+                     help As String) As ActionMenuItem
+
+            Return Add(path, action, help, True)
+        End Function
+
+        Function Add(path As String,
+                     action As Action,
+                     help As String,
+                     enabled As Boolean) As ActionMenuItem
 
             Dim ret = ActionMenuItem.Add(Items, path, action)
+            If ret Is Nothing Then Exit Function
 
             ret.Form = Form
             ret.Help = help
+            ret.Enabled = enabled
 
             AddHandler Opening, AddressOf ret.Opening
 
             Return ret
         End Function
 
-        Function Add(path As String, action As action, shortcut As Keys,
+        Function Add(path As String,
+                     action As Action,
+                     shortcut As Keys,
                      enabledFunc As Func(Of Boolean),
                      Optional help As String = Nothing) As ActionMenuItem
 

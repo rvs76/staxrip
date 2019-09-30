@@ -1,6 +1,4 @@
 ﻿Imports StaxRip.UI
-
-Imports System.Text
 Imports System.ComponentModel
 
 Public Class CommandLineControl
@@ -8,7 +6,7 @@ Public Class CommandLineControl
 
 #Region "Designer"
     Friend WithEvents tb As TextBoxEx
-    Friend WithEvents TableLayoutPanel1 As System.Windows.Forms.TableLayoutPanel
+    Friend WithEvents tlpMain As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents bu As StaxRip.UI.ButtonEx
 
     <System.Diagnostics.DebuggerNonUserCode()>
@@ -28,52 +26,53 @@ Public Class CommandLineControl
     Private Sub InitializeComponent()
         Me.tb = New StaxRip.UI.TextBoxEx()
         Me.bu = New StaxRip.UI.ButtonEx()
-        Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
-        Me.TableLayoutPanel1.SuspendLayout()
+        Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
+        Me.tlpMain.SuspendLayout()
         Me.SuspendLayout()
         '
         'tb
         '
         Me.tb.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.tb.Location = New System.Drawing.Point(0, 0)
         Me.tb.Margin = New System.Windows.Forms.Padding(0)
         Me.tb.Multiline = True
-        Me.tb.Size = New System.Drawing.Size(790, 430)
+        Me.tb.Size = New System.Drawing.Size(235, 205)
         '
-        'bn
+        'bu
         '
-        Me.bu.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.bu.Location = New System.Drawing.Point(796, 0)
-        Me.bu.Margin = New System.Windows.Forms.Padding(6, 0, 0, 0)
+        Me.bu.Anchor = System.Windows.Forms.AnchorStyles.Top
+        Me.bu.Location = New System.Drawing.Point(245, 0)
+        Me.bu.Margin = New System.Windows.Forms.Padding(10, 0, 0, 0)
         Me.bu.ShowMenuSymbol = True
-        Me.bu.Size = New System.Drawing.Size(34, 34)
+        Me.bu.Size = New System.Drawing.Size(70, 70)
         '
-        'TableLayoutPanel1
+        'tlpMain
         '
-        Me.TableLayoutPanel1.ColumnCount = 2
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.TableLayoutPanel1.Controls.Add(Me.bu, 1, 0)
-        Me.TableLayoutPanel1.Controls.Add(Me.tb, 0, 0)
-        Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TableLayoutPanel1.Location = New System.Drawing.Point(0, 0)
-        Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
-        Me.TableLayoutPanel1.RowCount = 1
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(830, 430)
-        Me.TableLayoutPanel1.TabIndex = 2
+        Me.tlpMain.ColumnCount = 2
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpMain.Controls.Add(Me.bu, 1, 0)
+        Me.tlpMain.Controls.Add(Me.tb, 0, 0)
+        Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpMain.Location = New System.Drawing.Point(0, 0)
+        Me.tlpMain.Margin = New System.Windows.Forms.Padding(0)
+        Me.tlpMain.Name = "tlpMain"
+        Me.tlpMain.RowCount = 1
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpMain.Size = New System.Drawing.Size(315, 205)
+        Me.tlpMain.TabIndex = 2
         '
-        'CmdlControl
+        'CommandLineControl
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
-        Me.Controls.Add(Me.TableLayoutPanel1)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Name = "CmdlControl"
-        Me.Size = New System.Drawing.Size(830, 430)
-        Me.TableLayoutPanel1.ResumeLayout(False)
-        Me.TableLayoutPanel1.PerformLayout()
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit
+        Me.Controls.Add(Me.tlpMain)
+        Me.Margin = New System.Windows.Forms.Padding(0)
+        Me.Name = "CommandLineControl"
+        Me.Size = New System.Drawing.Size(315, 205)
+        Me.tlpMain.ResumeLayout(False)
+        Me.tlpMain.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -84,7 +83,7 @@ Public Class CommandLineControl
     Property RestoreFunc As Func(Of String)
 
     Private HelpFileValue As String
-    Private cms As ContextMenuStrip
+    Private cms As ContextMenuStripEx
 
     Event PresetsChanged(presets As String)
     Event ValueChanged(value As String)
@@ -100,9 +99,9 @@ Public Class CommandLineControl
     Property Presets As String
 
     Sub MenuItenClick(value As String)
-        If value.Contains("$") Then
-            value = Macro.Solve(value, False)
-        End If
+        Dim tup = Macro.ExpandGUI(value)
+        If tup.Cancel Then Exit Sub
+        value = tup.Value
 
         If Not value Like "*$*$*" Then
             If tb.Text = "" Then
@@ -114,28 +113,20 @@ Public Class CommandLineControl
     End Sub
 
     Sub EditPresets()
-        Using f As New MacroEditor
-            f.SetMacroDefaults()
-            f.MacroEditorControl.Value = Presets.FormatColumn("=")
-            f.Text = "Menu Editor"
+        Using dia As New MacroEditorDialog
+            dia.SetMacroDefaults()
+            dia.MacroEditorControl.Value = Presets.FormatColumn("=")
+            dia.Text = "Menu Editor"
 
             If Not RestoreFunc Is Nothing Then
-                f.bnContext.Text = " Restore Defaults... "
-                f.bnContext.Visible = True
+                dia.bnContext.Text = " Restore Defaults... "
+                dia.bnContext.Visible = True
+                dia.bnContext.AddClickAction(Sub() If MsgOK("Restore defaults?") Then dia.MacroEditorControl.Value = RestoreFunc.Invoke)
+                dia.MacroEditorControl.rtbDefaults.Text = RestoreFunc.Invoke
             End If
 
-            Dim t = f
-
-            Dim resetAction = Sub()
-                                  If MsgOK("Restore defaults?") Then
-                                      t.MacroEditorControl.Value = RestoreFunc.Invoke
-                                  End If
-                              End Sub
-
-            f.bnContext.AddClickAction(resetAction)
-
-            If f.ShowDialog(FindForm) = DialogResult.OK Then
-                Presets = f.MacroEditorControl.Value.ReplaceUnicode
+            If dia.ShowDialog(FindForm) = DialogResult.OK Then
+                Presets = dia.MacroEditorControl.Value.ReplaceUnicode
                 RaiseEvent PresetsChanged(Presets)
             End If
         End Using
@@ -143,6 +134,7 @@ Public Class CommandLineControl
 
     Private Sub bCmdlAddition_Click() Handles bu.Click
         Dim cms = TextCustomMenu.GetMenu(Presets, bu, components, AddressOf MenuItenClick)
+        Me.components.Add(cms)
         cms.Items.Add(New ToolStripSeparator)
         cms.Items.Add(New ActionMenuItem("Edit Menu...", AddressOf EditPresets))
         cms.Show(bu, 0, bu.Height)
@@ -150,5 +142,9 @@ Public Class CommandLineControl
 
     Private Sub CmdlControl_Layout(sender As Object, e As LayoutEventArgs) Handles Me.Layout
         tb.Height = Height
+    End Sub
+
+    Private Sub CommandLineControl_Load(sender As Object, e As EventArgs) Handles Me.Load
+        If Not DesignHelp.IsDesignMode Then Font = New Font("Consolas", 10 * s.UIScaleFactor)
     End Sub
 End Class

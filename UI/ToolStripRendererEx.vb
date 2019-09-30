@@ -1,22 +1,13 @@
-Imports System.Collections.Generic
-Imports System.Text
-Imports System.Windows.Forms
-Imports System.Drawing
 Imports System.Drawing.Drawing2D
-Imports System.Diagnostics
-Imports System.Windows.Forms.VisualStyles
+Imports System.Drawing.Text
 Imports Microsoft.Win32
-
-Imports VB6 = Microsoft.VisualBasic
 
 Public Class ToolStripRendererEx
     Inherits ToolStripSystemRenderer
 
-    Private ColorSeperatorLight As Color = Color.White
-    Private ColorSeperatorDark As Color = Color.FromArgb(&HE0, &HE0, &HE0)
+    Shared RenderMode As ToolStripRenderModeEx
 
-    Shared RenderMode As ToolStripRenderMode
-
+    Shared Property ColorChecked As Color
     Shared Property ColorBorder As Color
     Shared Property ColorTop As Color
     Shared Property ColorBottom As Color
@@ -29,26 +20,22 @@ Public Class ToolStripRendererEx
 
     Private TextOffset As Integer
 
-    Sub New(mode As ToolStripRenderMode)
+    Sub New(mode As ToolStripRenderModeEx)
         RenderMode = mode
         InitColors(mode)
     End Sub
 
     Shared Function IsAutoRenderMode() As Boolean
         Return _
-            RenderMode = ToolStripRenderMode.SystemAuto OrElse
-            RenderMode = ToolStripRenderMode.Win7Auto OrElse
-            RenderMode = ToolStripRenderMode.Win8Auto
+            RenderMode = ToolStripRenderModeEx.SystemAuto OrElse
+            RenderMode = ToolStripRenderModeEx.Win7Auto OrElse
+            RenderMode = ToolStripRenderModeEx.Win10Auto
     End Function
 
-    Shared Sub InitColors(renderMode As ToolStripRenderMode)
+    Shared Sub InitColors(renderMode As ToolStripRenderModeEx)
         If ToolStripRendererEx.IsAutoRenderMode Then
             Dim argb = CInt(Registry.GetValue("HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM", "ColorizationColor", 0))
-
-            If argb = 0 Then
-                argb = Color.LightBlue.ToArgb
-            End If
-
+            If argb = 0 Then argb = Color.LightBlue.ToArgb
             InitColors(Color.FromArgb(argb))
         Else
             ColorBorder = Color.FromArgb(&HFF83ABDC)
@@ -65,9 +52,10 @@ Public Class ToolStripRendererEx
 
     Shared Sub InitColors(c As Color)
         ColorBorder = HSLColor.Convert(c).ToColorSetLuminosity(100)
-        ColorTop = HSLColor.Convert(c).ToColorSetLuminosity(240)
+        ColorChecked = HSLColor.Convert(c).ToColorSetLuminosity(200)
         ColorBottom = HSLColor.Convert(c).ToColorSetLuminosity(220)
         ColorBackground = HSLColor.Convert(c).ToColorSetLuminosity(230)
+        ColorTop = HSLColor.Convert(c).ToColorSetLuminosity(240)
 
         ColorToolStrip1 = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(ColorBorder, 1)))
         ColorToolStrip2 = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(ColorBorder, 0.7)))
@@ -75,48 +63,25 @@ Public Class ToolStripRendererEx
         ColorToolStrip4 = ControlPaint.LightLight(ControlPaint.LightLight(ControlPaint.Light(ColorBorder, 0.4)))
     End Sub
 
-    'works with ToolStrip.Renderer but not ToolStripManager.Renderer
-    Protected Overrides Sub Initialize(ts As ToolStrip)
-        MyBase.Initialize(ts)
-
-        For Each i In ts.Items.OfType(Of ToolStripMenuItem)()
-            If i.DropDownItems.Count > 0 Then
-                If Not i.Text.EndsWith("   ") Then
-                    i.Text += "   "
-                End If
-            End If
-        Next
-    End Sub
-
-    'works with ToolStrip.Renderer but not ToolStripManager.Renderer
-    Protected Overloads Overrides Sub InitializeItem(item As ToolStripItem)
-        MyBase.InitializeItem(item)
-        InitializeToolStripItem(item)
-    End Sub
-
-    Sub InitializeToolStripItem(item As ToolStripItem)
-        If TypeOf item Is ToolStripDropDownItem Then
-            Dim dropDownItem = DirectCast(item, ToolStripDropDownItem)
-
-            For Each i As ToolStripItem In dropDownItem.DropDownItems
-                InitializeToolStripItem(i)
-            Next
-        End If
-    End Sub
-
     Protected Overrides Sub OnRenderToolStripBorder(e As ToolStripRenderEventArgs)
         ControlPaint.DrawBorder(e.Graphics, e.AffectedBounds, Color.FromArgb(160, 175, 195), ButtonBorderStyle.Solid)
     End Sub
 
     Protected Overloads Overrides Sub OnRenderItemText(e As ToolStripItemTextRenderEventArgs)
-        If TypeOf e.Item Is ToolStripButton Then
-            e.Graphics.TextRenderingHint = Text.TextRenderingHint.ClearTypeGridFit
-        End If
+        e.Graphics.TextRenderingHint = TextRenderingHint.AntiAlias
 
         If TypeOf e.Item Is ToolStripMenuItem AndAlso Not TypeOf e.Item.Owner Is MenuStrip Then
-            Dim r = e.TextRectangle  'TextAlign don't work
-            TextOffset = r.Height
-            e.TextRectangle = New Rectangle(TextOffset, (e.Item.Height - r.Height) \ 2, r.Width, r.Height)
+            Dim r = e.TextRectangle
+
+            Dim dropDown = TryCast(e.ToolStrip, ToolStripDropDownMenu)
+
+            If dropDown Is Nothing OrElse dropDown.ShowImageMargin OrElse dropDown.ShowCheckMargin Then
+                TextOffset = CInt(e.Item.Height * 1.1)
+            Else
+                TextOffset = CInt(e.Item.Height * 0.2)
+            End If
+
+            e.TextRectangle = New Rectangle(TextOffset, CInt((e.Item.Height - r.Height) / 2), r.Width, r.Height)
         End If
 
         MyBase.OnRenderItemText(e)
@@ -158,15 +123,15 @@ Public Class ToolStripRendererEx
 
         If e.Item.Selected AndAlso e.Item.Enabled Then
             If TypeOf e.Item.Owner Is MenuStrip Then
-                DrawHotToolStripButton(e)
+                DrawButton(e)
             Else
                 g.SmoothingMode = SmoothingMode.AntiAlias
 
-                Dim r2 = New Rectangle(r.X + 3, r.Y + 1, r.Width - 6, r.Height - 3)
+                Dim r2 = New Rectangle(r.X + 2, r.Y, r.Width - 4, r.Height - 1)
 
                 If IsFlat() Then
-                    Using p As New Pen(ColorBorder)
-                        g.DrawRectangle(p, r2)
+                    Using pen As New Pen(ColorBorder)
+                        g.DrawRectangle(pen, r2)
                     End Using
 
                     r2.Inflate(-1, -1)
@@ -196,35 +161,33 @@ Public Class ToolStripRendererEx
                         End Using
                     End Using
                 End If
-
             End If
-        End If
-
-        If TypeOf e.Item.Owner Is MenuStrip AndAlso e.Item.Text.EndsWith("  ") Then
-            Dim s = "6"
-            Dim font = New Font("Marlett", e.Item.Font.Size - 2)
-            Dim size = g.MeasureString(s, font)
-            Dim x = CInt(e.Item.Width - size.Width)
-            Dim y = CInt((e.Item.Height - size.Height) / 2) + 1
-            g.DrawString(s, font, Brushes.Black, x, y)
         End If
     End Sub
 
-    Sub DrawHotToolStripButton(e As ToolStripItemRenderEventArgs)
+    Sub DrawButton(e As ToolStripItemRenderEventArgs)
         Dim g = e.Graphics
         Dim r = New Rectangle(Point.Empty, e.Item.Size)
-        Dim r2 = New Rectangle(r.X + 1, r.Y + 1, r.Width - 3, r.Height - 3)
+        Dim r2 = New Rectangle(r.X, r.Y, r.Width - 1, r.Height - 1)
 
         If IsFlat() Then
-            Using p As New Pen(ColorBorder)
-                g.DrawRectangle(p, r2)
+            Using pen As New Pen(ColorBorder)
+                g.DrawRectangle(pen, r2)
             End Using
 
             r2.Inflate(-1, -1)
 
-            Using b As New SolidBrush(ColorBottom)
-                g.FillRectangle(b, r2)
-            End Using
+            Dim tsb = TryCast(e.Item, ToolStripButton)
+
+            If Not tsb Is Nothing AndAlso tsb.Checked Then
+                Using brush As New SolidBrush(ColorChecked)
+                    g.FillRectangle(brush, r2)
+                End Using
+            Else
+                Using brush As New SolidBrush(ColorBottom)
+                    g.FillRectangle(brush, r2)
+                End Using
+            End If
         Else
             g.SmoothingMode = SmoothingMode.AntiAlias
 
@@ -267,21 +230,15 @@ Public Class ToolStripRendererEx
                 End Using
             End Using
         End If
-
     End Sub
 
     Protected Overrides Sub OnRenderDropDownButtonBackground(e As ToolStripItemRenderEventArgs)
-        If e.Item.Selected Then
-            DrawHotToolStripButton(e)
-        End If
+        If e.Item.Selected Then DrawButton(e)
     End Sub
 
     Protected Overrides Sub OnRenderButtonBackground(e As ToolStripItemRenderEventArgs)
         Dim button = DirectCast(e.Item, ToolStripButton)
-
-        If e.Item.Selected OrElse button.Checked Then
-            DrawHotToolStripButton(e)
-        End If
+        If e.Item.Selected OrElse button.Checked Then DrawButton(e)
     End Sub
 
     Protected Overloads Overrides Sub OnRenderArrow(e As ToolStripArrowRenderEventArgs)
@@ -302,18 +259,13 @@ Public Class ToolStripRendererEx
     Protected Overloads Overrides Sub OnRenderSeparator(e As ToolStripSeparatorRenderEventArgs)
         If e.Item.IsOnDropDown Then
             e.Graphics.Clear(ColorBackground)
-
-            Dim right = e.Item.Width - 3
+            Dim right = e.Item.Width - CInt(TextOffset / 5)
             Dim top = e.Item.Height \ 2
             top -= 1
             Dim b = e.Item.Bounds
 
-            Using p As New Pen(ColorSeperatorDark)
-                e.Graphics.DrawLine(p, New Point(2, top), New Point(right, top))
-            End Using
-
-            Using p As New Pen(ColorSeperatorLight)
-                e.Graphics.DrawLine(p, New Point(2, top + 1), New Point(right, top + 1))
+            Using p As New Pen(Color.Gray)
+                e.Graphics.DrawLine(p, New Point(TextOffset, top), New Point(right, top))
             End Using
         ElseIf e.Vertical Then
             Dim b = e.Item.Bounds
@@ -347,18 +299,11 @@ Public Class ToolStripRendererEx
     End Function
 
     Shared Function IsFlat() As Boolean
-        If RenderMode = ToolStripRenderMode.Win8Default Then
-            Return True
-        End If
+        If RenderMode = ToolStripRenderModeEx.Win10Default Then Return True
+        If RenderMode = ToolStripRenderModeEx.Win10Auto Then Return True
 
-        If RenderMode = ToolStripRenderMode.Win8Auto Then
-            Return True
-        End If
-
-        If (RenderMode = ToolStripRenderMode.SystemDefault OrElse RenderMode = ToolStripRenderMode.SystemAuto) AndAlso
-            (Environment.OSVersion.Version.Major = 6 AndAlso Environment.OSVersion.Version.Minor = 2) Then
-
-            Return True
-        End If
+        If (RenderMode = ToolStripRenderModeEx.SystemDefault OrElse
+            RenderMode = ToolStripRenderModeEx.SystemAuto) AndAlso
+            OSVersion.Current >= OSVersion.Windows8 Then Return True
     End Function
 End Class

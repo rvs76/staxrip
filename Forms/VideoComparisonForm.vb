@@ -18,6 +18,7 @@ Public Class VideoComparisonForm
         KeyPreview = True
         bnMenu.TabStop = False
         TabControl.AllowDrop = True
+        TrackBar.NoMouseWheelEvent = True
 
         Dim enabledFunc = Function() Not TabControl.SelectedTab Is Nothing
         Menu = New ContextMenuStripEx()
@@ -26,12 +27,12 @@ Public Class VideoComparisonForm
         bnMenu.ContextMenuStrip = Menu
         TabControl.ContextMenuStrip = Menu
 
-        Menu.Add("Add files to compare", AddressOf Add, Keys.O, Nothing, "Video files to compare, the file browser has multiselect enabled.")
+        Menu.Add("Add files to compare...", AddressOf Add, Keys.O, Nothing, "Video files to compare, the file browser has multiselect enabled.")
         Menu.Add("Close selected tab", AddressOf Remove, Keys.Delete, enabledFunc)
         Menu.Add("Save PNGs at current position", AddressOf Save, Keys.S, enabledFunc, "Saves a PNG image for every file/tab at the current position in the directory of the source file.")
-        Menu.Add("Crop and Zoom", AddressOf CropZoom, Keys.C, enabledFunc)
-        Menu.Add("Go To Frame", AddressOf GoToFrame, Keys.F, enabledFunc)
-        Menu.Add("Go To Time", AddressOf GoToTime, Keys.T, enabledFunc)
+        Menu.Add("Crop and Zoom...", AddressOf CropZoom, Keys.C, enabledFunc)
+        Menu.Add("Go To Frame...", AddressOf GoToFrame, Keys.F, enabledFunc)
+        Menu.Add("Go To Time...", AddressOf GoToTime, Keys.T, enabledFunc)
         Menu.Add("Select next tab", AddressOf NextTab, Keys.Space, enabledFunc)
         Menu.Add("Navigate | 1 frame backward", Sub() TrackBar.Value -= 1, Keys.Left, enabledFunc)
         Menu.Add("Navigate | 1 frame forward", Sub() TrackBar.Value += 1, Keys.Right, enabledFunc)
@@ -41,13 +42,15 @@ Public Class VideoComparisonForm
     End Sub
 
     Sub Add()
+        If Not Package.AviSynth.VerifyOK(True) Then Exit Sub
+
         Using f As New OpenFileDialog
-            f.SetFilter({"mkv", "mp4", "png", "webm", "m4v"})
+            f.SetFilter(FileTypes.Video)
             f.Multiselect = True
             f.SetInitDir(s.Storage.GetString("video comparison folder"))
 
             If f.ShowDialog() = DialogResult.OK Then
-                s.Storage.SetString("video comparison folder", Filepath.GetDir(f.FileName))
+                s.Storage.SetString("video comparison folder", FilePath.GetDir(f.FileName))
 
                 For Each i In f.FileNames
                     Add(i)
@@ -68,26 +71,38 @@ Public Class VideoComparisonForm
     Private Sub Save()
         For Each i As VideoTab In TabControl.TabPages
             i.AVI.Position = Pos
-            Dim outputPath = Filepath.GetDir(i.SourceFile) & Pos & " " + Filepath.GetBase(i.SourceFile) + ".png"
+            Dim outputPath = i.SourceFile.Dir & Pos & " " + i.SourceFile.Base + ".png"
 
             Using b = i.GetBitmap
                 b.Save(outputPath, ImageFormat.Png)
             End Using
         Next
+
     End Sub
 
     Sub Add(sourePath As String)
         Dim tab = New VideoTab()
         tab.Form = Me
-        tab.Open(sourePath)
-        TabControl.TabPages.Add(tab)
-        DirectCast(TabControl.SelectedTab, VideoTab).TrackBarValueChanged()
-        RaiseEvent UpdateMenu()
-        Application.DoEvents()
+
+        If tab.Open(sourePath) Then
+            TabControl.TabPages.Add(tab)
+            DirectCast(TabControl.SelectedTab, VideoTab).TrackBarValueChanged()
+            RaiseEvent UpdateMenu()
+            Application.DoEvents()
+        Else
+            tab.Dispose()
+        End If
     End Sub
 
     Private Sub TrackBar_ValueChanged(sender As Object, e As EventArgs) Handles TrackBar.ValueChanged
         TrackBarValueChanged()
+    End Sub
+
+    Private Sub CodecComparisonForm_MouseWheel(sender As Object, e As MouseEventArgs) Handles Me.MouseWheel
+        Dim value = 100
+        If e.Delta < 0 Then value = value * -1
+        If s.ReverseVideoScrollDirection Then value = value * -1
+        TrackBar.Value += value
     End Sub
 
     Sub TrackBarValueChanged()
@@ -100,7 +115,7 @@ Public Class VideoComparisonForm
     Sub Help()
         Dim f As New HelpForm()
         f.Doc.WriteStart(Text)
-        f.Doc.WriteP("In the statistic tab of the x265 dialog choose Log Level Frame and enable CSV log file creation, the video comparison tool can displays containing frame info.")
+        f.Doc.WriteP("In the statistic tab of the x265 dialog select Log Level Frame and enable CSV log file creation, the video comparison tool can displays containing frame info.")
         f.Doc.WriteTips(Menu.GetTips)
         f.Doc.WriteTable("Shortcut Keys", Menu.GetKeys, False)
         f.Show()
@@ -129,56 +144,47 @@ Public Class VideoComparisonForm
         Next
     End Sub
 
-    Private Sub CodecComparisonForm_MouseWheel(sender As Object, e As MouseEventArgs) Handles Me.MouseWheel
-        If e.Delta > 0 Then
-            TrackBar.Value += 100
-        Else
-            TrackBar.Value -= 100
-        End If
-    End Sub
-
     Private Sub CodecComparisonForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         Dispose()
     End Sub
 
     Private Sub CropZoom()
         Using f As New SimpleSettingsForm("Crop and Zoom")
-            f.Size = New Size(500, 400)
-
+            f.Height = CInt(f.Height * 0.6)
+            f.Width = CInt(f.Width * 0.6)
             Dim ui = f.SimpleUI
-
             Dim page = ui.CreateFlowPage("main page")
             page.SuspendLayout()
 
-            Dim nb = ui.AddNumericBlock(page)
+            Dim nb = ui.AddNum(page)
             nb.Label.Text = "Crop Left:"
-            nb.NumEdit.Init(0, 10000, 10)
+            nb.NumEdit.Config = {0, 10000, 10}
             nb.NumEdit.Value = CropLeft
             nb.NumEdit.SaveAction = Sub(value) CropLeft = CInt(value)
 
-            nb = ui.AddNumericBlock(page)
+            nb = ui.AddNum(page)
             nb.Label.Text = "Crop Top:"
-            nb.NumEdit.Init(0, 10000, 10)
+            nb.NumEdit.Config = {0, 10000, 10}
             nb.NumEdit.Value = CropTop
             nb.NumEdit.SaveAction = Sub(value) CropTop = CInt(value)
 
-            nb = ui.AddNumericBlock(page)
+            nb = ui.AddNum(page)
             nb.Label.Text = "Crop Right:"
-            nb.NumEdit.Init(0, 10000, 10)
+            nb.NumEdit.Config = {0, 10000, 10}
             nb.NumEdit.Value = CropRight
             nb.NumEdit.SaveAction = Sub(value) CropRight = CInt(value)
 
-            nb = ui.AddNumericBlock(page)
+            nb = ui.AddNum(page)
             nb.Label.Text = "Crop Bottom:"
-            nb.NumEdit.Init(0, 10000, 10)
+            nb.NumEdit.Config = {0, 10000, 10}
             nb.NumEdit.Value = CropBottom
             nb.NumEdit.SaveAction = Sub(value) CropBottom = CInt(value)
 
             ui.AddLine(page)
 
-            nb = ui.AddNumericBlock(page)
+            nb = ui.AddNum(page)
             nb.Label.Text = "Zoom:"
-            nb.NumEdit.Init(0, 1000, 10)
+            nb.NumEdit.Config = {0, 1000, 10}
             nb.NumEdit.Value = Zoom
             nb.NumEdit.SaveAction = Sub(value) Zoom = CInt(value)
 
@@ -210,7 +216,11 @@ Public Class VideoComparisonForm
         End If
     End Sub
 
-    Class VideoTab
+    Private Sub VideoComparisonForm_Load(sender As Object, e As EventArgs) Handles Me.Load
+        WindowState = FormWindowState.Normal
+    End Sub
+
+    Public Class VideoTab
         Inherits TabPage
 
         Property AVI As AVIFile
@@ -228,23 +238,43 @@ Public Class VideoComparisonForm
             Open(SourceFile)
         End Sub
 
-        Sub Open(sourePath As String)
-            Text = Filepath.GetBase(sourePath)
+        Function Open(sourePath As String) As Boolean
+            Text = FilePath.GetBase(sourePath)
             SourceFile = sourePath
 
             Dim avs As New VideoScript
-            avs.Engine = ScriptingEngine.AviSynth
-            avs.Path = CommonDirs.Temp + Guid.NewGuid.ToString + ".avs"
+            avs.Engine = ScriptEngine.AviSynth
+            avs.Path = Folder.Temp + Guid.NewGuid.ToString + ".avs"
             AddHandler Disposed, Sub() FileHelp.Delete(avs.Path)
 
             avs.Filters.Add(New VideoFilter("SetMemoryMax(512)"))
 
-            If Filepath.GetExtFull(sourePath) = ".png" Then
+            If sourePath.Ext = "png" Then
                 avs.Filters.Add(New VideoFilter("ImageSource(""" + sourePath + """, end = 0)"))
             Else
-                Dim cachefile = CommonDirs.Temp + Guid.NewGuid.ToString + ".ffindex"
-                AddHandler Disposed, Sub() FileHelp.Delete(cachefile)
-                avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + """, cachefile = """ + cachefile + """)"))
+                Try
+                    Dim cachePath = Folder.Temp + Guid.NewGuid.ToString + ".ffindex"
+                    AddHandler Disposed, Sub() FileHelp.Delete(cachePath)
+                Catch ex As Exception
+                End Try
+
+                If sourePath.EndsWith("mp4") Then
+                    avs.Filters.Add(New VideoFilter("LSMASHVideoSource(""" + sourePath + "" + """, format = ""YV12"")"))
+                Else
+                    avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + "" + """, colorspace = ""YV12"")"))
+                End If
+                'avs.Filters.Add(New VideoFilter("FFVideoSource(""" + sourePath + """, cachefile = """ + cachePath + """)"))
+
+                '    Dim proj As New Project
+                '    proj.Init()
+
+                '    Try
+                '        g.ffmsindex(sourePath, cachePath, False, proj)
+                '    Catch ex As AbortException
+                '        Return False
+                '    Finally
+                '        Form.Activate()
+                '    End Try               
             End If
 
             If (Form.CropLeft Or Form.CropTop Or Form.CropRight Or Form.CropBottom) <> 0 Then
@@ -252,17 +282,22 @@ Public Class VideoComparisonForm
             End If
 
             If Form.Zoom <> 100 Then
-                avs.Filters.Add(New VideoFilter("LanczosResize(Int(width / 100.0 * " & Form.Zoom & "), Int(height / 100.0 * " & Form.Zoom & "))"))
+                avs.Filters.Add(New VideoFilter("Spline64Resize(Int(width / 100.0 * " & Form.Zoom & "), Int(height / 100.0 * " & Form.Zoom & "))"))
             End If
 
             avs.Synchronize(True)
             AVI = New AVIFile(avs.Path)
 
+            Try
+                FileHelp.Delete(sourePath + ".ffindex")
+            Catch ex As Exception
+            End Try
+
             If Form.TrackBar.Maximum < AVI.FrameCount - 1 Then
                 Form.TrackBar.Maximum = AVI.FrameCount - 1
             End If
 
-            Dim csvFile = Filepath.GetDirAndBase(sourePath) + ".csv"
+            Dim csvFile = sourePath.DirAndBase + ".csv"
 
             If File.Exists(csvFile) Then
                 Dim len = Form.TrackBar.Maximum
@@ -287,7 +322,9 @@ Public Class VideoComparisonForm
                     Next
                 End If
             End If
-        End Sub
+
+            Return True
+        End Function
 
         Sub Draw()
             Dim padding As Padding
@@ -328,7 +365,8 @@ Public Class VideoComparisonForm
             Dim ret = AVI.GetBitmap
 
             Using g = Graphics.FromImage(ret)
-                Dim text = Filepath.GetBase(SourceFile)
+                g.TextRenderingHint = Drawing.Text.TextRenderingHint.AntiAlias
+                Dim text = FilePath.GetBase(SourceFile)
                 Dim fontSize = ret.Height \ 100
                 If fontSize < 10 Then fontSize = 10
                 Dim font = New Font("Arial", fontSize)
@@ -373,7 +411,7 @@ Public Class VideoComparisonForm
         End Sub
 
         Protected Overrides Sub Dispose(disposing As Boolean)
-            AVI.Dispose()
+            If Not AVI Is Nothing Then AVI.Dispose()
             MyBase.Dispose(disposing)
         End Sub
     End Class

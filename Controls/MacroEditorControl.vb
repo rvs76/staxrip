@@ -1,7 +1,5 @@
 Imports System.ComponentModel
-
 Imports StaxRip.UI
-Imports System.Text
 
 Public Class MacroEditorControl
     Inherits UserControl
@@ -15,19 +13,20 @@ Public Class MacroEditorControl
 
         MyBase.Dispose(disposing)
     End Sub
-    Friend WithEvents TabControl As System.Windows.Forms.TabControl
-    Friend WithEvents tpEdit As System.Windows.Forms.TabPage
+
+    Private WithEvents TabControl As TabControl
+    Public WithEvents tpEdit As TabPage
     Friend WithEvents tpPreview As System.Windows.Forms.TabPage
     Friend WithEvents gb As System.Windows.Forms.GroupBox
     Friend WithEvents TipProvider As StaxRip.UI.TipProvider
-    Friend WithEvents rtbEdit As RichTextBoxEx
-    Friend WithEvents rtbPreview As System.Windows.Forms.RichTextBox
+    Public WithEvents rtbEdit As RichTextBoxEx
+    Public WithEvents rtbPreview As RichTextBoxEx
     Friend WithEvents TableLayoutPanel1 As System.Windows.Forms.TableLayoutPanel
     Friend WithEvents FlowLayoutPanel1 As System.Windows.Forms.FlowLayoutPanel
-    Friend WithEvents llMacros As System.Windows.Forms.LinkLabel
-    Friend WithEvents llExecute As System.Windows.Forms.LinkLabel
-    Friend WithEvents llHelp As System.Windows.Forms.LinkLabel
-
+    Friend WithEvents llMacros As ButtonLabel
+    Friend WithEvents llHelp As ButtonLabel
+    Public WithEvents tpDefaults As TabPage
+    Public WithEvents rtbDefaults As RichTextBoxEx
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()>
@@ -37,17 +36,19 @@ Public Class MacroEditorControl
         Me.tpEdit = New System.Windows.Forms.TabPage()
         Me.rtbEdit = New StaxRip.UI.RichTextBoxEx()
         Me.tpPreview = New System.Windows.Forms.TabPage()
-        Me.rtbPreview = New System.Windows.Forms.RichTextBox()
+        Me.rtbPreview = New StaxRip.UI.RichTextBoxEx()
+        Me.tpDefaults = New System.Windows.Forms.TabPage()
+        Me.rtbDefaults = New StaxRip.UI.RichTextBoxEx()
         Me.gb = New System.Windows.Forms.GroupBox()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
-        Me.llMacros = New System.Windows.Forms.LinkLabel()
-        Me.llExecute = New System.Windows.Forms.LinkLabel()
-        Me.llHelp = New System.Windows.Forms.LinkLabel()
+        Me.llMacros = New StaxRip.UI.ButtonLabel()
+        Me.llHelp = New StaxRip.UI.ButtonLabel()
         Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
         Me.TabControl.SuspendLayout()
         Me.tpEdit.SuspendLayout()
         Me.tpPreview.SuspendLayout()
+        Me.tpDefaults.SuspendLayout()
         Me.gb.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
         Me.FlowLayoutPanel1.SuspendLayout()
@@ -60,55 +61,72 @@ Public Class MacroEditorControl
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TabControl.Controls.Add(Me.tpEdit)
         Me.TabControl.Controls.Add(Me.tpPreview)
+        Me.TabControl.Controls.Add(Me.tpDefaults)
         Me.TabControl.Location = New System.Drawing.Point(3, 3)
         Me.TabControl.Name = "TabControl"
         Me.TabControl.SelectedIndex = 0
-        Me.TabControl.Size = New System.Drawing.Size(608, 489)
+        Me.TabControl.Size = New System.Drawing.Size(608, 464)
         Me.TabControl.TabIndex = 0
         '
         'tpEdit
         '
         Me.tpEdit.Controls.Add(Me.rtbEdit)
-        Me.tpEdit.Location = New System.Drawing.Point(4, 34)
+        Me.tpEdit.Location = New System.Drawing.Point(12, 58)
         Me.tpEdit.Name = "tpEdit"
-        Me.tpEdit.Padding = New System.Windows.Forms.Padding(3)
-        Me.tpEdit.Size = New System.Drawing.Size(600, 451)
+        Me.tpEdit.Size = New System.Drawing.Size(584, 394)
         Me.tpEdit.TabIndex = 0
-        Me.tpEdit.Text = "Edit"
-        Me.tpEdit.UseVisualStyleBackColor = True
+        Me.tpEdit.Text = "   Edit   "
         '
         'rtbEdit
         '
         Me.rtbEdit.AcceptsTab = True
-        Me.rtbEdit.BlockPaint = False
         Me.rtbEdit.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.rtbEdit.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.rtbEdit.Location = New System.Drawing.Point(3, 3)
+        Me.rtbEdit.Location = New System.Drawing.Point(0, 0)
         Me.rtbEdit.Name = "rtbEdit"
-        Me.rtbEdit.Size = New System.Drawing.Size(594, 445)
+        Me.rtbEdit.Size = New System.Drawing.Size(584, 394)
         Me.rtbEdit.TabIndex = 0
         Me.rtbEdit.Text = ""
         '
         'tpPreview
         '
         Me.tpPreview.Controls.Add(Me.rtbPreview)
-        Me.tpPreview.Location = New System.Drawing.Point(4, 29)
+        Me.tpPreview.Location = New System.Drawing.Point(12, 58)
         Me.tpPreview.Name = "tpPreview"
-        Me.tpPreview.Padding = New System.Windows.Forms.Padding(3)
-        Me.tpPreview.Size = New System.Drawing.Size(600, 461)
+        Me.tpPreview.Size = New System.Drawing.Size(584, 394)
         Me.tpPreview.TabIndex = 1
-        Me.tpPreview.Text = "Preview"
-        Me.tpPreview.UseVisualStyleBackColor = True
+        Me.tpPreview.Text = " Preview "
         '
         'rtbPreview
         '
+        Me.rtbPreview.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.rtbPreview.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.rtbPreview.Location = New System.Drawing.Point(3, 3)
+        Me.rtbPreview.Location = New System.Drawing.Point(0, 0)
         Me.rtbPreview.Name = "rtbPreview"
         Me.rtbPreview.ReadOnly = True
-        Me.rtbPreview.Size = New System.Drawing.Size(594, 455)
+        Me.rtbPreview.Size = New System.Drawing.Size(584, 394)
         Me.rtbPreview.TabIndex = 0
         Me.rtbPreview.Text = ""
+        '
+        'tpDefaults
+        '
+        Me.tpDefaults.Controls.Add(Me.rtbDefaults)
+        Me.tpDefaults.Location = New System.Drawing.Point(12, 58)
+        Me.tpDefaults.Name = "tpDefaults"
+        Me.tpDefaults.Size = New System.Drawing.Size(584, 394)
+        Me.tpDefaults.TabIndex = 2
+        Me.tpDefaults.Text = " Defaults "
+        '
+        'rtbDefaults
+        '
+        Me.rtbDefaults.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.rtbDefaults.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.rtbDefaults.Location = New System.Drawing.Point(0, 0)
+        Me.rtbDefaults.Name = "rtbDefaults"
+        Me.rtbDefaults.ReadOnly = True
+        Me.rtbDefaults.Size = New System.Drawing.Size(584, 394)
+        Me.rtbDefaults.TabIndex = 0
+        Me.rtbDefaults.Text = ""
         '
         'gb
         '
@@ -124,15 +142,15 @@ Public Class MacroEditorControl
         '
         Me.TableLayoutPanel1.ColumnCount = 1
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel1.Controls.Add(Me.TabControl, 0, 0)
         Me.TableLayoutPanel1.Controls.Add(Me.FlowLayoutPanel1, 0, 1)
+        Me.TableLayoutPanel1.Controls.Add(Me.TabControl, 0, 0)
         Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TableLayoutPanel1.Location = New System.Drawing.Point(3, 27)
+        Me.TableLayoutPanel1.Location = New System.Drawing.Point(3, 40)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(614, 520)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(614, 507)
         Me.TableLayoutPanel1.TabIndex = 1
         '
         'FlowLayoutPanel1
@@ -140,40 +158,31 @@ Public Class MacroEditorControl
         Me.FlowLayoutPanel1.AutoSize = True
         Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.FlowLayoutPanel1.Controls.Add(Me.llMacros)
-        Me.FlowLayoutPanel1.Controls.Add(Me.llExecute)
         Me.FlowLayoutPanel1.Controls.Add(Me.llHelp)
-        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(0, 495)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(0, 470)
         Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(0)
         Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
-        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(208, 25)
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(216, 37)
         Me.FlowLayoutPanel1.TabIndex = 1
         '
         'llMacros
         '
         Me.llMacros.AutoSize = True
+        Me.llMacros.LinkColor = System.Drawing.Color.Empty
         Me.llMacros.Location = New System.Drawing.Point(3, 0)
         Me.llMacros.Name = "llMacros"
-        Me.llMacros.Size = New System.Drawing.Size(70, 25)
+        Me.llMacros.Size = New System.Drawing.Size(122, 37)
         Me.llMacros.TabIndex = 0
         Me.llMacros.TabStop = True
         Me.llMacros.Text = "Macros"
         '
-        'llExecute
-        '
-        Me.llExecute.AutoSize = True
-        Me.llExecute.Location = New System.Drawing.Point(79, 0)
-        Me.llExecute.Name = "llExecute"
-        Me.llExecute.Size = New System.Drawing.Size(71, 25)
-        Me.llExecute.TabIndex = 1
-        Me.llExecute.TabStop = True
-        Me.llExecute.Text = "Execute"
-        '
         'llHelp
         '
         Me.llHelp.AutoSize = True
-        Me.llHelp.Location = New System.Drawing.Point(156, 0)
+        Me.llHelp.LinkColor = System.Drawing.Color.Empty
+        Me.llHelp.Location = New System.Drawing.Point(131, 0)
         Me.llHelp.Name = "llHelp"
-        Me.llHelp.Size = New System.Drawing.Size(49, 25)
+        Me.llHelp.Size = New System.Drawing.Size(82, 37)
         Me.llHelp.TabIndex = 2
         Me.llHelp.TabStop = True
         Me.llHelp.Text = "Help"
@@ -182,12 +191,12 @@ Public Class MacroEditorControl
         '
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
         Me.Controls.Add(Me.gb)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Name = "MacroEditorControl"
         Me.Size = New System.Drawing.Size(620, 550)
         Me.TabControl.ResumeLayout(False)
         Me.tpEdit.ResumeLayout(False)
         Me.tpPreview.ResumeLayout(False)
+        Me.tpDefaults.ResumeLayout(False)
         Me.gb.ResumeLayout(False)
         Me.TableLayoutPanel1.ResumeLayout(False)
         Me.TableLayoutPanel1.PerformLayout()
@@ -213,16 +222,12 @@ Public Class MacroEditorControl
         MyBase.New()
         InitializeComponent()
         rtbEdit.EnableAutoDragDrop = True
-        rtbEdit.Font = New Font("Consolas", 10)
+        rtbEdit.Font = New Font("Consolas", 10 * s.UIScaleFactor)
         rtbPreview.Font = rtbEdit.Font
-
+        rtbDefaults.Font = rtbEdit.Font
         Dim c = ControlPaint.Dark(ToolStripRendererEx.ColorBorder, 0)
-
-        llExecute.LinkColor = c
         llHelp.LinkColor = c
         llMacros.LinkColor = c
-
-        llExecute.Visible = False
         llHelp.Visible = False
     End Sub
 
@@ -246,10 +251,7 @@ Public Class MacroEditorControl
         End Get
         Set(value As String)
             rtbEdit.Text = value
-
-            If IsCommandLineMode Then
-                EditTextChanged(Nothing, Nothing)
-            End If
+            If IsCommandLineMode Then EditTextChanged(Nothing, Nothing)
         End Set
     End Property
 
@@ -263,18 +265,19 @@ Public Class MacroEditorControl
         AutoWrap = False
         rtbEdit.WordWrap = False
         rtbPreview.WordWrap = False
+        rtbDefaults.WordWrap = False
     End Sub
 
     Sub SetMacroDefaults()
         AutoWrap = False
         rtbEdit.WordWrap = False
         rtbPreview.WordWrap = False
+        rtbDefaults.WordWrap = False
     End Sub
 
     Private Sub UpdateWrapMode(rtb As RichTextBox)
         If AutoWrap Then
-            rtb.WordWrap = Not rtb.Text.FixBreak.Contains(CrLf)
-
+            rtb.WordWrap = Not rtb.Text.FixBreak.Contains(BR)
             Dim s = TextRenderer.MeasureText(rtb.Text, rtb.Font)
 
             If s.Width > (rtb.Width - SystemInformation.VerticalScrollBarWidth) Then
@@ -293,7 +296,7 @@ Public Class MacroEditorControl
         If Not SpecialMacrosFunction Is Nothing Then
             rtbPreview.Text = SpecialMacrosFunction.Invoke(rtbEdit.Text)
         Else
-            rtbPreview.Text = Macro.Solve(rtbEdit.Text, True)
+            rtbPreview.Text = Macro.Expand(rtbEdit.Text)
         End If
     End Sub
 
@@ -305,28 +308,31 @@ Public Class MacroEditorControl
         UpdateWrapMode(rtbEdit)
     End Sub
 
-    Protected Overrides Sub OnHandleCreated(e As EventArgs)
+    Private Sub rtbDefaults_TextChanged(sender As Object, e As EventArgs) Handles rtbDefaults.TextChanged
+        UpdateWrapMode(rtbDefaults)
+    End Sub
+
+    Protected Overrides Sub OnLoad(e As EventArgs)
         UpdateWrapMode(rtbEdit)
         UpdateWrapMode(rtbPreview)
-        MyBase.OnHandleCreated(e)
+
+        If rtbDefaults.Text = "" Then
+            Controls.Remove(tpDefaults)
+            tpDefaults.Dispose()
+        End If
+
+        MyBase.OnLoad(e)
     End Sub
 
-    Private Sub llMacros_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llMacros.LinkClicked
+    Private Sub llMacros_Click(sender As Object, e As EventArgs) Handles llMacros.Click
         MacrosForm.ShowDialogForm()
-    End Sub
-
-    Private Sub llExecute_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llExecute.LinkClicked
-        UpdatePreview()
-        Dim batchPath = p.TempDir + Filepath.GetBase(p.TargetFile) + "_execute.bat"
-        File.WriteAllText(batchPath, rtbPreview.Text, Encoding.GetEncoding(850))
-        g.ShellExecute(batchPath)
     End Sub
 
     Private HelpPaths As New List(Of String)
 
-    Private Sub llHelp_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles llHelp.LinkClicked
+    Private Sub llHelp_Click(sender As Object, e As EventArgs) Handles llHelp.Click
         For Each i In HelpPaths
-            g.ShellExecute(i)
+            g.StartProcess(i)
         Next
     End Sub
 
@@ -335,7 +341,7 @@ Public Class MacroEditorControl
         HelpPaths.Clear()
         Dim caption As String
 
-        For Each i In Packs.Packages
+        For Each i In Package.Items.Values
             If editText.Contains(i.Name) Then
                 If i.GetHelpPath() <> "" Then
                     llHelp.Visible = True

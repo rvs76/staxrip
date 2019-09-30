@@ -1,5 +1,3 @@
-Imports System.Reflection
-
 Imports StaxRip.UI
 
 Public Class EventCommandEditor
@@ -22,7 +20,7 @@ Public Class EventCommandEditor
     Friend WithEvents CriteriaControl As StaxRip.UI.CriteriaControl
     Friend WithEvents tbCommand As System.Windows.Forms.TextBox
     Friend WithEvents bnCommand As StaxRip.UI.ButtonEx
-    Friend WithEvents cmsCommands As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents cmsCommands As ContextMenuStripEx
     Friend WithEvents pgParameters As PropertyGridEx
     Friend WithEvents lParameters As System.Windows.Forms.Label
     Friend WithEvents rbMatchAllCriteria As System.Windows.Forms.RadioButton
@@ -33,8 +31,11 @@ Public Class EventCommandEditor
     Friend WithEvents gbEvent As System.Windows.Forms.GroupBox
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
-    Friend WithEvents TableLayoutPanel1 As System.Windows.Forms.TableLayoutPanel
-
+    Friend WithEvents tlpMain As System.Windows.Forms.TableLayoutPanel
+    Friend WithEvents FlowLayoutPanel1 As FlowLayoutPanel
+    Friend WithEvents bnAdd As ButtonEx
+    Friend WithEvents FlowLayoutPanel2 As FlowLayoutPanel
+    Friend WithEvents tlpCommand As TableLayoutPanel
     Private components As System.ComponentModel.IContainer
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
@@ -43,7 +44,7 @@ Public Class EventCommandEditor
         Me.cbEvent = New System.Windows.Forms.ComboBox()
         Me.tbCommand = New System.Windows.Forms.TextBox()
         Me.bnCommand = New StaxRip.UI.ButtonEx()
-        Me.cmsCommands = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.cmsCommands = New StaxRip.UI.ContextMenuStripEx(Me.components)
         Me.CriteriaControl = New StaxRip.UI.CriteriaControl()
         Me.TipProvider = New StaxRip.UI.TipProvider(Me.components)
         Me.rbMatchAllCriteria = New System.Windows.Forms.RadioButton()
@@ -51,61 +52,65 @@ Public Class EventCommandEditor
         Me.pgParameters = New StaxRip.UI.PropertyGridEx()
         Me.lParameters = New System.Windows.Forms.Label()
         Me.gbCriteria = New System.Windows.Forms.GroupBox()
+        Me.FlowLayoutPanel1 = New System.Windows.Forms.FlowLayoutPanel()
+        Me.bnAdd = New StaxRip.UI.ButtonEx()
         Me.gbCommand = New System.Windows.Forms.GroupBox()
+        Me.tlpCommand = New System.Windows.Forms.TableLayoutPanel()
         Me.gbName = New System.Windows.Forms.GroupBox()
         Me.gbEvent = New System.Windows.Forms.GroupBox()
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
-        Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
+        Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
+        Me.FlowLayoutPanel2 = New System.Windows.Forms.FlowLayoutPanel()
         Me.gbCriteria.SuspendLayout()
+        Me.FlowLayoutPanel1.SuspendLayout()
         Me.gbCommand.SuspendLayout()
+        Me.tlpCommand.SuspendLayout()
         Me.gbName.SuspendLayout()
         Me.gbEvent.SuspendLayout()
-        Me.TableLayoutPanel1.SuspendLayout()
+        Me.tlpMain.SuspendLayout()
+        Me.FlowLayoutPanel2.SuspendLayout()
         Me.SuspendLayout()
         '
         'tbName
         '
-        Me.tbName.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbName.Location = New System.Drawing.Point(8, 29)
-        Me.tbName.Margin = New System.Windows.Forms.Padding(4)
+        Me.tbName.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tbName.Location = New System.Drawing.Point(15, 63)
+        Me.tbName.Margin = New System.Windows.Forms.Padding(10)
         Me.tbName.Name = "tbName"
-        Me.tbName.Size = New System.Drawing.Size(342, 36)
+        Me.tbName.Size = New System.Drawing.Size(496, 55)
         Me.tbName.TabIndex = 0
         '
         'cbEvent
         '
-        Me.cbEvent.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cbEvent.Dock = System.Windows.Forms.DockStyle.Fill
         Me.cbEvent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.cbEvent.FormattingEnabled = True
-        Me.cbEvent.Location = New System.Drawing.Point(8, 28)
-        Me.cbEvent.Margin = New System.Windows.Forms.Padding(4)
+        Me.cbEvent.Location = New System.Drawing.Point(15, 63)
+        Me.cbEvent.Margin = New System.Windows.Forms.Padding(10)
         Me.cbEvent.Name = "cbEvent"
-        Me.cbEvent.Size = New System.Drawing.Size(343, 38)
+        Me.cbEvent.Size = New System.Drawing.Size(496, 56)
         Me.cbEvent.Sorted = True
         Me.cbEvent.TabIndex = 0
         '
         'tbCommand
         '
-        Me.tbCommand.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tbCommand.Location = New System.Drawing.Point(8, 30)
-        Me.tbCommand.Margin = New System.Windows.Forms.Padding(4)
+        Me.tbCommand.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tbCommand.Location = New System.Drawing.Point(0, 7)
+        Me.tbCommand.Margin = New System.Windows.Forms.Padding(0, 0, 10, 0)
         Me.tbCommand.Name = "tbCommand"
         Me.tbCommand.ReadOnly = True
-        Me.tbCommand.Size = New System.Drawing.Size(669, 36)
+        Me.tbCommand.Size = New System.Drawing.Size(954, 55)
         Me.tbCommand.TabIndex = 0
         '
         'bnCommand
         '
-        Me.bnCommand.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnCommand.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnCommand.ContextMenuStrip = Me.cmsCommands
-        Me.bnCommand.Location = New System.Drawing.Point(685, 28)
-        Me.bnCommand.Margin = New System.Windows.Forms.Padding(4)
+        Me.bnCommand.Location = New System.Drawing.Point(964, 0)
+        Me.bnCommand.Margin = New System.Windows.Forms.Padding(0)
         Me.bnCommand.ShowMenuSymbol = True
-        Me.bnCommand.Size = New System.Drawing.Size(33, 33)
+        Me.bnCommand.Size = New System.Drawing.Size(70, 70)
         '
         'cmsCommands
         '
@@ -119,20 +124,19 @@ Public Class EventCommandEditor
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.CriteriaControl.BackColor = System.Drawing.SystemColors.Window
-        Me.CriteriaControl.Location = New System.Drawing.Point(8, 61)
-        Me.CriteriaControl.Margin = New System.Windows.Forms.Padding(4)
+        Me.CriteriaControl.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
+        Me.CriteriaControl.Location = New System.Drawing.Point(16, 137)
+        Me.CriteriaControl.Margin = New System.Windows.Forms.Padding(10)
         Me.CriteriaControl.Name = "CriteriaControl"
-        Me.CriteriaControl.ShowNiceBorder = True
-        Me.CriteriaControl.Size = New System.Drawing.Size(709, 211)
+        Me.CriteriaControl.Size = New System.Drawing.Size(1034, 56)
         Me.CriteriaControl.TabIndex = 1
         '
         'rbMatchAllCriteria
         '
-        Me.rbMatchAllCriteria.AutoSize = True
-        Me.rbMatchAllCriteria.Location = New System.Drawing.Point(8, 27)
-        Me.rbMatchAllCriteria.Margin = New System.Windows.Forms.Padding(4)
+        Me.rbMatchAllCriteria.Location = New System.Drawing.Point(5, 5)
+        Me.rbMatchAllCriteria.Margin = New System.Windows.Forms.Padding(5)
         Me.rbMatchAllCriteria.Name = "rbMatchAllCriteria"
-        Me.rbMatchAllCriteria.Size = New System.Drawing.Size(128, 34)
+        Me.rbMatchAllCriteria.Size = New System.Drawing.Size(253, 70)
         Me.rbMatchAllCriteria.TabIndex = 0
         Me.rbMatchAllCriteria.TabStop = True
         Me.rbMatchAllCriteria.Text = "Match All"
@@ -141,11 +145,10 @@ Public Class EventCommandEditor
         '
         'rbMatchAnyCriteria
         '
-        Me.rbMatchAnyCriteria.AutoSize = True
-        Me.rbMatchAnyCriteria.Location = New System.Drawing.Point(139, 27)
-        Me.rbMatchAnyCriteria.Margin = New System.Windows.Forms.Padding(4)
+        Me.rbMatchAnyCriteria.Location = New System.Drawing.Point(268, 5)
+        Me.rbMatchAnyCriteria.Margin = New System.Windows.Forms.Padding(5)
         Me.rbMatchAnyCriteria.Name = "rbMatchAnyCriteria"
-        Me.rbMatchAnyCriteria.Size = New System.Drawing.Size(141, 34)
+        Me.rbMatchAnyCriteria.Size = New System.Drawing.Size(273, 70)
         Me.rbMatchAnyCriteria.TabIndex = 2
         Me.rbMatchAnyCriteria.TabStop = True
         Me.rbMatchAnyCriteria.Text = "Match Any"
@@ -157,21 +160,23 @@ Public Class EventCommandEditor
         Me.pgParameters.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.pgParameters.Location = New System.Drawing.Point(8, 97)
-        Me.pgParameters.Margin = New System.Windows.Forms.Padding(4)
+        Me.pgParameters.HelpVisible = False
+        Me.pgParameters.LineColor = System.Drawing.SystemColors.ControlDark
+        Me.pgParameters.Location = New System.Drawing.Point(14, 166)
+        Me.pgParameters.Margin = New System.Windows.Forms.Padding(7)
         Me.pgParameters.Name = "pgParameters"
         Me.pgParameters.PropertySort = System.Windows.Forms.PropertySort.Alphabetical
-        Me.pgParameters.Size = New System.Drawing.Size(709, 200)
+        Me.pgParameters.Size = New System.Drawing.Size(1036, 44)
         Me.pgParameters.TabIndex = 2
         Me.pgParameters.ToolbarVisible = False
         '
         'lParameters
         '
         Me.lParameters.AutoSize = True
-        Me.lParameters.Location = New System.Drawing.Point(8, 68)
-        Me.lParameters.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lParameters.Location = New System.Drawing.Point(15, 117)
+        Me.lParameters.Margin = New System.Windows.Forms.Padding(7, 0, 7, 0)
         Me.lParameters.Name = "lParameters"
-        Me.lParameters.Size = New System.Drawing.Size(127, 30)
+        Me.lParameters.Size = New System.Drawing.Size(205, 48)
         Me.lParameters.TabIndex = 1
         Me.lParameters.Text = "Parameters:"
         '
@@ -180,47 +185,82 @@ Public Class EventCommandEditor
         Me.gbCriteria.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TableLayoutPanel1.SetColumnSpan(Me.gbCriteria, 2)
+        Me.tlpMain.SetColumnSpan(Me.gbCriteria, 2)
+        Me.gbCriteria.Controls.Add(Me.FlowLayoutPanel1)
         Me.gbCriteria.Controls.Add(Me.CriteriaControl)
-        Me.gbCriteria.Controls.Add(Me.rbMatchAnyCriteria)
-        Me.gbCriteria.Controls.Add(Me.rbMatchAllCriteria)
-        Me.gbCriteria.Location = New System.Drawing.Point(4, 82)
-        Me.gbCriteria.Margin = New System.Windows.Forms.Padding(4)
+        Me.gbCriteria.Location = New System.Drawing.Point(10, 170)
+        Me.gbCriteria.Margin = New System.Windows.Forms.Padding(10, 0, 10, 0)
         Me.gbCriteria.Name = "gbCriteria"
-        Me.gbCriteria.Padding = New System.Windows.Forms.Padding(4)
-        Me.gbCriteria.Size = New System.Drawing.Size(725, 280)
+        Me.gbCriteria.Padding = New System.Windows.Forms.Padding(7)
+        Me.gbCriteria.Size = New System.Drawing.Size(1064, 207)
         Me.gbCriteria.TabIndex = 2
         Me.gbCriteria.TabStop = False
         Me.gbCriteria.Text = "Criteria"
+        '
+        'FlowLayoutPanel1
+        '
+        Me.FlowLayoutPanel1.AutoSize = True
+        Me.FlowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.FlowLayoutPanel1.Controls.Add(Me.rbMatchAllCriteria)
+        Me.FlowLayoutPanel1.Controls.Add(Me.rbMatchAnyCriteria)
+        Me.FlowLayoutPanel1.Controls.Add(Me.bnAdd)
+        Me.FlowLayoutPanel1.Location = New System.Drawing.Point(14, 50)
+        Me.FlowLayoutPanel1.Margin = New System.Windows.Forms.Padding(5)
+        Me.FlowLayoutPanel1.Name = "FlowLayoutPanel1"
+        Me.FlowLayoutPanel1.Size = New System.Drawing.Size(756, 80)
+        Me.FlowLayoutPanel1.TabIndex = 3
+        '
+        'bnAdd
+        '
+        Me.bnAdd.Location = New System.Drawing.Point(551, 5)
+        Me.bnAdd.Margin = New System.Windows.Forms.Padding(5)
+        Me.bnAdd.Size = New System.Drawing.Size(200, 70)
+        Me.bnAdd.Text = "Add"
         '
         'gbCommand
         '
         Me.gbCommand.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TableLayoutPanel1.SetColumnSpan(Me.gbCommand, 2)
+        Me.tlpMain.SetColumnSpan(Me.gbCommand, 2)
+        Me.gbCommand.Controls.Add(Me.tlpCommand)
         Me.gbCommand.Controls.Add(Me.pgParameters)
-        Me.gbCommand.Controls.Add(Me.tbCommand)
-        Me.gbCommand.Controls.Add(Me.bnCommand)
         Me.gbCommand.Controls.Add(Me.lParameters)
-        Me.gbCommand.Location = New System.Drawing.Point(4, 370)
-        Me.gbCommand.Margin = New System.Windows.Forms.Padding(4)
+        Me.gbCommand.Location = New System.Drawing.Point(10, 377)
+        Me.gbCommand.Margin = New System.Windows.Forms.Padding(10, 0, 10, 0)
         Me.gbCommand.Name = "gbCommand"
-        Me.gbCommand.Padding = New System.Windows.Forms.Padding(4)
-        Me.gbCommand.Size = New System.Drawing.Size(725, 305)
+        Me.gbCommand.Padding = New System.Windows.Forms.Padding(7)
+        Me.gbCommand.Size = New System.Drawing.Size(1064, 224)
         Me.gbCommand.TabIndex = 4
         Me.gbCommand.TabStop = False
         Me.gbCommand.Text = "Command"
+        '
+        'tlpCommand
+        '
+        Me.tlpCommand.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpCommand.ColumnCount = 2
+        Me.tlpCommand.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpCommand.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpCommand.Controls.Add(Me.bnCommand, 1, 0)
+        Me.tlpCommand.Controls.Add(Me.tbCommand, 0, 0)
+        Me.tlpCommand.Location = New System.Drawing.Point(16, 49)
+        Me.tlpCommand.Margin = New System.Windows.Forms.Padding(10, 0, 10, 0)
+        Me.tlpCommand.Name = "tlpCommand"
+        Me.tlpCommand.RowCount = 1
+        Me.tlpCommand.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpCommand.Size = New System.Drawing.Size(1034, 70)
+        Me.tlpCommand.TabIndex = 4
         '
         'gbName
         '
         Me.gbName.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.gbName.Controls.Add(Me.tbName)
-        Me.gbName.Location = New System.Drawing.Point(4, 4)
-        Me.gbName.Margin = New System.Windows.Forms.Padding(4)
+        Me.gbName.Location = New System.Drawing.Point(10, 10)
+        Me.gbName.Margin = New System.Windows.Forms.Padding(10, 10, 6, 10)
         Me.gbName.Name = "gbName"
-        Me.gbName.Padding = New System.Windows.Forms.Padding(4)
-        Me.gbName.Size = New System.Drawing.Size(358, 70)
+        Me.gbName.Padding = New System.Windows.Forms.Padding(15)
+        Me.gbName.Size = New System.Drawing.Size(526, 150)
         Me.gbName.TabIndex = 1
         Me.gbName.TabStop = False
         Me.gbName.Text = "Name"
@@ -229,11 +269,11 @@ Public Class EventCommandEditor
         '
         Me.gbEvent.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.gbEvent.Controls.Add(Me.cbEvent)
-        Me.gbEvent.Location = New System.Drawing.Point(370, 4)
-        Me.gbEvent.Margin = New System.Windows.Forms.Padding(4)
+        Me.gbEvent.Location = New System.Drawing.Point(548, 10)
+        Me.gbEvent.Margin = New System.Windows.Forms.Padding(6, 10, 10, 10)
         Me.gbEvent.Name = "gbEvent"
-        Me.gbEvent.Padding = New System.Windows.Forms.Padding(4)
-        Me.gbEvent.Size = New System.Drawing.Size(359, 70)
+        Me.gbEvent.Padding = New System.Windows.Forms.Padding(15)
+        Me.gbEvent.Size = New System.Drawing.Size(526, 150)
         Me.gbEvent.TabIndex = 3
         Me.gbEvent.TabStop = False
         Me.gbEvent.Text = "Event"
@@ -242,66 +282,81 @@ Public Class EventCommandEditor
         '
         Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(642, 689)
-        Me.bnCancel.Margin = New System.Windows.Forms.Padding(4)
-        Me.bnCancel.Size = New System.Drawing.Size(100, 34)
+        Me.bnCancel.Location = New System.Drawing.Point(270, 10)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(10)
+        Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
         '
         'bnOK
         '
         Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(534, 689)
-        Me.bnOK.Margin = New System.Windows.Forms.Padding(4)
-        Me.bnOK.Size = New System.Drawing.Size(100, 34)
+        Me.bnOK.Location = New System.Drawing.Point(10, 10)
+        Me.bnOK.Margin = New System.Windows.Forms.Padding(10, 10, 0, 10)
+        Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
         '
-        'TableLayoutPanel1
+        'tlpMain
         '
-        Me.TableLayoutPanel1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TableLayoutPanel1.ColumnCount = 2
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel1.Controls.Add(Me.gbName, 0, 0)
-        Me.TableLayoutPanel1.Controls.Add(Me.gbEvent, 1, 0)
-        Me.TableLayoutPanel1.Controls.Add(Me.gbCriteria, 0, 1)
-        Me.TableLayoutPanel1.Controls.Add(Me.gbCommand, 0, 2)
-        Me.TableLayoutPanel1.Location = New System.Drawing.Point(12, 3)
-        Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
-        Me.TableLayoutPanel1.RowCount = 3
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 48.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 52.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(733, 679)
-        Me.TableLayoutPanel1.TabIndex = 6
+        Me.tlpMain.ColumnCount = 2
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.tlpMain.Controls.Add(Me.gbName, 0, 0)
+        Me.tlpMain.Controls.Add(Me.gbEvent, 1, 0)
+        Me.tlpMain.Controls.Add(Me.gbCriteria, 0, 1)
+        Me.tlpMain.Controls.Add(Me.gbCommand, 0, 2)
+        Me.tlpMain.Controls.Add(Me.FlowLayoutPanel2, 1, 3)
+        Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpMain.Location = New System.Drawing.Point(0, 0)
+        Me.tlpMain.Margin = New System.Windows.Forms.Padding(5)
+        Me.tlpMain.Name = "tlpMain"
+        Me.tlpMain.RowCount = 4
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 48.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 52.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.Size = New System.Drawing.Size(1084, 704)
+        Me.tlpMain.TabIndex = 6
+        '
+        'FlowLayoutPanel2
+        '
+        Me.FlowLayoutPanel2.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.FlowLayoutPanel2.AutoSize = True
+        Me.FlowLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.FlowLayoutPanel2.Controls.Add(Me.bnOK)
+        Me.FlowLayoutPanel2.Controls.Add(Me.bnCancel)
+        Me.FlowLayoutPanel2.Location = New System.Drawing.Point(554, 607)
+        Me.FlowLayoutPanel2.Margin = New System.Windows.Forms.Padding(0, 6, 0, 6)
+        Me.FlowLayoutPanel2.Name = "FlowLayoutPanel2"
+        Me.FlowLayoutPanel2.Size = New System.Drawing.Size(530, 90)
+        Me.FlowLayoutPanel2.TabIndex = 9
         '
         'EventCommandEditor
         '
         Me.AcceptButton = Me.bnOK
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(757, 736)
-        Me.Controls.Add(Me.TableLayoutPanel1)
-        Me.Controls.Add(Me.bnOK)
-        Me.Controls.Add(Me.bnCancel)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!)
+        Me.ClientSize = New System.Drawing.Size(1084, 704)
+        Me.Controls.Add(Me.tlpMain)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable
         Me.KeyPreview = True
-        Me.Location = New System.Drawing.Point(0, 0)
-        Me.Margin = New System.Windows.Forms.Padding(5)
-        Me.MinimumSize = New System.Drawing.Size(671, 608)
+        Me.Margin = New System.Windows.Forms.Padding(9)
         Me.Name = "EventCommandEditor"
         Me.Text = "Event Command Editor"
         Me.gbCriteria.ResumeLayout(False)
         Me.gbCriteria.PerformLayout()
+        Me.FlowLayoutPanel1.ResumeLayout(False)
         Me.gbCommand.ResumeLayout(False)
         Me.gbCommand.PerformLayout()
+        Me.tlpCommand.ResumeLayout(False)
+        Me.tlpCommand.PerformLayout()
         Me.gbName.ResumeLayout(False)
         Me.gbName.PerformLayout()
         Me.gbEvent.ResumeLayout(False)
-        Me.TableLayoutPanel1.ResumeLayout(False)
+        Me.tlpMain.ResumeLayout(False)
+        Me.tlpMain.PerformLayout()
+        Me.FlowLayoutPanel2.ResumeLayout(False)
         Me.ResumeLayout(False)
 
     End Sub
@@ -316,6 +371,7 @@ Public Class EventCommandEditor
         MyBase.New()
         InitializeComponent()
 
+        ScaleClientSize(37, 30)
         EventCommandValue = ev
         tbName.Text = EventCommandValue.Name
 
@@ -327,12 +383,15 @@ Public Class EventCommandEditor
 
         Dim allCriteria As New List(Of Criteria)
 
-        For Each i In Macro.GetMacros()
-            Dim c = Criteria.Create(i.Type)
-            c.Name = i.FriendlyName
-            c.Macro = i.Name
+        For Each m In Macro.GetMacros()
+            Dim c = Criteria.Create(m.Type)
+            c.Name = m.FriendlyName
+            c.Description = m.Description
+            c.Macro = m.Name
             allCriteria.Add(c)
         Next
+
+        allCriteria.Sort(New Comparer(Of Criteria)(NameOf(Criteria.Name)))
 
         CriteriaControl.AllCrieria = allCriteria
         CriteriaControl.CriteriaList = EventCommandValue.CriteriaList
@@ -378,7 +437,7 @@ Public Class EventCommandEditor
         End If
 
         Dim c = g.MainForm.CustomMainMenu.CommandManager.GetCommand(cp.MethodName)
-        tbCommand.Text = c.Attribute.Name
+        tbCommand.Text = cp.MethodName
 
         If cp.Parameters Is Nothing OrElse cp.Parameters.Count = 0 Then
             pgParameters.Visible = False
@@ -449,11 +508,6 @@ Public Class EventCommandEditor
         Next
     End Sub
 
-    Private Sub EventCommandEditor_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'weird scaling
-        Height = Width
-    End Sub
-
     Private Sub EventCommandEditor_Shown() Handles Me.Shown
         SetSplitter()
     End Sub
@@ -464,5 +518,9 @@ Public Class EventCommandEditor
 
     Sub SetSplitter()
         pgParameters.MoveSplitter(pgParameters.Width \ 3)
+    End Sub
+
+    Private Sub bnAdd_Click(sender As Object, e As EventArgs) Handles bnAdd.Click
+        CriteriaControl.AddItem(Nothing)
     End Sub
 End Class

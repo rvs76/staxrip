@@ -6,7 +6,7 @@ Partial Class CommandLineForm
 
     'Form overrides dispose to clean up the component list.
     <System.Diagnostics.DebuggerNonUserCode()> _
-    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+    Protected Overrides Sub dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
                 components.Dispose()
@@ -27,105 +27,156 @@ Partial Class CommandLineForm
         Me.components = New System.ComponentModel.Container()
         Me.bnCancel = New StaxRip.UI.ButtonEx()
         Me.bnOK = New StaxRip.UI.ButtonEx()
-        Me.rtbCmdl = New StaxRip.UI.CmdlRichTextBox()
         Me.SimpleUI = New StaxRip.SimpleUI()
         Me.cbGoTo = New System.Windows.Forms.ComboBox()
         Me.bnMenu = New StaxRip.UI.ButtonEx()
-        Me.cms = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.cms = New StaxRip.UI.ContextMenuStripEx(Me.components)
+        Me.tlpMain = New System.Windows.Forms.TableLayoutPanel()
+        Me.tlpRTB = New System.Windows.Forms.TableLayoutPanel()
+        Me.rtbCommandLine = New StaxRip.UI.CommandLineRichTextBox()
+        Me.tlpMain.SuspendLayout()
+        Me.tlpRTB.SuspendLayout()
         Me.SuspendLayout()
         '
         'bnCancel
         '
-        Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnCancel.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.bnCancel.Location = New System.Drawing.Point(822, 633)
-        Me.bnCancel.Size = New System.Drawing.Size(100, 36)
+        Me.bnCancel.Location = New System.Drawing.Point(857, 500)
+        Me.bnCancel.Margin = New System.Windows.Forms.Padding(15)
+        Me.bnCancel.Size = New System.Drawing.Size(250, 70)
         Me.bnCancel.Text = "Cancel"
         '
         'bnOK
         '
-        Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnOK.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.bnOK.Location = New System.Drawing.Point(716, 633)
-        Me.bnOK.Size = New System.Drawing.Size(100, 36)
+        Me.bnOK.Location = New System.Drawing.Point(592, 500)
+        Me.bnOK.Margin = New System.Windows.Forms.Padding(15, 15, 0, 15)
+        Me.bnOK.Size = New System.Drawing.Size(250, 70)
         Me.bnOK.Text = "OK"
-        '
-        'rtbCmdl
-        '
-        Me.rtbCmdl.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.rtbCmdl.BlockPaint = False
-        Me.rtbCmdl.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.rtbCmdl.Font = New System.Drawing.Font("Tahoma", 9.0!)
-        Me.rtbCmdl.LastCmdl = Nothing
-        Me.rtbCmdl.Location = New System.Drawing.Point(12, 583)
-        Me.rtbCmdl.Margin = New System.Windows.Forms.Padding(4)
-        Me.rtbCmdl.Name = "rtbCmdl"
-        Me.rtbCmdl.ReadOnly = True
-        Me.rtbCmdl.Size = New System.Drawing.Size(910, 35)
-        Me.rtbCmdl.TabIndex = 4
-        Me.rtbCmdl.Text = ""
         '
         'SimpleUI
         '
-        Me.SimpleUI.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.SimpleUI.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.SimpleUI.Location = New System.Drawing.Point(12, 12)
+        Me.tlpMain.SetColumnSpan(Me.SimpleUI, 4)
+        Me.SimpleUI.Location = New System.Drawing.Point(15, 15)
+        Me.SimpleUI.Margin = New System.Windows.Forms.Padding(15)
         Me.SimpleUI.Name = "SimpleUI"
-        Me.SimpleUI.Size = New System.Drawing.Size(910, 564)
+        Me.SimpleUI.Size = New System.Drawing.Size(1092, 391)
         Me.SimpleUI.TabIndex = 5
         Me.SimpleUI.Text = "SimpleUI"
         '
         'cbGoTo
         '
-        Me.cbGoTo.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.cbGoTo.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.cbGoTo.FormattingEnabled = True
-        Me.cbGoTo.Location = New System.Drawing.Point(11, 633)
-        Me.cbGoTo.Margin = New System.Windows.Forms.Padding(4)
+        Me.cbGoTo.Location = New System.Drawing.Point(15, 507)
+        Me.cbGoTo.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
         Me.cbGoTo.Name = "cbGoTo"
-        Me.cbGoTo.Size = New System.Drawing.Size(193, 33)
+        Me.cbGoTo.Size = New System.Drawing.Size(400, 56)
         Me.cbGoTo.TabIndex = 8
         '
         'bnMenu
         '
-        Me.bnMenu.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.bnMenu.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.bnMenu.ContextMenuStrip = Me.cms
-        Me.bnMenu.Location = New System.Drawing.Point(674, 633)
+        Me.bnMenu.Location = New System.Drawing.Point(507, 500)
+        Me.bnMenu.Margin = New System.Windows.Forms.Padding(0, 8, 0, 8)
         Me.bnMenu.ShowMenuSymbol = True
-        Me.bnMenu.Size = New System.Drawing.Size(36, 36)
+        Me.bnMenu.Size = New System.Drawing.Size(70, 70)
         '
         'cms
         '
+        Me.cms.Font = New System.Drawing.Font("Segoe UI", 9.0!)
         Me.cms.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.cms.Name = "cms"
         Me.cms.Size = New System.Drawing.Size(61, 4)
         '
+        'tlpMain
+        '
+        Me.tlpMain.AutoSize = True
+        Me.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.tlpMain.ColumnCount = 4
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpMain.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.tlpMain.Controls.Add(Me.bnCancel, 3, 2)
+        Me.tlpMain.Controls.Add(Me.bnMenu, 1, 2)
+        Me.tlpMain.Controls.Add(Me.bnOK, 2, 2)
+        Me.tlpMain.Controls.Add(Me.cbGoTo, 0, 2)
+        Me.tlpMain.Controls.Add(Me.SimpleUI, 0, 0)
+        Me.tlpMain.Controls.Add(Me.tlpRTB, 0, 1)
+        Me.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.tlpMain.Location = New System.Drawing.Point(0, 0)
+        Me.tlpMain.Margin = New System.Windows.Forms.Padding(2)
+        Me.tlpMain.Name = "tlpMain"
+        Me.tlpMain.RowCount = 3
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpMain.Size = New System.Drawing.Size(1122, 585)
+        Me.tlpMain.TabIndex = 11
+        '
+        'tlpRTB
+        '
+        Me.tlpRTB.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tlpRTB.AutoSize = True
+        Me.tlpRTB.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.tlpRTB.ColumnCount = 1
+        Me.tlpMain.SetColumnSpan(Me.tlpRTB, 4)
+        Me.tlpRTB.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.tlpRTB.Controls.Add(Me.rtbCommandLine, 0, 0)
+        Me.tlpRTB.Location = New System.Drawing.Point(15, 421)
+        Me.tlpRTB.Margin = New System.Windows.Forms.Padding(15, 0, 15, 0)
+        Me.tlpRTB.Name = "tlpRTB"
+        Me.tlpRTB.RowCount = 1
+        Me.tlpRTB.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.tlpRTB.Size = New System.Drawing.Size(1092, 64)
+        Me.tlpRTB.TabIndex = 9
+        '
+        'rtbCommandLine
+        '
+        Me.rtbCommandLine.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.rtbCommandLine.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.rtbCommandLine.LastCommandLine = Nothing
+        Me.rtbCommandLine.Location = New System.Drawing.Point(0, 0)
+        Me.rtbCommandLine.Margin = New System.Windows.Forms.Padding(0)
+        Me.rtbCommandLine.Name = "rtbCommandLine"
+        Me.rtbCommandLine.ReadOnly = True
+        Me.rtbCommandLine.Size = New System.Drawing.Size(1092, 64)
+        Me.rtbCommandLine.TabIndex = 4
+        Me.rtbCommandLine.Text = ""
+        '
         'CommandLineForm
         '
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+        Me.AutoSize = True
+        Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.CancelButton = Me.bnCancel
-        Me.ClientSize = New System.Drawing.Size(934, 680)
-        Me.Controls.Add(Me.bnMenu)
-        Me.Controls.Add(Me.cbGoTo)
-        Me.Controls.Add(Me.SimpleUI)
-        Me.Controls.Add(Me.bnCancel)
-        Me.Controls.Add(Me.bnOK)
-        Me.Controls.Add(Me.rtbCmdl)
-        Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ClientSize = New System.Drawing.Size(1122, 585)
+        Me.Controls.Add(Me.tlpMain)
         Me.KeyPreview = True
-        Me.Location = New System.Drawing.Point(0, 0)
         Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "CommandLineForm"
-        Me.Text = "x265"
+        Me.tlpMain.ResumeLayout(False)
+        Me.tlpMain.PerformLayout()
+        Me.tlpRTB.ResumeLayout(False)
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
     Friend WithEvents bnCancel As StaxRip.UI.ButtonEx
     Friend WithEvents bnOK As StaxRip.UI.ButtonEx
-    Friend WithEvents rtbCmdl As StaxRip.UI.CmdlRichTextBox
     Friend WithEvents SimpleUI As StaxRip.SimpleUI
     Friend WithEvents cbGoTo As System.Windows.Forms.ComboBox
     Friend WithEvents bnMenu As StaxRip.UI.ButtonEx
-    Friend WithEvents cms As System.Windows.Forms.ContextMenuStrip
+    Friend WithEvents cms As ContextMenuStripEx
+    Friend WithEvents tlpMain As TableLayoutPanel
+    Friend WithEvents tlpRTB As TableLayoutPanel
+    Friend WithEvents rtbCommandLine As CommandLineRichTextBox
 End Class

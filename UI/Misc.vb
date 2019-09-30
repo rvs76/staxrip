@@ -1,53 +1,104 @@
-Imports System.Reflection
 Imports System.ComponentModel
-Imports System.Text
 Imports System.Drawing.Design
-Imports System.Runtime.InteropServices
-Imports System.IO
-Imports System.Drawing
-Imports System.Windows.Forms
-Imports System.Text.RegularExpressions
 
 Namespace UI
     Public Class FormBase
         Inherits Form
 
-        <Browsable(False)>
+        Event FilesDropped(files As String())
+
+        Private FileDropValue As Boolean
+
         <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
-        Property ScaleFactor As SizeF = New SizeF(1, 1)
+        Shadows Property FontHeight As Integer
 
         Public Sub New()
-            AutoScaleMode = AutoScaleMode.None
+            Font = New Font("Segoe UI", 9)
+            FontHeight = Font.Height
+        End Sub
+
+        <DefaultValue(False)>
+        Property FileDrop As Boolean
+            Get
+                Return FileDropValue
+            End Get
+            Set(value As Boolean)
+                FileDropValue = value
+                AllowDrop = value
+            End Set
+        End Property
+
+        Protected Overrides Sub OnDragEnter(e As DragEventArgs)
+            If FileDrop Then
+                Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+                If Not files.NothingOrEmpty Then e.Effect = DragDropEffects.Copy
+            End If
+
+            MyBase.OnDragEnter(e)
+        End Sub
+
+        Protected Overrides Sub OnDragDrop(e As DragEventArgs)
+            If FileDrop Then
+                Dim files = TryCast(e.Data.GetData(DataFormats.FileDrop), String())
+                If Not files.NothingOrEmpty Then RaiseEvent FilesDropped(files)
+            End If
+
+            MyBase.OnDragDrop(e)
         End Sub
 
         Protected Overrides Sub OnLoad(e As EventArgs)
             KeyPreview = True
             SetTabIndexes(Me)
 
-            If AutoScaleDimensions.IsEmpty Then
-                AutoScaleDimensions = New SizeF(144.0!, 144.0!)
-            End If
+            If AutoScaleMode = AutoScaleMode.Dpi OrElse AutoScaleMode = AutoScaleMode.Font Then
+                If s.UIScaleFactor <> 1 Then
+                    Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
+                    Scale(New SizeF(1 * s.UIScaleFactor, 1 * s.UIScaleFactor))
+                End If
+            Else
+                Dim designDimension = 144
+                If s.UIScaleFactor <> 1 Then Font = New Font("Segoe UI", 9 * s.UIScaleFactor)
 
-            If AutoScaleDimensions <> CurrentDPIDimension Then
-                ScaleFactor = New SizeF(CurrentDPIDimension.Width / AutoScaleDimensions.Width,
-                                       CurrentDPIDimension.Height / AutoScaleDimensions.Height)
-
-                AutoScaleDimensions = CurrentDPIDimension
-                Scale(ScaleFactor)
-            End If
-
-            If Not DesignMode AndAlso Not s.WindowPositions Is Nothing Then
-                s.WindowPositions.RestorePosition(Me)
+                If designDimension <> DeviceDpi OrElse s.UIScaleFactor <> 1 Then
+                    Scale(New SizeF(CSng(DeviceDpi / designDimension * s.UIScaleFactor),
+                                    CSng(DeviceDpi / designDimension * s.UIScaleFactor)))
+                End If
             End If
 
             MyBase.OnLoad(e)
+            If Not DesignHelp.IsDesignMode Then s.WindowPositions?.RestorePosition(Me)
         End Sub
 
-        Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
-            If Not s.WindowPositions Is Nothing Then
-                s.WindowPositions.Save(Me)
-            End If
+        'Private ChangeService As IComponentChangeService
 
+        'Public Overrides Property Site() As ISite
+        '    Get
+        '        Return MyBase.Site
+        '    End Get
+        '    Set(ByVal Value As ISite)
+        '        MyBase.Site = Value
+
+        '        If ChangeService Is Nothing Then
+        '            ChangeService = DirectCast(GetService(GetType(IComponentChangeService)), IComponentChangeService)
+        '            AddHandler ChangeService.ComponentChanged, AddressOf OnComponentChanged
+        '        End If
+        '    End Set
+        'End Property
+
+        'Sub OnComponentChanged(sender As Object, e As ComponentChangedEventArgs)
+        '    If e.Component Is Me AndAlso (e.Member.Name = "Size" OrElse e.Member.Name = "Height") Then
+        '        DesignClientSize = ClientSize
+        '        DesignDPI = CurrentDPIDimension
+        '    End If
+        'End Sub
+
+        'Protected Overrides Sub Dispose(disposing As Boolean)
+        '    MyBase.Dispose(disposing)
+        '    If Not ChangeService Is Nothing Then RemoveHandler ChangeService.ComponentChanged, AddressOf OnComponentChanged
+        'End Sub
+
+        Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
+            If Not s.WindowPositions Is Nothing Then s.WindowPositions.Save(Me)
             MyBase.OnFormClosing(e)
         End Sub
 
@@ -64,19 +115,231 @@ Namespace UI
             Next
         End Sub
 
-        Private CurrentDPIDimensionValue As SizeF?
-
-        ReadOnly Property CurrentDPIDimension As SizeF
-            Get
-                If Not CurrentDPIDimensionValue.HasValue Then
-                    Using g = CreateGraphics()
-                        CurrentDPIDimensionValue = New SizeF(g.DpiX, g.DpiY)
-                    End Using
-                End If
-
-                Return CurrentDPIDimensionValue.Value
-            End Get
-        End Property
+        Protected Overrides Sub WndProc(ByRef m As Message)
+#Region "WM"
+            'If m.Msg = 6 Then Debug.WriteLine("WM_ACTIVATE")
+            'If m.Msg = &H1C Then Debug.WriteLine("WM_ACTIVATEAPP")
+            'If m.Msg = &H360 Then Debug.WriteLine("WM_AFXFIRST")
+            'If m.Msg = &H37F Then Debug.WriteLine("WM_AFXLAST")
+            'If m.Msg = &H8000 Then Debug.WriteLine("WM_APP")
+            'If m.Msg = &H319 Then Debug.WriteLine("WM_APPCOMMAND")
+            'If m.Msg = 780 Then Debug.WriteLine("WM_ASKCBFORMATNAME")
+            'If m.Msg = &H4B Then Debug.WriteLine("WM_CANCELJOURNAL")
+            'If m.Msg = &H1F Then Debug.WriteLine("WM_CANCELMODE")
+            'If m.Msg = &H215 Then Debug.WriteLine("WM_CAPTURECHANGED")
+            'If m.Msg = &H30D Then Debug.WriteLine("WM_CHANGECBCHAIN")
+            'If m.Msg = &H127 Then Debug.WriteLine("WM_CHANGEUISTATE")
+            'If m.Msg = &H102 Then Debug.WriteLine("WM_CHAR")
+            'If m.Msg = &H2F Then Debug.WriteLine("WM_CHARTOITEM")
+            'If m.Msg = &H22 Then Debug.WriteLine("WM_CHILDACTIVATE")
+            'If m.Msg = &H401 Then Debug.WriteLine("WM_CHOOSEFONT_GETLOGFONT")
+            'If m.Msg = &H303 Then Debug.WriteLine("WM_CLEAR")
+            'If m.Msg = &H10 Then Debug.WriteLine("WM_CLOSE")
+            'If m.Msg = &H111 Then Debug.WriteLine("WM_COMMAND")
+            'If m.Msg = &H44 Then Debug.WriteLine("WM_COMMNOTIFY")
+            'If m.Msg = &H41 Then Debug.WriteLine("WM_COMPACTING")
+            'If m.Msg = &H39 Then Debug.WriteLine("WM_COMPAREITEM")
+            'If m.Msg = &H7B Then Debug.WriteLine("WM_CONTEXTMENU")
+            'If m.Msg = &H301 Then Debug.WriteLine("WM_COPY")
+            'If m.Msg = &H4A Then Debug.WriteLine("WM_COPYDATA")
+            'If m.Msg = 1 Then Debug.WriteLine("WM_CREATE")
+            'If m.Msg = &H19 Then Debug.WriteLine("WM_CTLCOLOR")
+            'If m.Msg = &H135 Then Debug.WriteLine("WM_CTLCOLORBTN")
+            'If m.Msg = 310 Then Debug.WriteLine("WM_CTLCOLORDLG")
+            'If m.Msg = &H133 Then Debug.WriteLine("WM_CTLCOLOREDIT")
+            'If m.Msg = &H134 Then Debug.WriteLine("WM_CTLCOLORLISTBOX")
+            'If m.Msg = &H132 Then Debug.WriteLine("WM_CTLCOLORMSGBOX")
+            'If m.Msg = &H137 Then Debug.WriteLine("WM_CTLCOLORSCROLLBAR")
+            'If m.Msg = &H138 Then Debug.WriteLine("WM_CTLCOLORSTATIC")
+            'If m.Msg = &H300 Then Debug.WriteLine("WM_CUT")
+            'If m.Msg = &H103 Then Debug.WriteLine("WM_DEADCHAR")
+            'If m.Msg = &H2D Then Debug.WriteLine("WM_DELETEITEM")
+            'If m.Msg = 2 Then Debug.WriteLine("WM_DESTROY")
+            'If m.Msg = &H307 Then Debug.WriteLine("WM_DESTROYCLIPBOARD")
+            'If m.Msg = &H219 Then Debug.WriteLine("WM_DEVICECHANGE")
+            'If m.Msg = &H1B Then Debug.WriteLine("WM_DEVMODECHANGE")
+            'If m.Msg = &H7E Then Debug.WriteLine("WM_DISPLAYCHANGE")
+            'If m.Msg = &H308 Then Debug.WriteLine("WM_DRAWCLIPBOARD")
+            'If m.Msg = &H2B Then Debug.WriteLine("WM_DRAWITEM")
+            'If m.Msg = &H233 Then Debug.WriteLine("WM_DROPFILES")
+            'If m.Msg = &H31E Then Debug.WriteLine("WM_DWMCOMPOSITIONCHANGED")
+            'If m.Msg = 10 Then Debug.WriteLine("WM_ENABLE")
+            'If m.Msg = &H16 Then Debug.WriteLine("WM_ENDSESSION")
+            'If m.Msg = &H121 Then Debug.WriteLine("WM_ENTERIDLE")
+            'If m.Msg = &H211 Then Debug.WriteLine("WM_ENTERMENULOOP")
+            'If m.Msg = &H231 Then Debug.WriteLine("WM_ENTERSIZEMOVE")
+            'If m.Msg = 20 Then Debug.WriteLine("WM_ERASEBKGND")
+            'If m.Msg = 530 Then Debug.WriteLine("WM_EXITMENULOOP")
+            'If m.Msg = &H232 Then Debug.WriteLine("WM_EXITSIZEMOVE")
+            'If m.Msg = &H2CB Then Debug.WriteLine("WM_FLICK")
+            'If m.Msg = &H1D Then Debug.WriteLine("WM_FONTCHANGE")
+            'If m.Msg = &H87 Then Debug.WriteLine("WM_GETDLGCODE")
+            'If m.Msg = &H31 Then Debug.WriteLine("WM_GETFONT")
+            'If m.Msg = &H33 Then Debug.WriteLine("WM_GETHOTKEY")
+            'If m.Msg = &H7F Then Debug.WriteLine("WM_GETICON")
+            'If m.Msg = &H24 Then Debug.WriteLine("WM_GETMINMAXINFO")
+            'If m.Msg = &H3D Then Debug.WriteLine("WM_GETOBJECT")
+            'If m.Msg = 13 Then Debug.WriteLine("WM_GETTEXT")
+            'If m.Msg = 14 Then Debug.WriteLine("WM_GETTEXTLENGTH")
+            'If m.Msg = &H358 Then Debug.WriteLine("WM_HANDHELDFIRST")
+            'If m.Msg = &H35F Then Debug.WriteLine("WM_HANDHELDLAST")
+            'If m.Msg = &H53 Then Debug.WriteLine("WM_HELP")
+            'If m.Msg = &H312 Then Debug.WriteLine("WM_HOTKEY")
+            'If m.Msg = &H114 Then Debug.WriteLine("WM_HSCROLL")
+            'If m.Msg = &H30E Then Debug.WriteLine("WM_HSCROLLCLIPBOARD")
+            'If m.Msg = &H27 Then Debug.WriteLine("WM_ICONERASEBKGND")
+            'If m.Msg = &H286 Then Debug.WriteLine("WM_IME_CHAR")
+            'If m.Msg = &H10F Then Debug.WriteLine("WM_IME_COMPOSITION")
+            'If m.Msg = &H284 Then Debug.WriteLine("WM_IME_COMPOSITIONFULL")
+            'If m.Msg = &H283 Then Debug.WriteLine("WM_IME_CONTROL")
+            'If m.Msg = 270 Then Debug.WriteLine("WM_IME_ENDCOMPOSITION")
+            'If m.Msg = &H290 Then Debug.WriteLine("WM_IME_KEYDOWN")
+            'If m.Msg = &H10F Then Debug.WriteLine("WM_IME_KEYLAST")
+            'If m.Msg = &H291 Then Debug.WriteLine("WM_IME_KEYUP")
+            'If m.Msg = &H282 Then Debug.WriteLine("WM_IME_NOTIFY")
+            'If m.Msg = &H288 Then Debug.WriteLine("WM_IME_REQUEST")
+            'If m.Msg = &H285 Then Debug.WriteLine("WM_IME_SELECT")
+            'If m.Msg = &H281 Then Debug.WriteLine("WM_IME_SETCONTEXT")
+            'If m.Msg = &H10D Then Debug.WriteLine("WM_IME_STARTCOMPOSITION")
+            'If m.Msg = &H110 Then Debug.WriteLine("WM_INITDIALOG")
+            'If m.Msg = &H116 Then Debug.WriteLine("WM_INITMENU")
+            'If m.Msg = &H117 Then Debug.WriteLine("WM_INITMENUPOPUP")
+            'If m.Msg = &HFF Then Debug.WriteLine("WM_INPUT")
+            'If m.Msg = &H51 Then Debug.WriteLine("WM_INPUTLANGCHANGE")
+            'If m.Msg = 80 Then Debug.WriteLine("WM_INPUTLANGCHANGEREQUEST")
+            'If m.Msg = &H100 Then Debug.WriteLine("WM_KEYDOWN")
+            'If m.Msg = &H100 Then Debug.WriteLine("WM_KEYFIRST")
+            'If m.Msg = &H108 Then Debug.WriteLine("WM_KEYLAST")
+            'If m.Msg = &H101 Then Debug.WriteLine("WM_KEYUP")
+            'If m.Msg = 8 Then Debug.WriteLine("WM_KILLFOCUS")
+            'If m.Msg = &H203 Then Debug.WriteLine("WM_LBUTTONDBLCLK")
+            'If m.Msg = &H201 Then Debug.WriteLine("WM_LBUTTONDOWN")
+            'If m.Msg = &H202 Then Debug.WriteLine("WM_LBUTTONUP")
+            'If m.Msg = &H209 Then Debug.WriteLine("WM_MBUTTONDBLCLK")
+            'If m.Msg = &H207 Then Debug.WriteLine("WM_MBUTTONDOWN")
+            'If m.Msg = 520 Then Debug.WriteLine("WM_MBUTTONUP")
+            'If m.Msg = &H222 Then Debug.WriteLine("WM_MDIACTIVATE")
+            'If m.Msg = &H227 Then Debug.WriteLine("WM_MDICASCADE")
+            'If m.Msg = &H220 Then Debug.WriteLine("WM_MDICREATE")
+            'If m.Msg = &H221 Then Debug.WriteLine("WM_MDIDESTROY")
+            'If m.Msg = &H229 Then Debug.WriteLine("WM_MDIGETACTIVE")
+            'If m.Msg = &H228 Then Debug.WriteLine("WM_MDIICONARRANGE")
+            'If m.Msg = &H225 Then Debug.WriteLine("WM_MDIMAXIMIZE")
+            'If m.Msg = &H224 Then Debug.WriteLine("WM_MDINEXT")
+            'If m.Msg = &H234 Then Debug.WriteLine("WM_MDIREFRESHMENU")
+            'If m.Msg = &H223 Then Debug.WriteLine("WM_MDIRESTORE")
+            'If m.Msg = 560 Then Debug.WriteLine("WM_MDISETMENU")
+            'If m.Msg = 550 Then Debug.WriteLine("WM_MDITILE")
+            'If m.Msg = &H2C Then Debug.WriteLine("WM_MEASUREITEM")
+            'If m.Msg = &H120 Then Debug.WriteLine("WM_MENUCHAR")
+            'If m.Msg = &H11F Then Debug.WriteLine("WM_MENUSELECT")
+            'If m.Msg = &H21 Then Debug.WriteLine("WM_MOUSEACTIVATE")
+            'If m.Msg = &H200 Then Debug.WriteLine("WM_MOUSEFIRST")
+            'If m.Msg = &H2A1 Then Debug.WriteLine("WM_MOUSEHOVER")
+            'If m.Msg = &H20A Then Debug.WriteLine("WM_MOUSELAST")
+            'If m.Msg = &H2A3 Then Debug.WriteLine("WM_MOUSELEAVE")
+            'If m.Msg = &H200 Then Debug.WriteLine("WM_MOUSEMOVE")
+            'If m.Msg = &H9B Then Debug.WriteLine("WM_MOUSEQUERY")
+            'If m.Msg = &H20A Then Debug.WriteLine("WM_MOUSEWHEEL")
+            'If m.Msg = 3 Then Debug.WriteLine("WM_MOVE")
+            'If m.Msg = &H216 Then Debug.WriteLine("WM_MOVING")
+            'If m.Msg = &H86 Then Debug.WriteLine("WM_NCACTIVATE")
+            'If m.Msg = &H83 Then Debug.WriteLine("WM_NCCALCSIZE")
+            'If m.Msg = &H81 Then Debug.WriteLine("WM_NCCREATE")
+            'If m.Msg = 130 Then Debug.WriteLine("WM_NCDESTROY")
+            'If m.Msg = &H84 Then Debug.WriteLine("WM_NCHITTEST")
+            'If m.Msg = &HA3 Then Debug.WriteLine("WM_NCLBUTTONDBLCLK")
+            'If m.Msg = &HA1 Then Debug.WriteLine("WM_NCLBUTTONDOWN")
+            'If m.Msg = &HA2 Then Debug.WriteLine("WM_NCLBUTTONUP")
+            'If m.Msg = &HA9 Then Debug.WriteLine("WM_NCMBUTTONDBLCLK")
+            'If m.Msg = &HA7 Then Debug.WriteLine("WM_NCMBUTTONDOWN")
+            'If m.Msg = &HA8 Then Debug.WriteLine("WM_NCMBUTTONUP")
+            'If m.Msg = &H2A2 Then Debug.WriteLine("WM_NCMOUSELEAVE")
+            'If m.Msg = 160 Then Debug.WriteLine("WM_NCMOUSEMOVE")
+            'If m.Msg = &H85 Then Debug.WriteLine("WM_NCPAINT")
+            'If m.Msg = &HA6 Then Debug.WriteLine("WM_NCRBUTTONDBLCLK")
+            'If m.Msg = &HA4 Then Debug.WriteLine("WM_NCRBUTTONDOWN")
+            'If m.Msg = &HA5 Then Debug.WriteLine("WM_NCRBUTTONUP")
+            'If m.Msg = &HAD Then Debug.WriteLine("WM_NCXBUTTONDBLCLK")
+            'If m.Msg = &HAB Then Debug.WriteLine("WM_NCXBUTTONDOWN")
+            'If m.Msg = &HAC Then Debug.WriteLine("WM_NCXBUTTONUP")
+            'If m.Msg = 40 Then Debug.WriteLine("WM_NEXTDLGCTL")
+            'If m.Msg = &H213 Then Debug.WriteLine("WM_NEXTMENU")
+            'If m.Msg = &H4E Then Debug.WriteLine("WM_NOTIFY")
+            'If m.Msg = &H55 Then Debug.WriteLine("WM_NOTIFYFORMAT")
+            'If m.Msg = 0 Then Debug.WriteLine("WM_NULL")
+            'If m.Msg = 15 Then Debug.WriteLine("WM_PAINT")
+            'If m.Msg = &H309 Then Debug.WriteLine("WM_PAINTCLIPBOARD")
+            'If m.Msg = &H26 Then Debug.WriteLine("WM_PAINTICON")
+            'If m.Msg = &H311 Then Debug.WriteLine("WM_PALETTECHANGED")
+            'If m.Msg = &H310 Then Debug.WriteLine("WM_PALETTEISCHANGING")
+            'If m.Msg = &H210 Then Debug.WriteLine("WM_PARENTNOTIFY")
+            'If m.Msg = 770 Then Debug.WriteLine("WM_PASTE")
+            'If m.Msg = &H380 Then Debug.WriteLine("WM_PENWINFIRST")
+            'If m.Msg = &H38F Then Debug.WriteLine("WM_PENWINLAST")
+            'If m.Msg = &H48 Then Debug.WriteLine("WM_POWER")
+            'If m.Msg = &H218 Then Debug.WriteLine("WM_POWERBROADCAST")
+            'If m.Msg = &H317 Then Debug.WriteLine("WM_PRINT")
+            'If m.Msg = &H318 Then Debug.WriteLine("WM_PRINTCLIENT")
+            'If m.Msg = &H37 Then Debug.WriteLine("WM_QUERYDRAGICON")
+            'If m.Msg = &H11 Then Debug.WriteLine("WM_QUERYENDSESSION")
+            'If m.Msg = &H30F Then Debug.WriteLine("WM_QUERYNEWPALETTE")
+            'If m.Msg = &H13 Then Debug.WriteLine("WM_QUERYOPEN")
+            'If m.Msg = &H2CC Then Debug.WriteLine("WM_QUERYSYSTEMGESTURESTATUS")
+            'If m.Msg = &H129 Then Debug.WriteLine("WM_QUERYUISTATE")
+            'If m.Msg = &H23 Then Debug.WriteLine("WM_QUEUESYNC")
+            'If m.Msg = &H12 Then Debug.WriteLine("WM_QUIT")
+            'If m.Msg = &H206 Then Debug.WriteLine("WM_RBUTTONDBLCLK")
+            'If m.Msg = &H204 Then Debug.WriteLine("WM_RBUTTONDOWN")
+            'If m.Msg = &H205 Then Debug.WriteLine("WM_RBUTTONUP")
+            'If m.Msg = &H2000 Then Debug.WriteLine("WM_REFLECT")
+            'If m.Msg = &H306 Then Debug.WriteLine("WM_RENDERALLFORMATS")
+            'If m.Msg = &H305 Then Debug.WriteLine("WM_RENDERFORMAT")
+            'If m.Msg = &H20 Then Debug.WriteLine("WM_SETCURSOR")
+            'If m.Msg = 7 Then Debug.WriteLine("WM_SETFOCUS")
+            'If m.Msg = &H30 Then Debug.WriteLine("WM_SETFONT")
+            'If m.Msg = 50 Then Debug.WriteLine("WM_SETHOTKEY")
+            'If m.Msg = &H80 Then Debug.WriteLine("WM_SETICON")
+            'If m.Msg = 11 Then Debug.WriteLine("WM_SETREDRAW")
+            'If m.Msg = 12 Then Debug.WriteLine("WM_SETTEXT")
+            'If m.Msg = &H1A Then Debug.WriteLine("WM_SETTINGCHANGE")
+            'If m.Msg = &H18 Then Debug.WriteLine("WM_SHOWWINDOW")
+            'If m.Msg = 5 Then Debug.WriteLine("WM_SIZE")
+            'If m.Msg = &H30B Then Debug.WriteLine("WM_SIZECLIPBOARD")
+            'If m.Msg = &H214 Then Debug.WriteLine("WM_SIZING")
+            'If m.Msg = &H2A Then Debug.WriteLine("WM_SPOOLERSTATUS")
+            'If m.Msg = &H7D Then Debug.WriteLine("WM_STYLECHANGED")
+            'If m.Msg = &H7C Then Debug.WriteLine("WM_STYLECHANGING")
+            'If m.Msg = &H106 Then Debug.WriteLine("WM_SYSCHAR")
+            'If m.Msg = &H15 Then Debug.WriteLine("WM_SYSCOLORCHANGE")
+            'If m.Msg = &H112 Then Debug.WriteLine("WM_SYSCOMMAND")
+            'If m.Msg = &H107 Then Debug.WriteLine("WM_SYSDEADCHAR")
+            'If m.Msg = 260 Then Debug.WriteLine("WM_SYSKEYDOWN")
+            'If m.Msg = &H105 Then Debug.WriteLine("WM_SYSKEYUP")
+            'If m.Msg = &H2C8 Then Debug.WriteLine("WM_TABLET_ADDED")
+            'If m.Msg = &H2C9 Then Debug.WriteLine("WM_TABLET_REMOVED")
+            'If m.Msg = &H52 Then Debug.WriteLine("WM_TCARD")
+            'If m.Msg = &H31A Then Debug.WriteLine("WM_THEMECHANGED")
+            'If m.Msg = 30 Then Debug.WriteLine("WM_TIMECHANGE")
+            'If m.Msg = &H113 Then Debug.WriteLine("WM_TIMER")
+            'If m.Msg = &H304 Then Debug.WriteLine("WM_UNDO")
+            'If m.Msg = &H125 Then Debug.WriteLine("WM_UNINITMENUPOPUP")
+            'If m.Msg = &H128 Then Debug.WriteLine("WM_UPDATEUISTATE")
+            'If m.Msg = &H400 Then Debug.WriteLine("WM_USER")
+            'If m.Msg = &H54 Then Debug.WriteLine("WM_USERCHANGED")
+            'If m.Msg = &H2E Then Debug.WriteLine("WM_VKEYTOITEM")
+            'If m.Msg = &H115 Then Debug.WriteLine("WM_VSCROLL")
+            'If m.Msg = &H30A Then Debug.WriteLine("WM_VSCROLLCLIPBOARD")
+            'If m.Msg = &H47 Then Debug.WriteLine("WM_WINDOWPOSCHANGED")
+            'If m.Msg = 70 Then Debug.WriteLine("WM_WINDOWPOSCHANGING")
+            'If m.Msg = &H1A Then Debug.WriteLine("WM_WININICHANGE")
+            'If m.Msg = &H2B1 Then Debug.WriteLine("WM_WTSSESSION_CHANGE")
+            'If m.Msg = &H20D Then Debug.WriteLine("WM_XBUTTONDBLCLK")
+            'If m.Msg = &H20B Then Debug.WriteLine("WM_XBUTTONDOWN")
+            'If m.Msg = &H20C Then Debug.WriteLine("WM_XBUTTONUP")
+#End Region
+            MyBase.WndProc(m)
+        End Sub
     End Class
 
     Public Class DialogBase
@@ -100,45 +363,24 @@ Namespace UI
     End Class
 
     Public Class ListBag(Of T)
+        Implements IComparable(Of ListBag(Of T))
+
+        Property Text As String
+        Property Value As T
+
         Sub New(text As String, value As T)
             Me.Text = text
             Me.Value = value
         End Sub
 
-        Private TextValue As String
-
-        Property Text() As String
-            Get
-                Return TextValue
-            End Get
-            Set(Value As String)
-                TextValue = Value
-            End Set
-        End Property
-
-        Private ValueValue As T
-
-        Property Value() As T
-            Get
-                Return ValueValue
-            End Get
-            Set(Value As T)
-                ValueValue = Value
-            End Set
-        End Property
-
         Shared Sub SelectItem(cb As ComboBox, value As T)
             Dim selectItem As Object = Nothing
 
             For Each i As ListBag(Of T) In cb.Items
-                If i.Value.Equals(value) Then
-                    selectItem = i
-                End If
+                If i.Value.Equals(value) Then selectItem = i
             Next
 
-            If Not selectItem Is Nothing Then
-                cb.SelectedItem = selectItem
-            End If
+            If Not selectItem Is Nothing Then cb.SelectedItem = selectItem
         End Sub
 
         Shared Function GetValue(cb As ComboBox) As T
@@ -146,23 +388,27 @@ Namespace UI
         End Function
 
         Shared Function GetBagsForEnumType() As ListBag(Of T)()
-            Dim l As New List(Of ListBag(Of T))
+            Dim ret As New List(Of ListBag(Of T))
 
             For Each i As T In System.Enum.GetValues(GetType(T))
-                l.Add(New ListBag(Of T)(DispNameAttribute.GetValueForEnum(i), i))
+                ret.Add(New ListBag(Of T)(DispNameAttribute.GetValueForEnum(i), i))
             Next
 
-            Return l.ToArray
+            Return ret.ToArray
         End Function
 
         Overrides Function ToString() As String
             Return Text
         End Function
+
+        Function CompareTo(other As ListBag(Of T)) As Integer Implements IComparable(Of ListBag(Of T)).CompareTo
+            Return Text.CompareTo(other.Text)
+        End Function
     End Class
 
     <Serializable()>
     Public Class WindowPositions
-        Private Positions As New Dictionary(Of String, Point)
+        Public Positions As New Dictionary(Of String, Point)
         Private WindowStates As New Dictionary(Of String, FormWindowState)
 
         Sub Save(f As Form)
@@ -171,69 +417,71 @@ Namespace UI
         End Sub
 
         Private Sub SavePosition(f As Form)
-            If f.WindowState = FormWindowState.Normal Then
-                Positions(GetKey(f)) = f.Location
-            End If
+            If f.WindowState = FormWindowState.Normal Then Positions(GetKey(f)) = f.Location
         End Sub
 
         Private Sub SaveWindowState(f As Form)
             WindowStates(GetKey(f)) = f.WindowState
         End Sub
 
-        Private Sub RestorePositionInternal(f As Form)
-            f.StartPosition = FormStartPosition.Manual
+        Private Sub RestorePositionInternal(form As Form)
+            If Positions.ContainsKey(GetKey(form)) Then
+                Dim pos = Positions(GetKey(form))
+                Dim wa = Screen.FromControl(form).WorkingArea
 
-            If Positions.ContainsKey(GetKey(f)) Then
-                Dim p = Positions(GetKey(f))
-                Dim workingArea = Screen.FromControl(f).WorkingArea
+                If pos.X < 0 OrElse pos.Y < 0 OrElse
+                    pos.X + form.Width > wa.Width OrElse
+                    pos.Y + form.Height > wa.Height Then
 
-                If workingArea.Contains(p) AndAlso workingArea.Contains(p.X + f.Width, p.Y + f.Height) Then
-                    f.Location = p
+                    CenterScreen(form)
                 Else
-                    f.StartPosition = FormStartPosition.CenterParent
+                    form.StartPosition = FormStartPosition.Manual
+                    form.Location = pos
                 End If
-            Else
-                f.StartPosition = FormStartPosition.CenterParent
             End If
         End Sub
 
         Private Sub RestoreWindowState(f As Form)
-            If WindowStates.ContainsKey(GetKey(f)) Then
-                f.WindowState = WindowStates(GetKey(f))
-            End If
+            If WindowStates.ContainsKey(GetKey(f)) Then f.WindowState = WindowStates(GetKey(f))
         End Sub
 
-        Sub RestorePosition(f As Form)
-            Dim v = GetText(f)
+        Shared Sub CenterScreen(form As Form)
+            form.StartPosition = FormStartPosition.Manual
+            Dim wa = Screen.FromControl(form).WorkingArea
+            form.Left = (wa.Width - form.Width) \ 2
+            form.Top = (wa.Height - form.Height) \ 2
+        End Sub
 
-            If OK(s.WindowPositionsCenterScreen) AndAlso Not TypeOf f Is InputBoxForm Then
+        Sub RestorePosition(form As Form)
+            Dim v = GetText(form)
+
+            If Not s.WindowPositionsCenterScreen.NothingOrEmpty AndAlso Not TypeOf form Is InputBoxForm Then
                 For Each i In s.WindowPositionsCenterScreen
                     If v.StartsWith(i) OrElse i = "all" Then
-                        f.StartPosition = FormStartPosition.Manual
-                        Dim b = Screen.FromControl(f).WorkingArea
-                        f.Left = (b.Width - f.Width) \ 2
-                        f.Top = (b.Height - f.Height) \ 2
+                        CenterScreen(form)
                         Exit For
                     End If
                 Next
             End If
 
-            If OK(s.WindowPositionsRemembered) AndAlso Not TypeOf f Is InputBoxForm Then
+            If Not s.WindowPositionsRemembered.NothingOrEmpty AndAlso Not TypeOf form Is InputBoxForm Then
                 For Each i In s.WindowPositionsRemembered
                     If v.StartsWith(i) OrElse i = "all" Then
-                        RestorePositionInternal(f)
+                        RestorePositionInternal(form)
                         Exit For
                     End If
                 Next
             End If
         End Sub
 
-        Private Function GetKey(f As Form) As String
+        Function GetKey(f As Form) As String
             Return f.Name + f.GetType().FullName + GetText(f)
         End Function
 
         Function GetText(f As Form) As String
-            Return If(TypeOf f Is HelpForm, "Help", f.Text)
+            If TypeOf f Is HelpForm Then Return "Help"
+            If TypeOf f Is PreviewForm Then Return "Preview"
+            Return f.Text
         End Function
     End Class
 
@@ -262,11 +510,11 @@ Namespace UI
         End Sub
 
         Overloads Overrides Function EditValue(context As ITypeDescriptorContext, provider As IServiceProvider, value As Object) As Object
-            Dim f As New StringEditorForm
-            f.tb.Text = DirectCast(value, String)
+            Dim form As New StringEditorForm
+            form.rtb.Text = DirectCast(value, String)
 
-            If f.ShowDialog() = DialogResult.OK Then
-                Return f.tb.Text
+            If form.ShowDialog() = DialogResult.OK Then
+                Return form.rtb.Text
             Else
                 Return value
             End If
@@ -277,166 +525,14 @@ Namespace UI
         End Function
     End Class
 
-    ''' <summary>
-    ''' Specifies ellipsis format and alignment.
-    ''' </summary>
-    <Flags>
-    Public Enum EllipsisFormat
-        ''' <summary>
-        ''' Text is not modified.
-        ''' </summary>
-        None = 0
-        ''' <summary>
-        ''' Text is trimmed at the end of the string. An ellipsis (...) is drawn in place of remaining text.
-        ''' </summary>
-        [End] = 1
-        ''' <summary>
-        ''' Text is trimmed at the begining of the string. An ellipsis (...) is drawn in place of remaining text. 
-        ''' </summary>
-        Start = 2
-        ''' <summary>
-        ''' Text is trimmed in the middle of the string. An ellipsis (...) is drawn in place of remaining text.
-        ''' </summary>
-        Middle = 3
-        ''' <summary>
-        ''' Preserve as much as possible of the drive and filename information. Must be combined with alignment information.
-        ''' </summary>
-        Path = 4
-        ''' <summary>
-        ''' Text is trimmed at a word boundary. Must be combined with alignment information.
-        ''' </summary>
-        Word = 8
-    End Enum
+    Public Class DesignHelp
+        Private Shared IsDesignModeValue As Boolean?
 
-    Public Class Ellipsis
-        ''' <summary>
-        ''' String used as a place holder for trimmed text.
-        ''' </summary>
-        Public Shared ReadOnly EllipsisChars As String = "..."
-
-        Private Shared prevWord As New Regex("\W*\w*$")
-        Private Shared nextWord As New Regex("\w*\W*")
-
-        ''' <summary>
-        ''' Truncates a text string to fit within a given control width by replacing trimmed text with ellipses. 
-        ''' </summary>
-        ''' <param name="text">String to be trimmed.</param>
-        ''' <param name="ctrl">text must fit within ctrl width.
-        '''	The ctrl's Font is used to measure the text string.</param>
-        ''' <param name="options">Format and alignment of ellipsis.</param>
-        ''' <returns>This function returns text trimmed to the specified witdh.</returns>
-        Public Shared Function Compact(text As String, ctrl As Control, options As EllipsisFormat) As String
-            If String.IsNullOrEmpty(text) Then
-                Return text
-            End If
-
-            ' no aligment information
-            If (EllipsisFormat.Middle And options) = 0 Then
-                Return text
-            End If
-
-            If ctrl Is Nothing Then
-                Throw New ArgumentNullException("ctrl")
-            End If
-
-            Using dc As Graphics = ctrl.CreateGraphics()
-                Dim s As Size = TextRenderer.MeasureText(dc, text, ctrl.Font)
-
-                ' control is large enough to display the whole text
-                If s.Width <= ctrl.Width Then
-                    Return text
-                End If
-
-                Dim pre As String = ""
-                Dim mid As String = text
-                Dim post As String = ""
-
-                Dim isPath As Boolean = (EllipsisFormat.Path And options) <> 0
-
-                ' split path string into <drive><directory><filename>
-                If isPath Then
-                    pre = Path.GetPathRoot(text)
-                    mid = Path.GetDirectoryName(text).Substring(pre.Length)
-                    post = Path.GetFileName(text)
-                End If
-
-                Dim len As Integer = 0
-                Dim seg As Integer = mid.Length
-                Dim fit As String = ""
-
-                ' find the longest string that fits into 
-                ' the control boundaries using bisection method
-                While seg > 1
-                    seg -= seg \ 2
-
-                    Dim left As Integer = len + seg
-                    Dim right As Integer = mid.Length
-
-                    If left > right Then
-                        Continue While
-                    End If
-
-                    If (EllipsisFormat.Middle And options) = EllipsisFormat.Middle Then
-                        right -= left \ 2
-                        left -= left \ 2
-                    ElseIf (EllipsisFormat.Start And options) <> 0 Then
-                        right -= left
-                        left = 0
-                    End If
-
-                    ' trim at a word boundary using regular expressions
-                    If (EllipsisFormat.Word And options) <> 0 Then
-                        If (EllipsisFormat.[End] And options) <> 0 Then
-                            left -= prevWord.Match(mid, 0, left).Length
-                        End If
-                        If (EllipsisFormat.Start And options) <> 0 Then
-                            right += nextWord.Match(mid, right).Length
-                        End If
-                    End If
-
-                    ' build and measure a candidate string with ellipsis
-                    Dim tst As String = mid.Substring(0, left) & EllipsisChars & mid.Substring(right)
-
-                    ' restore path with <drive> and <filename>
-                    If isPath Then
-                        tst = Path.Combine(Path.Combine(pre, tst), post)
-                    End If
-                    s = TextRenderer.MeasureText(dc, tst, ctrl.Font)
-
-                    ' candidate string fits into control boundaries, try a longer string
-                    ' stop when seg <= 1
-                    If s.Width <= ctrl.Width Then
-                        len += seg
-                        fit = tst
-                    End If
-                End While
-
-                If len = 0 Then
-                    ' string can't fit into control
-                    ' "path" mode is off, just return ellipsis characters
-                    If Not isPath Then
-                        Return EllipsisChars
-                    End If
-
-                    ' <drive> and <directory> are empty, return <filename>
-                    If pre.Length = 0 AndAlso mid.Length = 0 Then
-                        Return post
-                    End If
-
-                    ' measure "C:\...\filename.ext"
-                    fit = Path.Combine(Path.Combine(pre, EllipsisChars), post)
-
-                    s = TextRenderer.MeasureText(dc, fit, ctrl.Font)
-
-                    ' if still not fit then return "...\filename.ext"
-                    If s.Width > ctrl.Width Then
-                        fit = Path.Combine(EllipsisChars, post)
-                    End If
-                End If
-
-                Return fit
-            End Using
-        End Function
+        Shared ReadOnly Property IsDesignMode As Boolean
+            Get
+                If Not IsDesignModeValue.HasValue Then IsDesignModeValue = Process.GetCurrentProcess.ProcessName = "devenv"
+                Return IsDesignModeValue.Value
+            End Get
+        End Property
     End Class
-
 End Namespace

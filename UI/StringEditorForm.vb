@@ -15,80 +15,96 @@ Namespace UI
 
         Private components As System.ComponentModel.IContainer
 
-        Public WithEvents tb As System.Windows.Forms.TextBox
-        Public WithEvents bOK As System.Windows.Forms.Button
+        Public WithEvents rtb As RichTextBoxEx
+        Public WithEvents bnOK As System.Windows.Forms.Button
         Public WithEvents cbWrap As System.Windows.Forms.CheckBox
-        Public WithEvents bCancel As System.Windows.Forms.Button
+        Friend WithEvents Panel1 As Panel
+        Public WithEvents bnCancel As System.Windows.Forms.Button
         <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-            Me.bOK = New System.Windows.Forms.Button()
-            Me.bCancel = New System.Windows.Forms.Button()
-            Me.tb = New System.Windows.Forms.TextBox()
+            Me.bnOK = New System.Windows.Forms.Button()
+            Me.bnCancel = New System.Windows.Forms.Button()
+            Me.rtb = New StaxRip.UI.RichTextBoxEx()
             Me.cbWrap = New System.Windows.Forms.CheckBox()
+            Me.Panel1 = New System.Windows.Forms.Panel()
+            Me.Panel1.SuspendLayout()
             Me.SuspendLayout()
             '
-            'bOK
+            'bnOK
             '
-            Me.bOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.bOK.DialogResult = System.Windows.Forms.DialogResult.OK
-            Me.bOK.Location = New System.Drawing.Point(382, 329)
-            Me.bOK.Name = "bOK"
-            Me.bOK.Size = New System.Drawing.Size(100, 34)
-            Me.bOK.TabIndex = 0
-            Me.bOK.Text = "OK"
+            Me.bnOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.bnOK.DialogResult = System.Windows.Forms.DialogResult.OK
+            Me.bnOK.Location = New System.Drawing.Point(341, 270)
+            Me.bnOK.Name = "bnOK"
+            Me.bnOK.Size = New System.Drawing.Size(250, 70)
+            Me.bnOK.TabIndex = 0
+            Me.bnOK.Text = "OK"
             '
-            'bCancel
+            'bnCancel
             '
-            Me.bCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.bCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-            Me.bCancel.Location = New System.Drawing.Point(488, 329)
-            Me.bCancel.Name = "bCancel"
-            Me.bCancel.Size = New System.Drawing.Size(100, 34)
-            Me.bCancel.TabIndex = 1
-            Me.bCancel.Text = "Cancel"
+            Me.bnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.bnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
+            Me.bnCancel.Location = New System.Drawing.Point(602, 270)
+            Me.bnCancel.Name = "bnCancel"
+            Me.bnCancel.Size = New System.Drawing.Size(250, 70)
+            Me.bnCancel.TabIndex = 1
+            Me.bnCancel.Text = "Cancel"
             '
-            'tb
+            'rtb
             '
-            Me.tb.AcceptsReturn = True
-            Me.tb.AcceptsTab = True
-            Me.tb.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                        Or System.Windows.Forms.AnchorStyles.Left) _
-                        Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-            Me.tb.Font = New System.Drawing.Font("Courier New", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-            Me.tb.Location = New System.Drawing.Point(12, 12)
-            Me.tb.Multiline = True
-            Me.tb.Name = "tb"
-            Me.tb.ScrollBars = System.Windows.Forms.ScrollBars.Both
-            Me.tb.Size = New System.Drawing.Size(576, 311)
-            Me.tb.TabIndex = 2
-            Me.tb.WordWrap = False
+            Me.rtb.AcceptsTab = True
+            Me.rtb.BorderStyle = System.Windows.Forms.BorderStyle.None
+            Me.rtb.Dock = System.Windows.Forms.DockStyle.Fill
+            Me.rtb.Location = New System.Drawing.Point(0, 0)
+            Me.rtb.Margin = New System.Windows.Forms.Padding(5)
+            Me.rtb.Name = "rtb"
+            Me.rtb.Size = New System.Drawing.Size(840, 241)
+            Me.rtb.TabIndex = 2
+            Me.rtb.Text = ""
+            Me.rtb.WordWrap = False
             '
             'cbWrap
             '
             Me.cbWrap.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
             Me.cbWrap.AutoSize = True
-            Me.cbWrap.Location = New System.Drawing.Point(13, 333)
+            Me.cbWrap.Location = New System.Drawing.Point(14, 278)
+            Me.cbWrap.Margin = New System.Windows.Forms.Padding(5)
             Me.cbWrap.Name = "cbWrap"
-            Me.cbWrap.Size = New System.Drawing.Size(81, 29)
+            Me.cbWrap.Size = New System.Drawing.Size(152, 52)
             Me.cbWrap.TabIndex = 3
             Me.cbWrap.Text = "Wrap"
             '
+            'Panel1
+            '
+            Me.Panel1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Me.Panel1.Controls.Add(Me.rtb)
+            Me.Panel1.Location = New System.Drawing.Point(12, 12)
+            Me.Panel1.Name = "Panel1"
+            Me.Panel1.Size = New System.Drawing.Size(840, 241)
+            Me.Panel1.TabIndex = 4
+            '
             'StringEditorForm
             '
-            Me.AcceptButton = Me.bOK
-            Me.CancelButton = Me.bCancel
-            Me.ClientSize = New System.Drawing.Size(600, 375)
+            Me.AcceptButton = Me.bnOK
+            Me.AutoScaleDimensions = New System.Drawing.SizeF(288.0!, 288.0!)
+            Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
+            Me.CancelButton = Me.bnCancel
+            Me.ClientSize = New System.Drawing.Size(864, 352)
+            Me.Controls.Add(Me.Panel1)
             Me.Controls.Add(Me.cbWrap)
-            Me.Controls.Add(Me.tb)
-            Me.Controls.Add(Me.bCancel)
-            Me.Controls.Add(Me.bOK)
-            Me.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+            Me.Controls.Add(Me.bnCancel)
+            Me.Controls.Add(Me.bnOK)
+            Me.KeyPreview = True
+            Me.Margin = New System.Windows.Forms.Padding(5)
             Me.MinimizeBox = False
-            Me.MinimumSize = New System.Drawing.Size(250, 200)
+            Me.MinimumSize = New System.Drawing.Size(425, 269)
             Me.Name = "StringEditorForm"
             Me.ShowIcon = False
             Me.ShowInTaskbar = False
             Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
             Me.Text = "String Editor"
+            Me.Panel1.ResumeLayout(False)
             Me.ResumeLayout(False)
             Me.PerformLayout()
 
@@ -100,17 +116,19 @@ Namespace UI
             MyBase.New()
             InitializeComponent()
             cbWrap.Checked = True
+            rtb.Font = New Font("Consolas", 10 * s.UIScaleFactor)
+            ScaleClientSize(41, 24)
         End Sub
 
-        Private Sub tb_KeyDown(sender As Object, e As KeyEventArgs) Handles tb.KeyDown
+        Private Sub tb_KeyDown(sender As Object, e As KeyEventArgs) Handles rtb.KeyDown
             If e.KeyData = (Keys.Enter Or Keys.Control) Then
                 e.Handled = True
-                bOK.PerformClick()
+                bnOK.PerformClick()
             End If
         End Sub
 
         Private Sub cbWrap_CheckedChanged() Handles cbWrap.CheckedChanged
-            tb.WordWrap = cbWrap.Checked
+            rtb.WordWrap = cbWrap.Checked
         End Sub
     End Class
 End Namespace

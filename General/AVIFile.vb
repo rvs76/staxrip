@@ -1,6 +1,5 @@
 Imports System.Runtime.InteropServices
 Imports System.Reflection
-Imports System.Text
 
 Public Class AVIFile
     Implements IDisposable
@@ -13,36 +12,28 @@ Public Class AVIFile
 
     Sub New(path As String)
         Try
-            AVIFileInit()
             Sourcefile = path
+            AVIFileInit()
 
             Const OF_SHARE_DENY_WRITE = 32
 
             If AVIFileOpen(AviFile, path, OF_SHARE_DENY_WRITE, IntPtr.Zero) <> 0 Then
-                Throw New Exception("AVIFileOpen failed")
+                ThrowException("AVIFileOpen failed to execute")
             End If
 
             If AVIFileGetStream(AviFile, AviStream, mmioStringToFOURCC("vids", 0), 0) <> 0 Then 'FourCC for vids
-                Throw New Exception("AVIFileGetStream failed")
+                ThrowException("AVIFileGetStream failed to execute")
             End If
 
             FrameCountValue = AVIStreamLength(AviStream)
 
             If FrameCountValue = 240 Then
-                Dim o = Marshal.GetObjectForIUnknown(AviFile)
+                Dim clipInfo = TryCast(Marshal.GetObjectForIUnknown(AviFile), IAvisynthClipInfo)
 
-                If Not o Is Nothing Then
-                    Dim i = CType(o, IAvisynthClipInfo)
-
-                    If Not i Is Nothing Then
-                        Dim ptr As IntPtr
-
-                        If i.GetError(ptr) = 0 Then
-                            ErrorMessageValue = Marshal.PtrToStringAnsi(ptr)
-                        End If
-
-                        Marshal.ReleaseComObject(i)
-                    End If
+                If Not clipInfo Is Nothing Then
+                    Dim ptr As IntPtr
+                    If clipInfo.GetError(ptr) = 0 Then ErrorMessageValue = Marshal.PtrToStringAnsi(ptr)
+                    Marshal.ReleaseComObject(clipInfo)
                 End If
             Else
                 ErrorMessageValue = Nothing
@@ -51,18 +42,28 @@ Public Class AVIFile
             StreamInfo = New _AVISTREAMINFO()
 
             If AVIStreamInfo(AviStream, StreamInfo, Marshal.SizeOf(StreamInfo)) <> 0 Then
-                Throw New Exception("AVIStreamInfo failed")
+                ThrowException("AVIStreamInfo failed to execute")
             End If
         Catch ex As Exception
             Dispose()
-            LogAVS()
+            WriteLog()
             Throw ex
         End Try
     End Sub
 
+    Sub ThrowException(message As String)
+        If Sourcefile.Ext = "avs" Then
+            Throw New Exception(message + BR2 + "Failed to open AviSynth script:" + BR2 + Sourcefile + BR2 + "You can try to open the script with VirtualDub x64, if it don't open it could be a problem with the script or the AviSynth+ x64 setup, if StaxRip don't report a script error and the script looks valid then reinstalling AviSynth+ x64 might fix the problem, the setup is located at:" + BR2 + Folder.Apps + Package.AviSynth.SetupFilename + BR)
+        ElseIf Sourcefile.Ext = "vpy" Then
+            Throw New Exception(message + BR2 + "Failed to open VapourSynth script:" + BR2 + Sourcefile + BR2 + "You can try to open the script with VirtualDub x64, if it don't open it could be a problem with the script or the VapourSynth x64 setup, if StaxRip don't report a script error and the script looks valid then reinstalling VapourSynth x64 might fix the problem.")
+        Else
+            Throw New Exception(message + BR2 + "Failed to open script:" + BR2 + Sourcefile)
+        End If
+    End Sub
+
     Private FrameCountValue As Integer
 
-    ReadOnly Property FrameCount() As Integer
+    ReadOnly Property FrameCount As Integer
         Get
             Return FrameCountValue
         End Get
@@ -90,7 +91,7 @@ Public Class AVIFile
 
     Private PositionValue As Integer
 
-    Property Position() As Integer
+    Property Position As Integer
         Get
             Return PositionValue
         End Get
@@ -105,28 +106,36 @@ Public Class AVIFile
         End Set
     End Property
 
-    Sub LogAVS()
-        Log.WriteHeader("AviSynth script failed to load")
-        Log.WriteLine(File.ReadAllText(Sourcefile, Encoding.Default) + CrLf)
+    Sub WriteLog()
+        Log.WriteHeader("Script file failed to load")
+        Log.WriteLine("Source File Path: " + Sourcefile)
 
-        If Directory.Exists(Paths.AviSynthPluginsDir) Then
-            Log.WriteLine("AviSynth Plugins: " + Directory.GetFiles(Paths.AviSynthPluginsDir, "*.dll").ToArray.Join(", ").Replace(Paths.AviSynthPluginsDir, "").Replace(".dll", ""))
+        Try
+            Log.WriteLine(File.ReadAllText(Sourcefile) + BR)
+        Catch ex As Exception
+            Throw New ErrorAbortException("Failed to read script file", ex.Message)
+        End Try
+
+        If Directory.Exists(Folder.Plugins) Then
+            Log.WriteLine("Plugins: " + Directory.GetFiles(Folder.Plugins, "*.dll").Join(", ").Replace(Folder.Plugins, "").Replace(".dll", ""))
         Else
-            Log.WriteLine("AviSynth plugin directory is missing!")
+            Log.WriteLine("Plugin directory is missing!")
         End If
     End Sub
 
-    Function GetBitmap() As Bitmap
+    Function GetDIB() As IntPtr
         If FrameObject = IntPtr.Zero Then
             Const AVIGETFRAMEF_BESTDISPLAYFMT = 1
             FrameObject = AVIStreamGetFrameOpen(AviStream, AVIGETFRAMEF_BESTDISPLAYFMT)
             If FrameObject = IntPtr.Zero Then FrameObject = AVIStreamGetFrameOpen(AviStream, 0)
         End If
 
-        If FrameObject <> IntPtr.Zero Then
-            Dim ptr = AVIStreamGetFrame(FrameObject, Position)
-            If ptr <> IntPtr.Zero Then Return GetBMPFromDib(ptr)
-        End If
+        If FrameObject <> IntPtr.Zero Then Return AVIStreamGetFrame(FrameObject, Position)
+    End Function
+
+    Function GetBitmap() As Bitmap
+        Dim dib = GetDIB()
+        If dib <> IntPtr.Zero Then Return GetBMPFromDib(dib)
     End Function
 
     Private Function GetBMPFromDib(pDIB As IntPtr) As Bitmap
@@ -153,7 +162,7 @@ Public Class AVIFile
     Private Shared Sub AVIFileInit()
     End Sub
 
-    <DllImport("avifil32.dll")>
+    <DllImport("avifil32.dll", CharSet:=CharSet.Unicode)>
     Private Shared Function AVIFileOpen(ByRef ppfile As IntPtr, szFile As String, uMode As Integer, pclsidHandler As IntPtr) As Integer
     End Function
 
@@ -193,7 +202,7 @@ Public Class AVIFile
     Private Shared Sub AVIFileExit()
     End Sub
 
-    <DllImport("winmm.dll")>
+    <DllImport("winmm.dll")> 
     Private Shared Function mmioStringToFOURCC(sz As String, uFlags As Integer) As UInteger
     End Function
 
